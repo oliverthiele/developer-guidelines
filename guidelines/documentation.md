@@ -183,6 +183,8 @@ Oliver Thiele — [oliver-thiele.de](https://www.oliver-thiele.de)
 - Internal project notes or WIP remarks
 - Planned features (unless they materially affect the integration decision
   today)
+- Placeholder text (e.g. `TODO`, `Insert description here`) — if a section
+  cannot be written yet, omit it entirely
 
 ---
 
@@ -210,19 +212,19 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Server-side pagination via Route Enhancer
+- Add server-side pagination via Route Enhancer
 
 ### Changed
 
-- Minimum PHP version raised to 8.3
+- Raise minimum PHP version to 8.3
 
 ### Fixed
 
-- Missing alt text on lightbox images
+- Fix missing alt text on lightbox images
 
 ### Removed
 
-- Deprecated `Gallery\LegacyProcessor` class
+- Remove deprecated `Gallery\LegacyProcessor` class
 ```
 
 Rules:

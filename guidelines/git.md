@@ -41,6 +41,8 @@ Examples:
 [FEATURE] Add pagination support to gallery plugin
 [BUGFIX] Fix missing crop context in FAL file references
 [DOCS] Update README with SiteSet dependency instructions
+[!!!][TASK] Remove deprecated AbstractPlugin base class
+[!!!][BUGFIX] Fix session handling — drops old cookie format
 ```
 
 ### Tags
@@ -145,8 +147,6 @@ Rules:
 
 Use `--no-ff` only when merging locally (GitHub PR merges are already non-fast-forward).
 
-Tag always on the merge commit in `main` — never on `develop`.
-
 ---
 
 ## CHANGELOG.md
@@ -196,6 +196,8 @@ Style:
 - Focus on actual code/config changes
 
 TYPO3 conventions: PSR-12, TypoScript, Fluid, Extbase patterns
+
+CRITICAL: Never append "Co-Authored-By" or any mention of AI tools in commit messages or PR descriptions.
 ```
 
 ### Commit Message Generation

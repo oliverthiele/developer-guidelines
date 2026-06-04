@@ -102,6 +102,12 @@ JavaScript always selects elements via `data-js`, never via CSS classes or IDs.
 - Value: `lowerCamelCase`
 - Value must match the JavaScript variable name — a single IDE search finds both
 
+Exception for Vue components: inside Vue templates, do not use `data-js`
+attributes or
+`document.querySelector`. Use Vue template refs (`ref="elementName"`) or event
+bindings
+(`@click`) instead.
+
 ```html
 <!-- Correct -->
 <button class="sk-nav-toggle" data-js="menuToggle">
@@ -236,7 +242,7 @@ See `vue.md` for mounting and component conventions.
 
 - One entry point per large feature
 - Do not load large scripts globally
-- File names: `UpperCamelCase`
+- File names: `PascalCase`
 
 ```
 Build/Default/EntryPoints/ProductFilterApp.js
@@ -297,5 +303,5 @@ document.getElementById('button')
 | JS variable       | matches `data-js` value        | `const menuToggle = ...` |
 | Bootstrap JS      | `data-bs-*`                    | `data-bs-toggle="modal"` |
 | Vue component     | `PascalCase`                   | `<ProductFilterApp />`   |
-| Entry point file  | `UpperCamelCase`               | `ProductFilterApp.js`    |
+| Entry point file  | `PascalCase`                   | `ProductFilterApp.js`    |
 | App root ID       | `lowerCamelCase`               | `productFilterApp`       |

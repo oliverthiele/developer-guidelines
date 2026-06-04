@@ -73,8 +73,8 @@ Use direct binary calls only when:
 
 Use the following order when the corresponding tools are available and relevant:
 
-1. Auto-fix and formatting
-2. Static analysis
+1. Static analysis
+2. Auto-fix and formatting
 3. Unit / Functional Tests
 4. Frontend build or frontend validation
 5. E2E tests such as Playwright
@@ -83,9 +83,9 @@ Use the following order when the corresponding tools are available and relevant:
 
 For PHP-related validation, use this fixed execution order:
 
-1. php-cs-fixer--dry-run
-2. php-codesniffer
-3. phpstan
+1. phpstan
+2. php-cs-fixer --dry-run
+3. php-codesniffer
 
 This order is authoritative and must not be overridden in tools or automation.
 

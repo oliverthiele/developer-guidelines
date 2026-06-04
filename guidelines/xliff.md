@@ -64,16 +64,16 @@ Use for extensions that support TYPO3 v13.
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file source-language="en" datatype="plaintext"
-          original="EXT:my_ext/Resources/Private/Language/locallang.xlf"
-          product-name="my-ext">
-        <header/>
-        <body>
-            <trans-unit id="my.key" resname="my.key">
-                <source>My label</source>
-            </trans-unit>
-        </body>
-    </file>
+  <file source-language="en" datatype="plaintext"
+        original="EXT:my_ext/Resources/Private/Language/locallang.xlf"
+        product-name="my-ext">
+    <header/>
+    <body>
+      <trans-unit id="my.key" resname="my.key">
+        <source>My label</source>
+      </trans-unit>
+    </body>
+  </file>
 </xliff>
 ```
 
@@ -82,17 +82,17 @@ Use for extensions that support TYPO3 v13.
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file source-language="en" target-language="de" datatype="plaintext"
-          original="EXT:my_ext/Resources/Private/Language/locallang.xlf"
-          product-name="my-ext">
-        <header/>
-        <body>
-            <trans-unit id="my.key" resname="my.key" approved="yes">
-                <source>My label</source>
-                <target>Meine Beschriftung</target>
-            </trans-unit>
-        </body>
-    </file>
+  <file source-language="en" target-language="de" datatype="plaintext"
+        original="EXT:my_ext/Resources/Private/Language/locallang.xlf"
+        product-name="my-ext">
+    <header/>
+    <body>
+      <trans-unit id="my.key" resname="my.key" approved="yes">
+        <source>My label</source>
+        <target>Meine Beschriftung</target>
+      </trans-unit>
+    </body>
+  </file>
 </xliff>
 ```
 
@@ -131,14 +131,14 @@ Use for extensions that target TYPO3 v14+ only.
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en">
-    <file id="my-ext-locallang"
-          original="EXT:my_ext/Resources/Private/Language/locallang.xlf">
-        <unit id="my.key">
-            <segment>
-                <source>My label</source>
-            </segment>
-        </unit>
-    </file>
+  <file id="my-ext-locallang"
+        original="EXT:my_ext/Resources/Private/Language/locallang.xlf">
+    <unit id="my.key">
+      <segment>
+        <source>My label</source>
+      </segment>
+    </unit>
+  </file>
 </xliff>
 ```
 
@@ -148,15 +148,15 @@ Use for extensions that target TYPO3 v14+ only.
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en"
        trgLang="de">
-    <file id="my-ext-locallang"
-          original="EXT:my_ext/Resources/Private/Language/locallang.xlf">
-        <unit id="my.key">
-            <segment>
-                <source>My label</source>
-                <target>Meine Beschriftung</target>
-            </segment>
-        </unit>
-    </file>
+  <file id="my-ext-locallang"
+        original="EXT:my_ext/Resources/Private/Language/locallang.xlf">
+    <unit id="my.key">
+      <segment>
+        <source>My label</source>
+        <target>Meine Beschriftung</target>
+      </segment>
+    </unit>
+  </file>
 </xliff>
 ```
 
@@ -201,9 +201,9 @@ Use only in XLIFF 2.0 files (v14+ extensions).
 ```xml
 
 <unit id="items.count">
-    <segment>
-        <source>{count, plural, one {# result} other {# results}}</source>
-    </segment>
+  <segment>
+    <source>{count, plural, one {# result} other {# results}}</source>
+  </segment>
 </unit>
 ```
 
@@ -212,10 +212,10 @@ Use only in XLIFF 2.0 files (v14+ extensions).
 ```xml
 
 <unit id="items.count">
-    <segment>
-        <source>{count, plural, one {# result} other {# results}}</source>
-        <target>{count, plural, one {# Ergebnis} other {# Ergebnisse}}</target>
-    </segment>
+  <segment>
+    <source>{count, plural, one {# result} other {# results}}</source>
+    <target>{count, plural, one {# Ergebnis} other {# Ergebnisse}}</target>
+  </segment>
 </unit>
 ```
 
@@ -261,23 +261,23 @@ treated as a nested placeholder and causes a parse error at runtime.
 ```xml
 <!-- Wrong: two keys for singular/plural -->
 <unit id="result.singular">
-    <segment>
-        <source>1 result</source>
-    </segment>
+  <segment>
+    <source>1 result</source>
+  </segment>
 </unit>
 <unit id="result.plural">
-<segment>
+  <segment>
     <source>{count} results</source>
-</segment>
+  </segment>
 </unit>
 ```
 
 ```xml
 <!-- Correct: one key with ICU -->
 <unit id="result.count">
-    <segment>
-        <source>{count, plural, one {# result} other {# results}}</source>
-    </segment>
+  <segment>
+    <source>{count, plural, one {# result} other {# results}}</source>
+  </segment>
 </unit>
 ```
 
@@ -310,7 +310,7 @@ the key segment.
 current-job-offers      ← hyphens as separator
 tx_myext_published_on   ← underscores as separator (TCA exception does not apply here)
 applicationByEmail      ← no namespace, missing dot
-PublishedOn             ← UpperCamelCase
+PublishedOn             ← PascalCase
 ```
 
 ---
@@ -370,34 +370,34 @@ settings:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en">
-    <file id="my-ext-labels"
-          original="EXT:my_ext/Configuration/Sets/MySet/labels.xlf">
-        <unit id="label">
-            <segment>
-                <source>My Extension</source>
-            </segment>
-        </unit>
-        <unit id="categories.MyExt">
-            <segment>
-                <source>My Extension</source>
-            </segment>
-        </unit>
-        <unit id="categories.MyExt.general">
-            <segment>
-                <source>General</source>
-            </segment>
-        </unit>
-        <unit id="settings.myExt.someOption">
-            <segment>
-                <source>Option label</source>
-            </segment>
-        </unit>
-        <unit id="settings.description.myExt.someOption">
-            <segment>
-                <source>Description shown below the field.</source>
-            </segment>
-        </unit>
-    </file>
+  <file id="my-ext-labels"
+        original="EXT:my_ext/Configuration/Sets/MySet/labels.xlf">
+    <unit id="label">
+      <segment>
+        <source>My Extension</source>
+      </segment>
+    </unit>
+    <unit id="categories.MyExt">
+      <segment>
+        <source>My Extension</source>
+      </segment>
+    </unit>
+    <unit id="categories.MyExt.general">
+      <segment>
+        <source>General</source>
+      </segment>
+    </unit>
+    <unit id="settings.myExt.someOption">
+      <segment>
+        <source>Option label</source>
+      </segment>
+    </unit>
+    <unit id="settings.description.myExt.someOption">
+      <segment>
+        <source>Description shown below the field.</source>
+      </segment>
+    </unit>
+  </file>
 </xliff>
 ```
 
@@ -425,14 +425,14 @@ TYPO3 derives the key automatically as
 ```xml
 
 <unit id="settings.myExt.layout.enum.grid">
-    <segment>
-        <source>Grid</source>
-    </segment>
+  <segment>
+    <source>Grid</source>
+  </segment>
 </unit>
 <unit id="settings.myExt.layout.enum.masonry">
-<segment>
+  <segment>
     <source>Masonry</source>
-</segment>
+  </segment>
 </unit>
 ```
 
@@ -475,7 +475,7 @@ HTML must be wrapped in CDATA. Never use raw HTML inside `<source>` or
 <source><![CDATA[Please <strong>confirm</strong> your email]]></source>
 <target><![CDATA[Bitte <strong>bestätigen</strong> Sie Ihre E-Mail]]></target>
 
-    <!-- Wrong -->
+<!-- Wrong -->
 <source>Please <strong>confirm</strong> your email
 </source>
 ```
@@ -492,19 +492,19 @@ between languages).
 <source>Hello %1$s, you have %2$s new messages.</source>
 <target>Hallo %1$s, Sie haben %2$s neue Nachrichten.</target>
 
-    <!-- Wrong: unordered -->
+<!-- Wrong: unordered -->
 <source>Hello {1}, you have {2} new messages.</source>
 
-    <!-- Wrong: sentence split across keys -->
+<!-- Wrong: sentence split across keys -->
 <unit id="greeting.hello">
-<segment>
+  <segment>
     <source>Hello</source>
-</segment>
+  </segment>
 </unit>
 <unit id="greeting.messages">
-<segment>
+  <segment>
     <source>you have new messages.</source>
-</segment>
+  </segment>
 </unit>
 ```
 

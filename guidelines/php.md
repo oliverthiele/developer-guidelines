@@ -34,8 +34,8 @@ Code style is enforced by **TYPO3 Coding Standards** via PHP CS Fixer.
 
 ### Execution Order
 
-1. PHP CS Fixer
-2. PHPStan
+1. PHPStan
+2. PHP CS Fixer
 
 Both must pass before committing changes.
 
@@ -77,6 +77,25 @@ Fallback:
 ```bash
 ddev exec vendor/bin/php-cs-fixer fix
 ```
+
+### Required configuration
+
+Every project that uses both PHP CS Fixer and PHP CodeSniffer must override
+`single_line_empty_body` in `.php-cs-fixer.dist.php`:
+
+```php
+$config->setRules(array_merge(
+    $config->getRules(),
+    [
+        // Prevents CS Fixer from collapsing empty constructors/methods/classes.
+        // Without this, CS Fixer and CodeSniffer conflict on every empty body.
+        'single_line_empty_body' => false,
+    ]
+));
+```
+
+Without this override, CS Fixer collapses empty methods to a single line and
+CodeSniffer immediately flags the result — the tools loop endlessly.
 
 ---
 
@@ -136,9 +155,7 @@ declare(strict_types=1);
 ## Decision Rules
 
 - Prefer minimal changes over refactoring
-- Do not rename variables unless required
 - Do not introduce helpers for one-time use
-- Do not add error handling for impossible states
 - Preserve existing structure and comments
 
 ---
@@ -179,6 +196,7 @@ Standalone Packagist packages use their own `phpstan.neon.dist`.
 `$GLOBALS` is typed as `array<string, mixed>` — always use multi-step narrowing:
 
 ```php
+/** @return array<string, mixed> */
 private function getTcaCtrl(string $tableName): array
 {
     $tca = $GLOBALS['TCA'] ?? null;
@@ -244,5 +262,4 @@ if (is_array($overlayedRow[0])) {
 - Comments in **English only**
 - No docblocks on obvious methods — only where logic is not self-evident
 - Trust framework guarantees — do not guard impossible states
-- No helpers or abstractions for one-time use
 - No backwards-compatibility shims for removed code

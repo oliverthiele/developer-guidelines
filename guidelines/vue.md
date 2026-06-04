@@ -51,6 +51,9 @@ Always use `<script setup>` (Composition API):
 
 Never use the Options API for new components.
 
+Write Vue components in plain JavaScript — do not add `lang="ts"` unless the
+project was explicitly initialized with a TypeScript setup.
+
 ---
 
 ## Component naming
@@ -91,7 +94,10 @@ import ProductFilterApp from './ProductFilterApp.vue'
 
 const rootElement = document.getElementById('productFilterApp')
 if (rootElement) {
-    createApp(ProductFilterApp).mount(rootElement)
+    const settings = rootElement.dataset.settings ? JSON.parse(rootElement.dataset.settings) : {}
+    const items = rootElement.dataset.items ? JSON.parse(rootElement.dataset.items) : []
+
+    createApp(ProductFilterApp, {settings, items}).mount(rootElement)
 }
 ```
 
@@ -137,6 +143,8 @@ Always declare props and emits explicitly:
 
 ```javascript
 // Correct
+import {ref, computed} from 'vue'
+
 export function useProductFilter(items) {
     const query = ref('')
     const filtered = computed(() => items.filter(...))
@@ -154,3 +162,4 @@ export function useProductFilter(items) {
 - Selecting elements inside a Vue component with `document.querySelector`
 - Bypassing the root element pattern (inline `createApp` without a dedicated
   root)
+- Mutating props directly inside a child component (always emit events instead)

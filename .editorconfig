@@ -12,8 +12,8 @@ indent_size = 4
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# TS/JS-Files
-[*.{ts,js,mjs}]
+# TS/JS/Vue-Files
+[*.{ts,js,mjs,vue}]
 indent_size = 2
 
 # JSON-Files
