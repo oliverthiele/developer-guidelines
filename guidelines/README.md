@@ -36,11 +36,12 @@ Each guideline file covers one technology or topic area.
 | [scss.md](scss.md)                                 | CUBE CSS, prefix system, custom properties, state classes                              |
 | [javascript.md](javascript.md)                     | data-js hooks, Bootstrap JS, ID conventions, framework choice                          |
 | [vue.md](vue.md)                                   | Component syntax, script setup, state management, when to use Vue                      |
+| [playwright.md](playwright.md)                       | Playwright test patterns, visual regression, functional tests, helpers                 |
+| [documentation.md](documentation.md)               | README.md and CHANGELOG.md structure for Packagist extensions                          |
 
 ## General rules (apply everywhere)
 
 - Code comments and documentation: **English only**
-- Communication with Oliver: **German**
 - No abbreviated variable names — always write them out in full
     - `$breakpoint` not `$bp`
     - `$configuration` not `$config`

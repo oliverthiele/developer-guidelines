@@ -210,6 +210,11 @@ Rules:
 - Change affects a shared package (theme, base extensions) → run all site configs
 - Always use the npm script that references the correct config file, not a generic `playwright test` call
 
+#### Playwright Patterns
+
+<!-- TODO: Playwright patterns (visual regression, functional tests, helpers, login for protected pages)
+     are documented separately in playwright.md — file is in progress. -->
+
 ## Fallback Behavior
 
 - If a tool is not installed, report it clearly
