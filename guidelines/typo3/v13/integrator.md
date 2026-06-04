@@ -71,12 +71,12 @@ The XLIFF key is always the full dot-separated path prefixed with `settings.`:
 
 ```xml
 <trans-unit id="settings.otFoo.mainColor" resname="settings.otFoo.mainColor">
-    <source>Main color</source>
+  <source>Main color</source>
 </trans-unit>
 
 <trans-unit id="settings.otFoo.subSection.itemLimit"
             resname="settings.otFoo.subSection.itemLimit">
-    <source>Item limit</source>
+  <source>Item limit</source>
 </trans-unit>
 ```
 
@@ -96,10 +96,10 @@ displayed.
 <!-- Correct -->
 <trans-unit id="settings.description.otFoo.myKey"
             resname="settings.description.otFoo.myKey">
-    <source>My setting description</source>
+  <source>My setting description</source>
 </trans-unit>
 
-    <!-- Wrong — description never shown -->
+<!-- Wrong — description never shown -->
 <trans-unit id="settings.otFoo.myKey.description"
             resname="settings.otFoo.myKey.description">
 ```

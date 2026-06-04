@@ -36,3 +36,5 @@ Rules:
 - Always use XLIFF files
 - Paths in `LLL:EXT:` must match the actual file path exactly
 - The `original` attribute in XLIFF files must point to the English source file
+
+For XLIFF format, key naming, ICU plurals and file structure, see → `xliff.md`

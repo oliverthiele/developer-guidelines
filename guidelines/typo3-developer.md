@@ -125,7 +125,6 @@ fields and must not be overridden with an empty string.
 | `{field -> f:format.html()}`                                | correct — uses `lib.parseFunc_RTE` |
 | `<f:format.html>{field}</f:format.html>`                    | correct — same as above            |
 | `<f:format.html parseFuncTSPath="">{field}</f:format.html>` | **wrong — runtime error**          |
-| `<f:format.html parseFuncTSPath="">{field}</f:format.html>` | **wrong — runtime error**          |
 
 ---
 
