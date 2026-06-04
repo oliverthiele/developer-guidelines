@@ -1,76 +1,38 @@
 # TYPO3 Integrator Guidelines
 
-TYPO3 v13 conventions for integrators.
+TYPO3 conventions for integrators. Applies to all supported TYPO3 versions
+unless a version-specific file states otherwise.
 
 ## Scope
-
-This file applies to:
 
 - TypoScript
 - SiteSets
 - XLIFF usage in TYPO3 context
 - Backend configuration
 
-Do not use these rules for:
+For PHP / TCA / Fluid conventions, see `typo3-developer.md`.
 
-- PHP implementation
-- TCA internals
+## Version-specific additions
 
----
+| Version | File                      |
+|---------|---------------------------|
+| v13     | `typo3/v13/integrator.md` |
 
-## SiteSets
-
-### File structure
-
-Configuration/Sets/{SetName}/
-config.yaml
-settings.definitions.yaml
-setup.typoscript
-constants.typoscript
-
-Resources/Private/Language/
-labels.xlf
-de.labels.xlf
-
----
-
-## TypoScript in SiteSets
-
-TypoScript is still used.
-
-Rules:
-
-- TypoScript is auto-included
-- No manual include required
-- Do not say "no TypoScript"
-
----
-
-## labels.xlf key naming
-
-| Key pattern                           | Purpose     |
-|---------------------------------------|------------|
-| settings.{vendor}.{key}               | label       |
-| settings.description.{vendor}.{key}   | description |
-
-Important:
-
-TYPO3 expects:
-settings.description.KEY
-
-NOT:
-settings.KEY.description
+Load the file matching your project's TYPO3 version in addition to this one.
 
 ---
 
 ## TYPO3 translation usage
 
-Always use:
+Always reference labels via `LLL:EXT:`:
 
-LLL:EXT:my_extension/...:key
+```php
+'label' => 'LLL:EXT:my_extension/Resources/Private/Language/locallang_db.xlf:my.key',
+```
 
 Rules:
 
 - Never hardcode labels
-- Always use XLIFF
-- Paths must match exactly
+- Always use XLIFF files
+- Paths in `LLL:EXT:` must match the actual file path exactly
+- The `original` attribute in XLIFF files must point to the English source file

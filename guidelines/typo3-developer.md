@@ -1,32 +1,37 @@
 # TYPO3 Developer Guidelines
 
-TYPO3 v13 conventions for extension development.
+TYPO3 conventions for extension development. Applies to all supported TYPO3
+versions
+unless a version-specific file states otherwise.
 
 ## Scope
-
-This file applies to:
 
 - PHP development
 - TCA configuration
 - Fluid (ViewHelpers, arguments)
 - Database interaction
 
-Do not use these rules for:
+For integrator conventions (SiteSets, TypoScript, labels.xlf), see
+`typo3-integrator.md`.
 
-- TypoScript configuration
-- SiteSets
-- Integrator tasks
+## Version-specific additions
+
+| Version | File                     |
+|---------|--------------------------|
+| v13     | `typo3/v13/developer.md` |
+
+Load the file matching your project's TYPO3 version in addition to this one.
 
 ---
 
 ## TCA field types
 
-Use current TYPO3 v13 TCA types — never deprecated helpers or legacy APIs.
+Use current TCA types — never deprecated helpers or legacy APIs.
 
-| Use                       | Avoid                                  |
-|---------------------------|----------------------------------------|
-| `'type' => 'file'`        | `getFileFieldTCAConfig()`              |
-| `'type' => 'passthrough'` | incorrect TCA definitions              |
+| Use                       | Avoid                     |
+|---------------------------|---------------------------|
+| `'type' => 'file'`        | `getFileFieldTCAConfig()` |
+| `'type' => 'passthrough'` | incorrect TCA definitions |
 
 Rules:
 
@@ -45,52 +50,50 @@ Rules:
 
 ---
 
-## Doctrine DBAL v4
+## Doctrine DBAL
 
-`\PDO::PARAM_INT` was removed in TYPO3 v13.
-
-Always use Doctrine DBAL parameter types.
+`\PDO::PARAM_INT` was removed in TYPO3 v13. Use Doctrine DBAL parameter types in
+all
+projects running v13 or above.
 
 ```php
+// Correct
 $queryBuilder->expr()->eq(
     'uid',
     $queryBuilder->createNamedParameter($uid, \Doctrine\DBAL\ParameterType::INTEGER)
 );
+
+// Wrong — PDO constant removed in TYPO3 v13
+$queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
 ```
-
-Rules:
-
-- Always use Doctrine types
-- Never use PDO constants
 
 ---
 
-## Fluid
+## Fluid: f:format.html
 
-### Argument types (TYPO3 v13 / Fluid 4)
+Always use the inline notation for RTE content. Never pass `parseFuncTSPath=""`.
 
-Union types are NOT supported.
-
-```xml
-<!-- Correct -->
-<f:argument name="columns" type="integer"/>
-<f:argument name="breakpoints" type="array"/>
-
-<!-- Wrong -->
-<f:argument name="columns" type="int|array"/>
+```html
+{record.bodytext -> f:format.html()}
 ```
 
-Rules:
+`parseFuncTSPath=""` (empty string) causes
+`Invoked ContentObjectRenderer::parseFunc without any configuration` — a fatal
+error at runtime. The default value (`lib.parseFunc_RTE`) is correct for RTE
+fields and must not be overridden with an empty string.
 
-- Always use explicit types
-- Use `mixed` only as a last resort
-- Prefer multiple arguments over mixed typing
+| Pattern                                                     | Result                             |
+|-------------------------------------------------------------|------------------------------------|
+| `{field -> f:format.html()}`                                | correct — uses `lib.parseFunc_RTE` |
+| `<f:format.html>{field}</f:format.html>`                    | correct — same as above            |
+| `<f:format.html parseFuncTSPath="">{field}</f:format.html>` | **wrong — runtime error**          |
+| `<f:format.html parseFuncTSPath="">{field}</f:format.html>` | **wrong — runtime error**          |
 
 ---
 
 ## General rules
 
 - Follow PSR-12
-- Use meaningful names
+- Use meaningful, unabbreviated names
 - Avoid magic values
 - Prefer explicit typing

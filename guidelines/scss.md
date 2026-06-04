@@ -13,30 +13,18 @@ We use a **pragmatic CUBE CSS approach** on top of Bootstrap 5:
   system
 - Do not introduce a second naming system alongside Bootstrap
 
-## Responsibility
+## Responsibility and Separation of Concerns
 
 SCSS is responsible for **styling only**.
 
-- CSS classes define layout and visual appearance
-- CSS classes must NOT be used as JavaScript selectors
-- CSS must not depend on `data-js`
+- CSS classes define layout and visual appearance — never behaviour
+- CSS classes must not be used as JavaScript selectors
+- CSS must not depend on `data-js` attributes
 - JavaScript must not depend on CSS class names
 
-This enforces a strict separation between styling and behaviour.
+`data-js` is the contract between JavaScript and HTML — SCSS never reads it.
 
-## Relation to JavaScript
-
-SCSS and JavaScript follow a strict separation of concerns:
-
-- SCSS defines **styling only**
-- JavaScript defines **behaviour only**
-- JavaScript uses `data-js` as its primary hook (see `javascript.md`)
-- SCSS must never rely on `data-js`
-- JavaScript must never rely on CSS class names
-
-For JavaScript conventions and DOM interaction rules, see:
-
-→ `javascript.md`
+For JavaScript conventions and DOM interaction rules, see → `javascript.md`
 
 ## Formatting
 
@@ -302,4 +290,3 @@ Rules:
 | Component CSS variable | `--{ext-key}-{name}`              | `--ot-gallery-ratio`      |
 | CMS variant            | `data-variant="{value}"`          | `data-variant="featured"` |
 | Theme variant          | `data-bs-theme="{value}"`         | `data-bs-theme="dark"`    |
-| Selector priority      | `data-js → ID → class`            |                           |

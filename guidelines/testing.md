@@ -32,7 +32,7 @@ Always check at least:
     - `phpstan.neon.dist`
     - `phpunit.xml`
     - `phpunit.xml.dist`
-    - `playwright.config.*`
+    - `playwright.config.*` or site-specific configs like `playwright.carstens.config.ts`
     - `package.json`
 
 ## Detection Rules
@@ -196,6 +196,19 @@ Typical tools:
 Typical tools:
 
 - `playwright`
+
+#### Multi-Site Projects
+
+Some projects serve multiple sites from the same repository and define one Playwright
+config file per site (e.g. `playwright.carstens.config.ts`, `playwright.num.config.ts`).
+
+Detection: look for multiple `playwright.*.config.ts` files in the project root.
+
+Rules:
+
+- Change affects a site-specific package → run only the config for that site
+- Change affects a shared package (theme, base extensions) → run all site configs
+- Always use the npm script that references the correct config file, not a generic `playwright test` call
 
 ## Fallback Behavior
 

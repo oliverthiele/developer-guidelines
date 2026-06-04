@@ -85,6 +85,24 @@ Do NOT add `Co-Authored-By: Claude ...` in public repositories (e.g. Packagist p
 
 ---
 
+## Pre-Staging Checklist
+
+Run these checks **before `git add`** — not just before committing.
+Staging unformatted or statically invalid code forces an amend or an extra fixup commit.
+
+```bash
+# 1. Static analysis — fix any errors manually before auto-formatting
+ddev composer phpstan          # whole project
+ddev composer phpstan:ot-faq  # or scoped to the package being released
+
+# 2. Auto-format PHP — runs after manual fixes so the formatter covers them too
+ddev composer php-cs-fixer
+```
+
+Only stage files after both tools pass without errors.
+
+---
+
 ## Commit Authorization
 
 - Commits must only be created on explicit user request (no autonomous commits)

@@ -49,32 +49,34 @@ All template paths must include:
 
 Purpose:
 
-- switch frontend framework
+- switch frontend framework without touching every extension
 - avoid hardcoded paths
-- enable global replacement
+- enable global replacement (e.g. Bootstrap 5 → Bootstrap 6)
 
 ---
 
 ## Layer responsibilities
 
-0–10 TYPO3 Core → fallback  
-11–59 Extensions → reusable components  
-60 SiteKit Base → Bootstrap integration  
-70 Themes → visual layer  
-80 Sitepackage → project overrides
+| Range | Owner | Purpose |
+|---|---|---|
+| 0–10 | TYPO3 Core | fallback templates |
+| 11–59 | Extensions | reusable components (`tt_content.<CType> =< lib.contentElement`) |
+| 60 | SiteKit Base | Bootstrap integration, overrides fluid_styled_content templates |
+| 70 | Themes | visual layer, must be below sitepackage to allow overrides |
+| 80 | Sitepackage | project-specific overrides |
 
 ---
 
 ## Rules
 
 - Never modify TYPO3 core templates
-- Always override via correct layer
-- Keep responsibilities separated
+- Always override via the correct layer
+- Keep layer responsibilities separated
 
 ---
 
 ## Anti-patterns
 
-- overriding core templates directly
-- hardcoded template paths
-- mixing layers in one extension
+- Overriding core templates directly
+- Hardcoded template paths (use `{$sitekit.frameworks.frontend.directory}/` instead)
+- Mixing layer responsibilities in one extension
