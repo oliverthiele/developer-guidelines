@@ -228,6 +228,26 @@ Use only in XLIFF 2.0 files (v14+ extensions).
     arguments="{count: items->f:count()}"/>
 ```
 
+### Escaping special characters in ICU
+
+ICU uses `{`, `}`, and `#` as syntax characters. To output them as literal text,
+wrap with single quotes:
+
+| Literal output                | ICU syntax |
+|-------------------------------|------------|
+| `{`                           | `'{'`      |
+| `}`                           | `'}'`      |
+| `#` (in plural/selectordinal) | `'#'`      |
+| `'` (single quote itself)     | `''`       |
+
+```xml
+<!-- Outputs: "1 item {SKU}: abc" -->
+<source>{count, plural, one {# item '{SKU}': abc} other {# items}}</source>
+```
+
+This is a common AI-generation error — unescaped `{` inside a plural branch is
+treated as a nested placeholder and causes a parse error at runtime.
+
 ### Supported ICU selectors
 
 | Selector        | Use case           | Example                                                         |
@@ -380,6 +400,57 @@ settings:
     </file>
 </xliff>
 ```
+
+### Enum label localization (v14.2+)
+
+Since TYPO3 v14.2, enum option labels in `settings.definitions.yaml` can be
+localized via `labels.xlf`.
+
+**List-style enum — XLIFF keys are auto-derived:**
+
+```yaml
+# settings.definitions.yaml
+myExt.layout:
+    type: string
+    default: grid
+    enum:
+        - grid
+        - masonry
+        - justified
+```
+
+TYPO3 derives the key automatically as
+`settings.{settingKey}.enum.{enumValue}`:
+
+```xml
+
+<unit id="settings.myExt.layout.enum.grid">
+    <segment>
+        <source>Grid</source>
+    </segment>
+</unit>
+<unit id="settings.myExt.layout.enum.masonry">
+<segment>
+    <source>Masonry</source>
+</segment>
+</unit>
+```
+
+**Map-style enum — explicit control per option:**
+
+```yaml
+myExt.layout:
+    type: string
+    default: grid
+    enum:
+        grid: 'LLL:EXT:my_ext/.../labels.xlf:settings.myExt.layout.enum.grid'
+        masonry: 'Masonry layout'   # literal — used as-is
+        justified:                  # no value — falls back to 'justified'
+```
+
+Use list-style for the common case. Map-style is only needed when options
+require different label strategies (e.g. mixing `LLL:` references with
+literals).
 
 ---
 

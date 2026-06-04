@@ -36,6 +36,50 @@ Correct description: _"TypoScript is provided as part of the TYPO3 v13 SiteSet �
 no manual
 TypoScript includes required, just add the extension as a SiteSet dependency."_
 
+### Settings definitions — always flat dot-notation
+
+`settings.definitions.yaml` must use flat dot-notation keys. Never use nested
+YAML structure.
+
+```yaml
+# Correct — flat map (canonical format since TYPO3 v13.4)
+otFoo.mainColor:
+    type: color
+    default: '#ff0000'
+
+otFoo.subSection.itemLimit:
+    type: int
+    default: 10
+```
+
+```yaml
+# Wrong — nested YAML structure
+otFoo:
+    mainColor:
+        type: color
+        default: '#ff0000'
+```
+
+TYPO3 v13.4 switched `settings.yaml` storage from tree to flat map format.
+The reason: nested structure made it impossible to have both `foo.bar` and
+`foo.bar.baz` as distinct settings — the tree cannot represent both
+simultaneously. The flat map eliminates this limitation. Nested YAML is still
+read for backwards compatibility, but flat dot-notation is the canonical format
+and must be used in all new definitions.
+
+The XLIFF key is always the full dot-separated path prefixed with `settings.`:
+
+```xml
+<trans-unit id="settings.otFoo.mainColor" resname="settings.otFoo.mainColor">
+    <source>Main color</source>
+</trans-unit>
+
+<trans-unit id="settings.otFoo.subSection.itemLimit"
+            resname="settings.otFoo.subSection.itemLimit">
+    <source>Item limit</source>
+</trans-unit>
+```
+
 ### labels.xlf key naming
 
 | Key pattern                           | Purpose             |

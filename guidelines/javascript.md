@@ -36,6 +36,41 @@ Fallback:
 
 ---
 
+## Variable Declarations
+
+- Always use `const` — default for all declarations
+- Use `let` only when reassignment is required
+- Never use `var`
+
+```javascript
+const menuToggle = document.querySelector('[data-js="menuToggle"]')  // default
+
+let counter = 0        // only when reassignment follows
+counter++
+
+var label = 'old'      // Wrong — never use var
+```
+
+---
+
+## Asynchronous Code
+
+Prefer `async/await` over raw Promise chains or `.then()`:
+
+```javascript
+// Correct
+async function loadData(url) {
+    const response = await fetch(url)
+    return response.json()
+}
+
+// Wrong
+fetch(url).then(r => r.json()).then(data => { …
+})
+```
+
+---
+
 ## Naming Conventions
 
 ### IDs

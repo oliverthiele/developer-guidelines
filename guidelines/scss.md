@@ -51,6 +51,24 @@ Use custom SCSS only when:
 
 Do not recreate Bootstrap utilities with custom classes.
 
+Do not use `@extend` with Bootstrap utility or component classes. Bootstrap's
+internal selector structure causes unpredictable CSS bloat and broken output when
+extended. Use HTML composition or Bootstrap mixins (`@include`) instead:
+
+```scss
+// Wrong — @extend on a Bootstrap class
+.my-button {
+    @extend .btn;
+    @extend .btn-primary;
+}
+
+// Correct — compose in HTML, or use the Bootstrap mixin
+@use 'bootstrap/scss/mixins/buttons' as *;
+.my-button {
+    @include button-variant(…);
+}
+```
+
 ## IDs
 
 IDs are not used for styling.
@@ -132,6 +150,19 @@ Do not use BEM modifier syntax (`--`). Use these patterns instead:
 
 <!-- Wrong — BEM modifier -->
 <div class="ot-hero-stage ot-hero-stage--fullwidth">…</div>
+```
+
+The `data-variant` attribute is matched in SCSS with an attribute selector on the
+component class:
+
+```scss
+.cb-price-card {
+    // base styles
+
+    &[data-variant="featured"] {
+        // featured variant styles
+    }
+}
 ```
 
 ## State classes
@@ -236,8 +267,8 @@ Global tokens must always be defined in the global `:root` scope.
 
 ```scss
 :root {
-  --sk-color-primary: #0066cc;
-  --sk-spacing-4: 1rem;
+    --sk-color-primary: #0066cc;
+    --sk-spacing-4: 1rem;
 }
 ```
 

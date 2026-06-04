@@ -319,6 +319,77 @@ Reference screenshots are generated and stored per project and OS:
 
 ---
 
-## TODO
+## Login for access-protected pages
 
-- Document login pattern for testing access-protected pages
+Authenticate once in a global setup routine and reuse the browser state via
+`storageState`. Do not re-authenticate before every test.
+
+```typescript
+// helpers/global-setup.ts
+import {chromium, FullConfig} from '@playwright/test';
+
+async function globalSetup(config: FullConfig) {
+    const browser = await chromium.launch();
+    const page = await browser.newPage();
+
+    await page.goto(process.env['BASE_URL'] + '/login');
+    await page.locator('[data-js="username"]').fill(process.env['TEST_USERNAME'] ?? '');
+    await page.locator('[data-js="password"]').fill(process.env['TEST_PASSWORD'] ?? '');
+    await page.locator('[data-js="submitLogin"]').click();
+
+    await page.context().storageState({path: 'tests/helpers/auth-state.json'});
+    await browser.close();
+}
+
+export default globalSetup;
+```
+
+Register the setup in `playwright.config.ts`:
+
+```typescript
+export default defineConfig({
+    globalSetup: './tests/helpers/global-setup.ts',
+});
+```
+
+Use in protected spec files:
+
+```typescript
+test.use({storageState: 'tests/helpers/auth-state.json'});
+
+test('Protected page — content is visible', async ({page}) => {
+    await page.goto('/members-area', {waitUntil: 'networkidle'});
+    await expectNoError(page);
+    await expect(page.locator('h1')).toBeVisible();
+});
+```
+
+Never hardcode credentials. Always read them from environment variables.
+Add `tests/helpers/auth-state.json` to `.gitignore`.
+
+---
+
+## Masking dynamic content
+
+TYPO3 pages often include dynamic elements (news teasers, timestamps, random
+items) that change between runs and cause false positives in visual tests. Mask
+these elements instead of hiding them:
+
+```typescript
+test('Homepage — full page with masked dynamic elements', async ({page}) => {
+    await page.goto('/', {waitUntil: 'networkidle'});
+    await hideOverlays(page);
+
+    await expect(page).toHaveScreenshot('home.png', {
+        fullPage: true,
+        mask: [
+            page.locator('[data-js="latestNews"]'),
+            page.locator('[data-js="currentDate"]'),
+        ],
+    });
+});
+```
+
+Masked areas are replaced with a solid colour in the snapshot — the surrounding
+layout is still compared. Use `mask` instead of `display: none` so the layout
+impact of the element is preserved in the test.

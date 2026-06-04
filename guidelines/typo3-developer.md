@@ -28,15 +28,53 @@ Load the file matching your project's TYPO3 version in addition to this one.
 
 Use current TCA types — never deprecated helpers or legacy APIs.
 
-| Use                       | Avoid                     |
-|---------------------------|---------------------------|
-| `'type' => 'file'`        | `getFileFieldTCAConfig()` |
-| `'type' => 'passthrough'` | incorrect TCA definitions |
+| Use                       | Avoid                                      |
+|---------------------------|--------------------------------------------|
+| `'type' => 'file'`        | `getFileFieldTCAConfig()`                  |
+| `'type' => 'number'`      | `'type' => 'input'` with `'eval' => 'int'` |
+| `'type' => 'passthrough'` | incorrect TCA definitions                  |
+
+`'type' => 'number'` was introduced in TYPO3 v12. Never use `'eval' => 'int'` on
+an input field for integer values — it is deprecated and a common AI-generation
+error.
+
+```php
+// Correct — v12+
+'sorting_value' => [
+    'label' => 'LLL:EXT:my_ext/Resources/Private/Language/locallang_db.xlf:sorting_value',
+    'config' => [
+        'type' => 'number',
+    ],
+],
+
+// Wrong
+'sorting_value' => [
+    'config' => [
+        'type' => 'input',
+        'eval' => 'int',
+    ],
+],
+```
 
 Rules:
 
 - `'type' => 'passthrough'` only for fields already defined in `ext_tables.sql`
 - passthrough fields must not be rendered in backend forms
+
+### columnsOverrides — label and config overrides
+
+Use `columnsOverrides` to change a label or partial config for a specific CType
+without redeclaring the full field configuration:
+
+```php
+$GLOBALS['TCA']['tt_content']['types']['my_ctype']['columnsOverrides'] = [
+    'header' => [
+        'label' => 'LLL:EXT:my_ext/Resources/Private/Language/locallang_db.xlf:my_ctype.header',
+    ],
+];
+```
+
+Do not copy the entire field `config` array just to change a label.
 
 ### showitem palette syntax
 
