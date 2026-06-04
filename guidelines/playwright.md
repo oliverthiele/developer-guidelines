@@ -94,9 +94,12 @@ test.describe('Homepage', () => {
 
 Rules:
 
-- Always use `waitUntil: 'networkidle'` — essential for AJAX-driven components
+- Always use `waitUntil: 'networkidle'` for pages with AJAX-driven components
   (Vue apps, lazy-loaded content). Without it, the screenshot is taken before
   rendering is complete.
+- On static pages without AJAX, prefer `waitUntil: 'domcontentloaded'` or wait
+  for a specific locator (`page.locator('...').waitFor()`) — `networkidle` can
+  cause flaky tests on CI when external resources (fonts, tracking) respond slowly.
 - Always use `{ fullPage: true }` for full-page screenshots.
 - Omit `{ fullPage: true }` for element-scoped screenshots (the locator already
   defines the crop area).
@@ -228,8 +231,11 @@ export async function expectNoError(page: Page): Promise<void> {
 ```
 
 Call `expectNoError()` in every test after `page.goto()` — both in functional
-and
-in visual tests where rendering depends on backend data.
+and in visual tests where rendering depends on backend data.
+
+TYPO3 Admin Panel: disable it for the test user via TSconfig (`admPanel = 0`).
+If active, TYPO3 injects additional markup and styles that break visual
+regression tests.
 
 ---
 
@@ -254,11 +260,9 @@ object form:
 
 ```typescript
 productDetail: {
-    ddev: '/products/example-product', live
-:
-    '/en/products/example-product'
+    ddev: '/products/example-product',
+    live: '/en/products/example-product',
 }
-,
 ```
 
 Default to a plain string — only use the object form when paths actually differ.

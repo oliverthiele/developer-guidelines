@@ -113,6 +113,8 @@ Rules:
 - every TYPO3 extension must use its own prefix
 - do not mix prefixes within a component
 - prefixes define ownership and must remain stable
+- TYPO3 extension keys use underscores (`ot_gallery`) — convert to hyphens for
+  CSS prefixes (`ot-gallery-`). Never use underscores in CSS class names.
 
 ### Inner elements — no BEM double-underscore
 
@@ -151,6 +153,12 @@ Do not use BEM modifier syntax (`--`). Use these patterns instead:
 <!-- Wrong — BEM modifier -->
 <div class="ot-hero-stage ot-hero-stage--fullwidth">…</div>
 ```
+
+Rule: use an additional class for structural/layout variants, and `data-variant`
+or `data-bs-theme` for visual/thematic variants (colours, themes):
+
+- Layout changes (spacing, columns, aspect ratio) → additional class
+- Visual changes (colour scheme, theme, brand) → `data-variant` or `data-bs-theme`
 
 The `data-variant` attribute is matched in SCSS with an attribute selector on the
 component class:
@@ -349,7 +357,8 @@ architecture, not the symptom.
     }
 }
 
-/* Correct — customize Bootstrap via SCSS variables before the import */
+/* Correct — define Bootstrap variable overrides in your global variables file
+   BEFORE importing Bootstrap. Overrides placed after the import have no effect. */
 $btn-primary-bg: #000;
 $btn-primary-border-color: #000;
 $btn-primary-color: #fff;
