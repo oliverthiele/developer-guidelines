@@ -212,8 +212,8 @@ Rules:
 
 #### Playwright Patterns
 
-<!-- TODO: Playwright patterns (visual regression, functional tests, helpers, login for protected pages)
-     are documented separately in playwright.md — file is in progress. -->
+Visual regression tests, functional tests, helper utilities, and login patterns
+for access-protected pages are documented in `playwright.md`.
 
 ## Fallback Behavior
 

@@ -36,6 +36,7 @@ Code style is enforced by **TYPO3 Coding Standards** via PHP CS Fixer.
 
 1. PHPStan
 2. PHP CS Fixer
+3. PHP CodeSniffer
 
 Both must pass before committing changes.
 
