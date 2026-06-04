@@ -307,6 +307,101 @@ Rules:
 }
 ```
 
+## TYPO3-specific anti-patterns
+
+### Never use content element UIDs as selectors
+
+TYPO3 assigns a database UID to every content element (`#c113`, `#c64`, etc.).
+These IDs change when an element is deleted and recreated, migrated to another
+environment, or imported from a different database. CSS targeting a UID is broken
+by design.
+
+```scss
+/* Wrong — UID is a database primary key, not a stable CSS hook */
+#c113.frame-layout-1 {
+    background-color: #fff;
+}
+
+#c64.frame-layout-0 {
+    background-color: $green-old;
+}
+```
+
+If a content element needs unique styling, add a CSS class via the TYPO3 backend
+field "Additional CSS class" (`tx_contentblock_css_class`, `space_before_class`,
+or the "Appearance" tab) and target that class instead.
+
+### Never override Bootstrap component classes with `!important`
+
+`!important` in component overrides is a sign of a specificity battle. The root
+cause is always a selector that is too specific or in the wrong place — fix the
+architecture, not the symptom.
+
+```scss
+/* Wrong — !important to win a specificity war */
+#c64 .btn-primary {
+    background-color: #000 !important;
+    border-color: #000 !important;
+    color: #fff !important;
+
+    &:hover {
+        background-color: #000 !important;
+    }
+}
+
+/* Correct — customize Bootstrap via SCSS variables before the import */
+$btn-primary-bg: #000;
+$btn-primary-border-color: #000;
+$btn-primary-color: #fff;
+```
+
+### Never use deep structural selectors tied to framework internals
+
+Selectors that chain TYPO3 or Bootstrap class names to reach an element break
+whenever the framework changes its markup or the template is refactored.
+
+```scss
+/* Wrong — 6-level structural selector */
+.frame-type-form_formframework form .actions .form-navigation .btn.btn-primary {
+    background-color: #000;
+}
+
+/* Correct — add a semantic class to the element and target that */
+.ot-form-submit {
+    background-color: var(--sk-color-primary);
+}
+```
+
+### Never hardcode magic values — use custom properties
+
+Hardcoded color hex values and pixel sizes scattered across selectors cannot be
+maintained. A single brand color change requires hunting through hundreds of
+lines.
+
+```scss
+/* Wrong — magic values hardcoded in every selector */
+#c64 {
+    background-color: #2d6a4f;
+    padding: 30px;
+
+    h2 { font-size: 24px; line-height: 36px; }
+    p  { font-size: 16px; line-height: 24px; }
+}
+
+/* Correct — values defined once as custom properties */
+:root {
+    --sk-color-brand: #2d6a4f;
+    --sk-spacing-section: 1.875rem;
+}
+
+.ot-section-highlight {
+    background-color: var(--sk-color-brand);
+    padding: var(--sk-spacing-section);
+}
+```
+
+---
+
 ## Quick reference
 
 | What                   | Convention                        | Example                   |
