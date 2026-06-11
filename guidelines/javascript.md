@@ -34,6 +34,34 @@ Fallback:
 - insert_final_newline: true
 - trim_trailing_whitespace: true
 
+### Quotes
+
+- Single Quotes als Standard für Strings
+- Template Literals (`` ` ``) für Interpolation oder mehrzeilige Strings
+- Double Quotes nur, wenn der String selbst ein `'` enthält (Vermeidung von Escaping)
+
+```javascript
+const label = 'Menu öffnen'              // korrekt
+const message = `Hallo ${userName}`      // korrekt – Interpolation
+const html = "<div class='card'>"        // korrekt – vermeidet Escaping
+
+const label = "Menu öffnen"              // falsch – Double Quotes ohne Grund
+```
+
+### Semicolons
+
+- Semicolons sind Pflicht am Ende jeder Anweisung
+- Grund: vermeidet ASI-Fallstricke (Automatic Semicolon Insertion), v. a. bei Zeilen, die mit `(`, `[` oder `` ` `` beginnen
+
+```javascript
+const menuToggle = document.querySelector('[data-js="menuToggle"]');
+
+async function loadData(url) {
+    const response = await fetch(url);
+    return response.json();
+}
+```
+
 ---
 
 ## Variable Declarations
