@@ -12,6 +12,24 @@ Always prefer minimal, targeted changes.
 - Preserve existing comments and architecture
 - Extend instead of rewriting
 
+## Setup
+
+Clone this repository as a sibling directory next to your projects:
+
+```
+PhpstormProjects/
+├── developer-guidelines/    ← this repo
+├── my-project-a/
+├── my-project-b/
+└── ...
+```
+
+The default path used in `CLAUDE.md` and memory files is
+`../developer-guidelines/guidelines/` (relative to the project root).
+
+If the guidelines are located elsewhere, set the environment variable
+`DEVELOPER_GUIDELINES_DIR` to the absolute path of the `guidelines/` directory.
+
 ## How to use
 
 Each guideline file covers one technology or topic area.

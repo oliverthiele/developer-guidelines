@@ -22,6 +22,20 @@ Load the file matching your project's TYPO3 version in addition to this one.
 
 ---
 
+## Script Directories
+
+| Directory      | Purpose                                                             | Deployed to live |
+|----------------|---------------------------------------------------------------------|------------------|
+| `bin-dev/`     | Dev-workflow scripts (watch processes, DB sync, environment setup)  | No               |
+| `Build/*/bin/` | Build-tool-specific scripts (Node/npm utilities, Bootstrap upgrade) | No               |
+| `bin/`         | Scripts required in production (Deployer tasks, cron helpers)       | Yes              |
+
+Rule of thumb: if it runs via `node`/`npm` and belongs to the build tooling,
+place it in `Build/*/bin/`. If it is a shell script for the local dev workflow,
+place it in `bin-dev/`. Exclude `bin-dev/` from deployments.
+
+---
+
 ## TYPO3 translation usage
 
 Always reference labels via `LLL:EXT:`:
