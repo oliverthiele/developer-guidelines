@@ -39,6 +39,44 @@ Fallback:
 - insert_final_newline: true
 - trim_trailing_whitespace: true
 
+## Sass compilation — when to actually use it
+
+Default to plain, hand-written CSS with custom properties (see below) — it
+needs no build step and matches the portable, dependency-free asset
+convention used across this ecosystem's standalone extensions.
+
+Only introduce actual Sass compilation (`.scss` source → compiled `.css`) for
+a standalone extension when it **already** has a Node-based build step for
+other reasons — typically because its JavaScript is TypeScript (see
+`javascript.md`). In that case, name the source file `.scss` even if its
+content is currently plain CSS syntax, so the extension is clear it needs
+compiling, and compile it via the same build script:
+
+```
+Resources/Private/Scss/CountUp.scss   — source (may be plain CSS syntax)
+Resources/Public/Css/CountUp.min.css  — compiled + minified, committed
+```
+
+```javascript
+// build.mjs — compile with `sass`, then minify with esbuild
+import { build } from 'esbuild';
+import { compile } from 'sass';
+
+const compiledCss = compile('Resources/Private/Scss/CountUp.scss').css;
+
+await build({
+  stdin: { contents: compiledCss, loader: 'css', resolveDir: '.' },
+  outfile: 'Resources/Public/Css/CountUp.min.css',
+  minify: true,
+});
+```
+
+Do not rename a `.css` file to `.scss` without also wiring up a real Sass
+compile step — esbuild alone does not understand Sass-specific syntax
+(`@use`, nesting, variables), only plain CSS.
+
+---
+
 ## Bootstrap First
 
 Prefer native Bootstrap utilities and components whenever they already solve the problem clearly.

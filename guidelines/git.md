@@ -147,6 +147,22 @@ Rules:
 
 Use `--no-ff` only when merging locally (GitHub PR merges are already non-fast-forward).
 
+## First Push on a New Repository
+
+Always push `main` before `develop` when initializing a new repository on GitHub.
+
+GitHub sets the **first pushed branch as the default branch**. If `develop` is pushed first, it becomes the default and branch protection rules apply to `develop` instead of `main`.
+
+Correct order:
+
+```bash
+git push origin main      # first — becomes default branch on GitHub
+git push origin v0.1.0    # tag
+git push origin develop   # after main is established
+```
+
+Set branch protection for `main` on GitHub afterwards.
+
 ---
 
 ## CHANGELOG.md

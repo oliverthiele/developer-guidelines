@@ -62,6 +62,38 @@ Use direct binary calls only if no Composer script exists.
 
 ---
 
+### Composer Script Format
+
+Use **strings** for single-command scripts, **arrays** for multi-command or
+shell-dependent scripts:
+
+```json
+{
+    "scripts": {
+        "phpstan": "phpstan analyse",
+        "php-cs-fixer": "vendor/bin/php-cs-fixer fix",
+        "fe-build": "npm --prefix Build/Default run build",
+
+        "db-export": [
+            "typo3 database:export -c Default -e 'cf_*' > data/dev_dump.sql"
+        ],
+        "code-quality": [
+            "@phpstan",
+            "@php-cs-fixer",
+            "@php-codesniffer"
+        ]
+    }
+}
+```
+
+Use arrays when the script:
+
+- chains multiple commands or `@`-references
+- uses shell operators (`>`, `<`, `|`, `&`)
+- appends arguments to another script (`@php-cs-fixer --dry-run`)
+
+---
+
 ### PHP CS Fixer
 
 - Required before every commit
@@ -128,6 +160,30 @@ ddev exec vendor/bin/phpstan analyse packages/{package-name}/Classes
 ```
 
 Prefer package-specific Composer scripts if available.
+
+---
+
+### Combined Quality Check
+
+Every project should provide a `code-quality` Composer script that runs all
+quality tools in the correct execution order:
+
+```json
+{
+    "code-quality": [
+        "@phpstan",
+        "@php-cs-fixer",
+        "@php-codesniffer"
+    ]
+}
+```
+
+```bash
+ddev composer code-quality
+```
+
+Composer aborts the chain on the first non-zero exit code, matching the
+"stop on failure" rule from the execution order above.
 
 ---
 

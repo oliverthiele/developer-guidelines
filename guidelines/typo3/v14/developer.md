@@ -69,26 +69,109 @@ Do not use shortform in extensions that still support v13.
 
 ---
 
-## Extension Manager — "Extension Title missing"
+## Extension title comes from `composer.json`
 
-TYPO3 v14 validates that `description` in `composer.json` and `ext_emconf.php`
-are consistent.
-A mismatch triggers the **"Extension Title missing"** warning in the backend
-Extension Manager.
+Since TYPO3 v14 the extension title shown in the Extension Manager is derived
+from the `description` in `composer.json`. The `title` and `description` keys in
+`ext_emconf.php` are no longer read automatically
+([Breaking-108304](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108304-PopulateExtensionTitleFromComposerJson.html)).
 
-Rule: always keep both descriptions in sync when updating one of them.
+The core splits on the **first** occurrence of ` - ` (space, dash, space):
+
+```php
+// TYPO3\CMS\Core\Package\Package::createPackageMetaData()
+$descriptionParts = explode(' - ', $description ?? '', 2);
+```
+
+- everything before it becomes the **title**
+- the remainder becomes the **description**
+- without the separator the whole string is used as the title — that is what
+  looks like a missing title in the Extension Manager
 
 ```json
 // composer.json
-"description": "Gallery - Gallery extension for TYPO3 v13 and v14."
+"description": "Gallery - Gallery extension for TYPO3 v14."
 ```
 
 ```php
-// ext_emconf.php
-'description' => 'Gallery extension for TYPO3 v13 and v14.',
+// ext_emconf.php — separate 'title' key, description without the prefix
+'title' => 'Gallery',
+'description' => 'Gallery extension for TYPO3 v14.',
 ```
 
-The `composer.json` description follows the convention
-`"Title - Description text."`;
-`ext_emconf.php` has a separate `'title'` key and uses only the description text
-without prefix.
+Rules:
+
+- The separator is exactly ` - `. An en dash (` – `) or a hyphen without
+  surrounding spaces does not match.
+- Only the first occurrence is evaluated, so ` - ` may still appear later inside
+  the description text.
+- Avoid ` - ` inside the title itself — it would be split at the wrong place.
+- Keep `ext_emconf.php` consistent anyway: it is still evaluated in non-Composer
+  installations, and its `description` must stay **without** the title prefix,
+  otherwise the title appears twice there.
+
+---
+
+## `record-transformation` is applied by default — and resolves IRRE relations
+
+Since TYPO3 v14, `lib.contentElement` (the base TypoScript object every
+`FLUIDTEMPLATE`-based content element extends via `=< lib.contentElement`)
+already applies the `record-transformation` DataProcessor to the element's own
+data by default:
+
+```typoscript
+# EXT:fluid_styled_content/Configuration/TypoScript/Helper/ContentElement.typoscript
+lib.contentElement {
+    dataProcessing {
+        1770716912 = record-transformation
+    }
+}
+```
+
+This means every content element based on `lib.contentElement` automatically
+gets a `{record}` variable in Fluid — a `TYPO3\CMS\Core\Domain\Record` object
+with clean, type-aware, direct property access (`{record.header}`,
+`{record.uid}`), independent of whatever the extension's own TypoScript adds.
+
+Confirmed by testing: for a TCA field of `type => inline` (an IRRE/foreign-table
+relation, e.g. `countup_items` in `ot_countup`), `record-transformation`
+**automatically resolves the relation** into a `LazyRecordCollection` of
+`Record` objects — with the same clean, direct property access on each child
+(`{item.title}`, `{item.value_end}`, no `.data.` wrapper). A manual
+`database-query` DataProcessor to fetch IRRE child records is **not** needed
+for this case.
+
+```html
+<!-- No custom dataProcessing needed in TypoScript for this -->
+<f:for each="{record.countup_items}" as="item">
+    {item.title}: {item.value_end}
+</f:for>
+```
+
+Caveats:
+
+- Only fields defined in the TCA `columns` for the record's current `type`
+  are exposed. A field not in the current type's `showitem`/columns is only
+  reachable via `{record.rawRecord}` (untransformed).
+- The core changelog for this feature (`Feature-103783`) explicitly notes the
+  `Record` API "is still to be finalized" as of v13 LTS — treat it as stable
+  enough to build on for v14-only extensions, but verify behavior for field
+  types beyond scalars and `inline` (e.g. `select` with `foreign_table`,
+  `category`) before relying on automatic resolution there too.
+
+---
+
+## Fluid 5 template file resolution — `.fluid.html` convention
+
+Fluid 5 (TYPO3 v14) natively resolves `{Name}.fluid.{format}` before
+`{Name}.{format}` for Templates, Partials, and Layouts — see
+`TemplatePaths::resolveFileInPaths()` in `typo3fluid/fluid`. No TypoScript
+or `view.format` configuration is needed; it works as a same-directory,
+same-basename fallback out of the box.
+
+Official reference:
+[Feature-108166 — Fluid file extension and template resolving](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108166-FluidFileExtensionAndTemplateResolving.html)
+
+Prefer naming Fluid template files `*.fluid.html` (e.g. `Default.fluid.html`)
+instead of plain `*.html` — this is the project convention going forward and
+gives IDEs unambiguous syntax highlighting for Fluid vs. plain HTML.

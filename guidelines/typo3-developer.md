@@ -107,6 +107,32 @@ $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
 
 ---
 
+## ExtensionScanner false positives — property/method naming
+
+The TYPO3 ExtensionScanner matches property and method names lexically,
+regardless of the actual class. A property or method we define ourselves can
+accidentally collide with a name used by a since-removed/deprecated core API,
+producing a "weak" match. Unlike PHPStan baselines, the ExtensionScanner has
+no way to mark a finding as reviewed/dismissed — it resurfaces every time the
+scan runs.
+
+Avoid generic names for properties/methods we define ourselves when they
+collide with a removed/deprecated core pattern:
+
+| Avoid   | Collides with (removed TYPO3 v14)             | Prefer instead                     |
+|---------|------------------------------------------------|-------------------------------------|
+| `$config` | `TypoScriptFrontendController::$config`       | specific name, e.g. `$apiConfiguration` |
+| `$data`   | `TypoScriptFrontendController::$data`         | specific name, e.g. `$articleData`  |
+| `error()` (custom method we define) | any core class with a same-named removed method | specific name, e.g. `logError()`, `reportError()` |
+
+This only applies to properties/methods **we name ourselves**. It does not
+apply to calls on external interfaces we don't control — e.g.
+`LoggerInterface::error()` (PSR-3) is the prescribed method name and must be
+called as-is. The resulting scanner false positive there is unavoidable and
+not worth working around.
+
+---
+
 ## Fluid: f:format.html
 
 Always use the inline notation for RTE content. Never pass `parseFuncTSPath=""`.
@@ -125,6 +151,21 @@ fields and must not be overridden with an empty string.
 | `{field -> f:format.html()}`                                | correct — uses `lib.parseFunc_RTE` |
 | `<f:format.html>{field}</f:format.html>`                    | correct — same as above            |
 | `<f:format.html parseFuncTSPath="">{field}</f:format.html>` | **wrong — runtime error**          |
+
+---
+
+## Version constraints — never guess the current minor version
+
+Never assume a TYPO3 minor version by extrapolating a pattern from prior LTS
+releases (e.g. v11.5, v12.4, v13.4 does **not** imply v14.4 exists or is the
+target). Before writing `typo3/cms-core` in `composer.json` or `'typo3'` in
+`ext_emconf.php`, verify the actual current minor version:
+
+```bash
+ddev composer show typo3/cms-core --available | grep "^versions"
+```
+
+or check https://get.typo3.org/. Ask the user if still unclear.
 
 ---
 

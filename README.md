@@ -19,9 +19,10 @@ Technology- and topic-specific coding guidelines that apply to **all projects**.
 | [xliff.md](guidelines/xliff.md)                               | XLIFF 1.2 / 2.0 file format, attributes, source/translation conventions |
 | [typo3-developer.md](guidelines/typo3-developer.md)           | TCA, Doctrine DBAL, Fluid — universal + links to version files          |
 | [typo3-integrator.md](guidelines/typo3-integrator.md)         | TypoScript, translations — universal + links to version files           |
-| [typo3/v13/developer.md](guidelines/typo3/v13/developer.md)   | v13-specific: Fluid 4 argument types                                    |
-| [typo3/v13/integrator.md](guidelines/typo3/v13/integrator.md) | v13-specific: SiteSets, labels.xlf key naming                           |
-| [typo3/v14/developer.md](guidelines/typo3/v14/developer.md)   | v14-specific: Fluid 5 union types, FlexForm DS, TCA shortform           |
+| [typo3/content-blocks.md](guidelines/typo3/content-blocks.md) | Content Block structure, portable assets, two-layer CSS, config.yaml    |
+| [typo3/v13/developer.md](guidelines/typo3/v13/developer.md)   | v13-specific: Fluid 4 argument types, custom views, union types         |
+| [typo3/v13/integrator.md](guidelines/typo3/v13/integrator.md) | v13-specific: SiteSets, labels.xlf key naming, @import, CE wizard       |
+| [typo3/v14/developer.md](guidelines/typo3/v14/developer.md)   | v14-specific: Fluid 5, FlexForm DS, TCA shortform, record-transformation |
 | [php.md](guidelines/php.md)                                   | Naming conventions, PHPStan, PHP CS Fixer, type safety                  |
 | [testing.md](guidelines/testing.md)                           | Quality checks, execution order, PHPUnit, Playwright                    |
 | [git.md](guidelines/git.md)                                   | Branching workflow, commit messages, release process                    |
@@ -34,6 +35,8 @@ Technology- and topic-specific coding guidelines that apply to **all projects**.
 See [guidelines/README.md](guidelines/README.md) for shared rules that cut
 across
 all files (naming, formatting, tooling).
+
+Changes between releases are documented in [CHANGELOG.md](CHANGELOG.md).
 
 ### `sitekit/`
 
