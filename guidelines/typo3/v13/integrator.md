@@ -1,6 +1,6 @@
 # TYPO3 v13 — Integrator
 
-Version-specific additions to `docs/guidelines/typo3-integrator.md` for TYPO3
+Version-specific additions to `guidelines/typo3-integrator.md` for TYPO3
 v13.
 
 ---

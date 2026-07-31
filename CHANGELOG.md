@@ -5,6 +5,24 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- `php.md` — `code-quality` example now defines all three referenced scripts and
+  states that unresolved `@`-references abort the chain; corrected "Both must
+  pass" to "All three must pass"
+- `typo3-developer.md` — added the v14 row to the version-specific file table
+- `typo3-integrator.md` — noted that no v14 integrator file exists yet and how to
+  read the v13 one in a v14 project; moved the `xliff.md` pointer to the end of
+  the translation section
+- `typo3/v13/developer.md`, `typo3/v13/integrator.md`, `typo3/v14/developer.md` —
+  corrected the non-existent `docs/guidelines/` path in the header line
+- `git.md` — the Co-Authored-By ban now applies to all repositories, matching the
+  GitKraken instructions further down the file
+- `README.md`, `guidelines/README.md` — aligned the XLIFF and SCSS topic
+  descriptions with the actual file contents
+
 ## [1.0.0] — 2026-07-31
 
 First tagged release of the guideline set.

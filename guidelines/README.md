@@ -42,7 +42,7 @@ Each guideline file covers one technology or topic area.
 
 | File                                               | Topics                                                                                 |
 |----------------------------------------------------|----------------------------------------------------------------------------------------|
-| [xliff.md](xliff.md)                               | XLIFF 1.2 file format, attributes, source/translation conventions                      |
+| [xliff.md](xliff.md)                               | XLIFF 1.2 / 2.0 file format, attributes, source/translation conventions                |
 | [typo3-developer.md](typo3-developer.md)           | TCA, Doctrine DBAL, Fluid — universal + links to version files                         |
 | [typo3-integrator.md](typo3-integrator.md)         | TypoScript, translations — universal + links to version files                          |
 | [typo3/content-blocks.md](typo3/content-blocks.md) | Content Block structure, portable assets, two-layer CSS, config.yaml                    |
@@ -52,7 +52,7 @@ Each guideline file covers one technology or topic area.
 | [php.md](php.md)                                   | Naming conventions, PHPStan, PHP CS Fixer, type safety                                 |
 | [testing.md](testing.md)                           | Quality checks, execution order, PHPUnit, Playwright                                   |
 | [git.md](git.md)                                   | Branching workflow, commit messages, release process                                   |
-| [scss.md](scss.md)                                 | CUBE CSS, prefix system, custom properties, state classes                              |
+| [scss.md](scss.md)                                 | Bootstrap-first, CUBE CSS, prefix system, custom properties, state classes             |
 | [javascript.md](javascript.md)                     | data-js hooks, Bootstrap JS, ID conventions, framework choice                          |
 | [vue.md](vue.md)                                   | Component syntax, script setup, state management, when to use Vue                      |
 | [playwright.md](playwright.md)                     | Playwright test patterns, visual regression, functional tests, helpers                 |

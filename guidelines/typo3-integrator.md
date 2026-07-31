@@ -20,6 +20,12 @@ For PHP / TCA / Fluid conventions, see `typo3-developer.md`.
 
 Load the file matching your project's TYPO3 version in addition to this one.
 
+There is no integrator file for v14 yet. In a v14 project, read
+`typo3/v13/integrator.md` with care: rules describing something as *deprecated
+in v13, removed in v14* (e.g. `<INCLUDE_TYPOSCRIPT:`) describe an already
+completed removal there, and statements about SiteSets and the New Content
+Element wizard must be verified against v14 before being applied.
+
 ---
 
 ## Script Directories

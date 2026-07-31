@@ -83,7 +83,9 @@ TYPO3 conventions:
 
 ## Co-Authored-By
 
-Do NOT add `Co-Authored-By: Claude ...` in public repositories (e.g. Packagist packages).
+Never add `Co-Authored-By: Claude ...` — or any other mention of AI tools — to
+commit messages or PR descriptions. This applies to **all** repositories,
+public and private alike.
 
 ---
 

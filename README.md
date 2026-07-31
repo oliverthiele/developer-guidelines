@@ -26,7 +26,7 @@ Technology- and topic-specific coding guidelines that apply to **all projects**.
 | [php.md](guidelines/php.md)                                   | Naming conventions, PHPStan, PHP CS Fixer, type safety                  |
 | [testing.md](guidelines/testing.md)                           | Quality checks, execution order, PHPUnit, Playwright                    |
 | [git.md](guidelines/git.md)                                   | Branching workflow, commit messages, release process                    |
-| [scss.md](guidelines/scss.md)                                 | Bootstrap-first, prefix system, custom properties, state classes        |
+| [scss.md](guidelines/scss.md)                                 | Bootstrap-first, CUBE CSS, prefix system, custom properties, state classes |
 | [javascript.md](guidelines/javascript.md)                     | data-js hooks, Bootstrap JS, ID conventions, framework choice           |
 | [vue.md](guidelines/vue.md)                                   | Component syntax, script setup, state management, when to use Vue       |
 | [playwright.md](guidelines/playwright.md)                     | Playwright test patterns, visual regression, functional tests, helpers  |
