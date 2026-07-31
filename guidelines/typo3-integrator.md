@@ -122,8 +122,6 @@ Rules:
 - Paths in `LLL:EXT:` must match the actual file path exactly
 - The `original` attribute in XLIFF files must point to the English source file
 
-For XLIFF format, key naming, ICU plurals and file structure, see → `xliff.md`
-
 ### f:translate — `extensionName` must be UpperCamelCase
 
 `<f:translate>`'s `extensionName` argument expects the **UpperCamelCased**
@@ -143,3 +141,7 @@ extension key (e.g. `WinkelTheme` for `winkel_theme`), per
 Lowercase/underscored values happen to resolve today because TYPO3 normalizes
 the extension key internally, but that's an implementation detail, not a
 guarantee — always write the UpperCamelCase form.
+
+---
+
+For XLIFF format, key naming, ICU plurals and file structure, see → `xliff.md`
