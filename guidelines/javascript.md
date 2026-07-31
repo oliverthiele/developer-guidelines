@@ -196,6 +196,83 @@ conventions.
 
 ---
 
+## TypeScript vs. Plain JavaScript
+
+Default to plain JavaScript. Use TypeScript only for a standalone TYPO3
+extension's own frontend logic when that logic is non-trivial (animations,
+observers, calculations — not a one-off toggle), **and** the extension already
+has (or is getting) its own Node-based build step to produce the shipped
+`Resources/Public` assets.
+
+Do not introduce TypeScript just because it "seems cleaner" for a trivial
+script, and do not introduce a build step purely to enable TypeScript — the
+build step must already be justified by the extension needing pre-minified,
+dependency-free `Resources/Public` assets for standalone distribution.
+
+When adopted, signal intent through the file extension and matching folder:
+
+```
+Resources/Private/JavaScript/CountUp.ts   — source, type-checked
+Resources/Public/JavaScript/CountUp.min.js — compiled + minified, committed
+```
+
+Minimal reference setup (esbuild transpiles `.ts` directly; `tsc --noEmit` is
+used only for type-checking, not compilation):
+
+```json
+// package.json (devDependencies)
+{
+  "esbuild": "^0.25.0",
+  "typescript": "^5.7.0"
+}
+```
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["Resources/Private/JavaScript/**/*.ts"]
+}
+```
+
+```javascript
+// build.mjs
+import { build } from 'esbuild';
+
+await build({
+  entryPoints: ['Resources/Private/JavaScript/CountUp.ts'],
+  outfile: 'Resources/Public/JavaScript/CountUp.min.js',
+  minify: true,
+  format: 'iife',
+  target: 'es2020',
+});
+```
+
+Add an npm script `"typecheck": "tsc --noEmit"` and run it before building —
+esbuild silently strips types without checking them.
+
+Do **not** move the TypeScript source itself out of the extension package
+(e.g. into a consuming project's own `Build/Default`) — the compiled
+`Resources/Public` assets must ship with the package either way for it to
+work standalone in other projects, so keeping the source out of the package
+only removes the ability for other consumers to read or adapt it, without
+actually making the package smaller. A consuming project can still replace the
+shipped assets as an optional customisation layer on top — by not including the
+extension's own asset TypoScript and registering its own bundle instead, or by
+pointing the corresponding TypoScript constant at a different file. Note that
+`templateRootPaths` does **not** apply here: it resolves Fluid templates, not
+`Resources/Public` assets.
+
+---
+
 ## Initialization
 
 - Initialize only after DOM is ready

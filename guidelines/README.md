@@ -45,16 +45,17 @@ Each guideline file covers one technology or topic area.
 | [xliff.md](xliff.md)                               | XLIFF 1.2 file format, attributes, source/translation conventions                      |
 | [typo3-developer.md](typo3-developer.md)           | TCA, Doctrine DBAL, Fluid — universal + links to version files                         |
 | [typo3-integrator.md](typo3-integrator.md)         | TypoScript, translations — universal + links to version files                          |
-| [typo3/v13/developer.md](typo3/v13/developer.md)   | v13-specific: Fluid 4 argument types                                                   |
-| [typo3/v13/integrator.md](typo3/v13/integrator.md) | v13-specific: SiteSets, labels.xlf key naming                                          |
-| [typo3/v14/developer.md](typo3/v14/developer.md)   | v14-specific: Fluid 5 union types, FlexForm DS, TCA shortform, Extension Title warning |
+| [typo3/content-blocks.md](typo3/content-blocks.md) | Content Block structure, portable assets, two-layer CSS, config.yaml                    |
+| [typo3/v13/developer.md](typo3/v13/developer.md)   | v13-specific: Fluid 4 argument types, custom views, union types                         |
+| [typo3/v13/integrator.md](typo3/v13/integrator.md) | v13-specific: SiteSets, labels.xlf key naming, @import, CE wizard                       |
+| [typo3/v14/developer.md](typo3/v14/developer.md)   | v14-specific: Fluid 5, FlexForm DS, TCA shortform, extension title, record-transformation |
 | [php.md](php.md)                                   | Naming conventions, PHPStan, PHP CS Fixer, type safety                                 |
 | [testing.md](testing.md)                           | Quality checks, execution order, PHPUnit, Playwright                                   |
 | [git.md](git.md)                                   | Branching workflow, commit messages, release process                                   |
 | [scss.md](scss.md)                                 | CUBE CSS, prefix system, custom properties, state classes                              |
 | [javascript.md](javascript.md)                     | data-js hooks, Bootstrap JS, ID conventions, framework choice                          |
 | [vue.md](vue.md)                                   | Component syntax, script setup, state management, when to use Vue                      |
-| [playwright.md](playwright.md)                       | Playwright test patterns, visual regression, functional tests, helpers                 |
+| [playwright.md](playwright.md)                     | Playwright test patterns, visual regression, functional tests, helpers                 |
 | [documentation.md](documentation.md)               | README.md and CHANGELOG.md structure for Packagist extensions                          |
 
 ## General rules (apply everywhere)
