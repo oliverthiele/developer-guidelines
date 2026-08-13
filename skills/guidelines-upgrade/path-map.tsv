@@ -1,0 +1,15 @@
+# Guideline path moves, cumulative across releases.
+# A project that skipped releases is carried forward correctly, because every
+# move ever made is listed here. Append rows, never edit or delete them.
+#
+# columns: release	old path (relative to guidelines/)	new path
+# Matching is done on the old path as a whole token, so it also covers absolute
+# paths, ../developer-guidelines/ prefixes and bare file names.
+# Longest old path is applied first — order in this file does not matter.
+2.0.0	typo3/v13/integrator.md	typo3/integrator.md
+2.0.0	typo3/v13/developer.md	typo3/developer.md
+2.0.0	typo3/v14/developer.md	typo3/developer.md
+2.0.0	typo3-integrator.md	typo3/integrator.md
+2.0.0	typo3-developer.md	typo3/developer.md
+2.0.0	sitekit/sitekit.md	typo3/sitekit.md
+2.0.0	xliff.md	xliff/README.md

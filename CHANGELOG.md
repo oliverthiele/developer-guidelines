@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `skills/guidelines-upgrade/` — checks a project against the current guidelines
+  release: are they reachable, is `Read(../developer-guidelines/guidelines/**)`
+  pre-granted, and do the referenced files still exist. Rewrites moved paths
+  from a cumulative `path-map.tsv`, so a project that skipped releases is still
+  carried forward. Reports by default, writes only with `--apply`, never commits
+
 - `xliff/README.md` — whitespace and `xml:space`: from v14 the parser follows
   the XML specification, so indentation in a label collapses instead of being
   kept. Includes when `xml:space="preserve"` is warranted and why it should not
