@@ -7,23 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-
-- `skills/guidelines-upgrade/` — checks a project against the current guidelines
-  release: are they reachable, is `Read(../developer-guidelines/guidelines/**)`
-  pre-granted, and do the referenced files still exist. Rewrites moved paths
-  from a cumulative `path-map.tsv`, so a project that skipped releases is still
-  carried forward. Reports by default, writes only with `--apply`, never commits
-
-- `xliff/README.md` — whitespace and `xml:space`: from v14 the parser follows
-  the XML specification, so indentation in a label collapses instead of being
-  kept. Includes when `xml:space="preserve"` is warranted and why it should not
-  be set by default ([#70867](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Important-70867-XLIFFWhitespaceHandlingNowRespectsXmlSpaceAttribute.html))
-- `Important` changelog entries are now indexed as well (67 additional entries
-  for v13 and v14). They change how existing code behaves without being
-  classified as breaking, which is exactly what gets overlooked — the XLIFF
-  whitespace change above was found this way
-
 ## [2.0.0] — 2026-08-13
 
 Breaking for consumers: guideline files moved. Every project, skill or
@@ -57,6 +40,20 @@ compatibility stubs.
 
 ### Added
 
+- `skills/guidelines-upgrade/` — checks a project against the current guidelines
+  release: are they reachable, is `Read(../developer-guidelines/guidelines/**)`
+  pre-granted, and do the referenced files still exist. Rewrites moved paths
+  from a cumulative `path-map.tsv`, so a project that skipped releases is still
+  carried forward. Reports by default, writes only with `--apply`, never commits
+
+- `xliff/README.md` — whitespace and `xml:space`: from v14 the parser follows
+  the XML specification, so indentation in a label collapses instead of being
+  kept. Includes when `xml:space="preserve"` is warranted and why it should not
+  be set by default ([#70867](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Important-70867-XLIFFWhitespaceHandlingNowRespectsXmlSpaceAttribute.html))
+- `Important` changelog entries are now indexed as well (67 additional entries
+  for v13 and v14). They change how existing code behaves without being
+  classified as breaking, which is exactly what gets overlooked — the XLIFF
+  whitespace change above was found this way
 - `guidelines/typo3/versions.md` — validity table with changelog references,
   the entry point when unsure whether a rule still applies
 - `guidelines/typo3/changelog-index/` — one line per core changelog entry for
