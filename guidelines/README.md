@@ -120,6 +120,31 @@ Each guideline file covers one technology or topic area.
 - Follow rules strictly — do not reinterpret them
 - Prefer existing project patterns over introducing new ones
 
+## When a rule is missing
+
+These files do not cover everything, and they are not meant to. When a task
+needs a TYPO3 API, a TCA type, a configuration key or a convention that neither
+a guideline nor the project's own `Guidelines/` folder covers:
+
+1. **Look it up.** For TYPO3 version questions — does this class still exist,
+   what replaced it, when was it removed — the answer is in
+   [typo3/changelog-index/](typo3/changelog-index/). Grep it, never read it
+   whole. Otherwise read the surrounding project code, which is the binding
+   pattern for anything project-specific.
+2. **Ask.** If the lookup does not settle it, stop and ask. An unanswered
+   question costs one message; a wrong assumption is found in review, or later.
+3. **Never invent a fallback.** Do not write against a remembered API, do not
+   reconstruct a missing rule by analogy from a neighbouring guideline, and do
+   not carry a pattern over from an older TYPO3 version because it used to work
+   there.
+
+**Silence in these files is not permission.** It usually means the case has not
+come up yet — see [What belongs in here](#what-belongs-in-here) for why the set
+is deliberately small. If the gap keeps recurring, propose a rule for it.
+
+This holds for humans too, but it is written for AI assistants, which are the
+ones that fill a gap with a plausible-looking guess instead of leaving it open.
+
 ## Guidelines
 
 | File                                               | Topics                                                                     |
