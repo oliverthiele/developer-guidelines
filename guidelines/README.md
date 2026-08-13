@@ -31,7 +31,12 @@ If the guidelines are located elsewhere, set the environment variable
 `DEVELOPER_GUIDELINES_DIR` to the absolute path of the `guidelines/` directory.
 
 Update with `git pull` in this repository — every project reads it directly, so there
-is no copy to refresh. Do not vendor these files into a project (no submodule, no
+is no copy to refresh.
+
+Projects read the **working tree**, not a tag. Whatever branch this clone has
+checked out is what every project sees, so keep it on `main` and switch
+deliberately when working on the guidelines themselves — otherwise a project
+silently reads unreleased rules. Do not vendor these files into a project (no submodule, no
 duplication); that would pin each project to a commit and defeat the single pull.
 
 ### Project-specific guidelines
