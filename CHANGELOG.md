@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] — 2026-08-13
+
+### Changed
+
+- `guidelines/README.md` — the read permission a project grants is now
+  `Read(../developer-guidelines/**)` instead of `Read(.../guidelines/**)`.
+  `AGENTS.md` sits in the repository root and `skills/` outside `guidelines/`,
+  so the narrower pattern prompted on exactly the two files a project reads
+  first. Existing projects should widen the pattern in their
+  `.claude/settings.json`
+- `guidelines/README.md` — the `CLAUDE.md` template for a project now routes
+  through `AGENTS.md` and carries the missing-rule protocol, and says how to
+  use it in a project that has no `Guidelines/` folder
+
 ## [2.2.1] — 2026-08-13
 
 ### Fixed
