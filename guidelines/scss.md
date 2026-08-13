@@ -154,6 +154,37 @@ Rules:
 - TYPO3 extension keys use underscores (`ot_gallery`) — convert to hyphens for
   CSS prefixes (`ot-gallery-`). Never use underscores in CSS class names.
 
+#### Deriving the prefix
+
+The default derivation is the extension key (`ot_gallery` → `ot-gallery-`).
+
+A project may instead define a **short prefix scheme** (`winkel_products` → `wp-`),
+for example when extension keys are long enough to dominate the class name. Two
+conditions apply:
+
+- the assignment is documented in that project's `Guidelines/` — one prefix per
+  extension, listed in full
+- the scheme is used consistently across the whole project
+
+Either way the guarantee is the same: one stable, unambiguous prefix per extension.
+
+#### Reserved prefixes — never assign to an extension
+
+| Prefix          | Owner                                     |
+|-----------------|-------------------------------------------|
+| *(none)*        | Bootstrap utilities and components         |
+| `bs-`           | Bootstrap internals                        |
+| `sk-`           | SiteKit base system                        |
+| `cb-`, `--cb-`  | TYPO3 Content Blocks                       |
+| `is-`, `has-`   | state classes (see *State classes* below)  |
+| `tx-`           | TYPO3-generated plugin container classes   |
+
+`sk-` is reserved in **every** project, not only in SiteKit projects — otherwise a
+project that later adopts SiteKit collides with its own classes.
+
+Third-party libraries own their prefixes too (`fa-`, `mfp-`, `cc-`, …). Which ones
+apply depends on the project; record them in the project's `Guidelines/`.
+
 ### Inner elements — no BEM double-underscore
 
 Inner elements use full prefix + hyphen. No `__`.
