@@ -88,16 +88,25 @@ collaborators do not have it:
 ## Guidelines — mandatory read protocol
 
 Project rules live in `Guidelines/`. They extend the shared, project-independent
-guidelines cloned next to this project in `../developer-guidelines/guidelines/`.
+guidelines cloned next to this project in `../developer-guidelines/` — start there
+at `../developer-guidelines/AGENTS.md` for the read order and the routing table.
 
 **Read the relevant file before starting work in that area** — also when the task
 looks small or the rule seems obvious.
 
 @Guidelines/README.md
 
+When no rule covers the case: look it up — `guidelines/typo3/changelog-index/` for
+TYPO3 version questions (grep it, never read it whole), otherwise the surrounding
+project code. Ask if that does not settle it, and never invent a fallback. Silence
+in the guidelines is not permission.
+
 On conflict, the project file wins. Never edit files in `../developer-guidelines/`
 without explicit confirmation.
 ```
+
+A project without a `Guidelines/` folder uses the same block without the first
+sentence and the `@Guidelines/README.md` line.
 
 **3.** Commit `.claude/settings.json` so reading the shared guidelines does not prompt
 every collaborator:
@@ -106,11 +115,17 @@ every collaborator:
 {
   "permissions": {
     "allow": [
-      "Read(../developer-guidelines/guidelines/**)"
+      "Read(../developer-guidelines/**)"
     ]
   }
 }
 ```
+
+The grant covers the whole repository, not just `guidelines/` — `AGENTS.md` in the
+root is the entry point, and `skills/` is read from projects that run
+`guidelines-upgrade`. Both sit outside a `guidelines/**` pattern, so a narrower
+grant prompts on exactly the files a project reads first. Nothing here is writable
+by a project, so there is no risk in the wider read.
 
 ## How to use
 
