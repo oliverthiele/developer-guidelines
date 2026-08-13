@@ -31,7 +31,12 @@ If the guidelines are located elsewhere, set the environment variable
 `DEVELOPER_GUIDELINES_DIR` to the absolute path of the `guidelines/` directory.
 
 Update with `git pull` in this repository — every project reads it directly, so there
-is no copy to refresh. Do not vendor these files into a project (no submodule, no
+is no copy to refresh.
+
+Projects read the **working tree**, not a tag. Whatever branch this clone has
+checked out is what every project sees, so keep it on `main` and switch
+deliberately when working on the guidelines themselves — otherwise a project
+silently reads unreleased rules. Do not vendor these files into a project (no submodule, no
 duplication); that would pin each project to a commit and defeat the single pull.
 
 ### Project-specific guidelines
@@ -119,6 +124,7 @@ Each guideline file covers one technology or topic area.
 | [typo3/developer.md](typo3/developer.md)           | PHP, TCA, Fluid, Doctrine DBAL, views                                      |
 | [typo3/content-blocks.md](typo3/content-blocks.md) | Content Block structure, portable assets, two-layer CSS, config.yaml       |
 | [typo3/sitekit.md](typo3/sitekit.md)               | SiteKit layer model, template path abstraction (SiteKit projects only)     |
+| [typo3/practices/](typo3/practices/README.md)      | decision guides: which approach, and when deliberately not                 |
 | [typo3/versions.md](typo3/versions.md)             | which rule applies to which TYPO3 version                                  |
 | [typo3/changelog-index/](typo3/changelog-index/)   | every core changelog entry — grep only, never read whole                   |
 | [xliff/](xliff/README.md)                          | XLIFF 1.2 / 2.0 file format, attributes, ICU message format                |

@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] — 2026-08-13
+
+### Added
+
+- `skills/changelog-audit/` — compares the guidelines against the changelog
+  index and ranks entries that touch a subject the guidelines cover but do not
+  cite. Uses a triage log (`changelog-index/reviewed.tsv`) so every entry is
+  either cited, judged, or shown — without it an audit reports hundreds of
+  candidates once and is never read again
+- `guidelines/typo3/developer.md` — `$GLOBALS['TSFE']` and
+  `TypoScriptFrontendController` are gone in v14; frontend state is read from
+  PSR-7 request attributes. Found by the first audit run: the guidelines had no
+  word on it, and seven of twenty-four candidates were facets of that one change
+
+- `guidelines/typo3/practices/` — decision guides, a fourth document type next
+  to rule files, version table and changelog index. They answer which approach
+  to choose and when deliberately not, which neither the rules nor the changelog
+  cover — some shifts (menus from `HMENU` to DataProcessor plus Fluid) have no
+  changelog entry at all
+- `guidelines/typo3/practices/fluid-components.md` — component or partial,
+  Atomic Design levels, the strict argument API and the `settings` exception,
+  v13 PHP collection class vs. v14.1 configuration, and the variant dispatcher
+  as a SiteKit pattern rather than a general one
+
 ## [2.0.0] — 2026-08-13
 
 Breaking for consumers: guideline files moved. Every project, skill or
