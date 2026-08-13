@@ -3,12 +3,16 @@
 Personal coding guidelines for PHP/TYPO3 projects.
 
 Published primarily for developers who collaborate with me on projects — the
-rules
-here reflect how I structure, name, and maintain code across all my work.
+rules here reflect how I structure, name, and maintain code across all my work.
 
 ---
 
 ## Contents
+
+### `AGENTS.md`
+
+Entry point for AI coding assistants: read order, and what to do when a rule is
+missing. See [AGENTS.md](AGENTS.md).
 
 ### `guidelines/`
 
@@ -59,15 +63,14 @@ See [skills/README.md](skills/README.md) for installation.
 
 **As a developer working with me:**
 Load the relevant guideline file(s) for the area you are working in and follow
-the
-rules as written. When in doubt, prefer the existing project pattern over
-introducing
-a new one.
+the rules as written. When in doubt, prefer the existing project pattern over
+introducing a new one.
 
 **As an AI assistant:**
-Load only the files relevant to the current task. Follow rules strictly — do not
-reinterpret or override them based on general conventions. The guidelines take
-precedence over defaults.
+Start with [AGENTS.md](AGENTS.md). Load only the files relevant to the current
+task. Follow rules strictly — do not reinterpret or override them based on
+general conventions. The guidelines take precedence over defaults. When a rule
+is missing, look it up or ask — never invent a fallback.
 
 ---
 
