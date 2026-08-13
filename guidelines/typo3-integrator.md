@@ -20,6 +20,12 @@ For PHP / TCA / Fluid conventions, see `typo3-developer.md`.
 
 Load the file matching your project's TYPO3 version in addition to this one.
 
+There is no integrator file for v14 yet. In a v14 project, read
+`typo3/v13/integrator.md` with care: rules describing something as *deprecated
+in v13, removed in v14* (e.g. `<INCLUDE_TYPOSCRIPT:`) describe an already
+completed removal there, and statements about SiteSets and the New Content
+Element wizard must be verified against v14 before being applied.
+
 ---
 
 ## Script Directories
@@ -122,24 +128,26 @@ Rules:
 - Paths in `LLL:EXT:` must match the actual file path exactly
 - The `original` attribute in XLIFF files must point to the English source file
 
-For XLIFF format, key naming, ICU plurals and file structure, see → `xliff.md`
-
 ### f:translate — `extensionName` must be UpperCamelCase
 
 `<f:translate>`'s `extensionName` argument expects the **UpperCamelCased**
-extension key (e.g. `WinkelTheme` for `winkel_theme`), per
+extension key (e.g. `MySitepackage` for `my_sitepackage`), per
 `TranslateViewHelper::initializeArguments()`: `'UpperCamelCased extension key
 (for example BlogExample)'`.
 
 ```html
 <!-- Correct -->
-<f:translate key="my_key" extensionName="WinkelTheme" />
+<f:translate key="my_key" extensionName="MySitepackage" />
 
 <!-- Wrong — works today because TYPO3 normalizes it internally, but violates
      the documented argument contract and is a common AI-generation error -->
-<f:translate key="my_key" extensionName="winkel_theme" />
+<f:translate key="my_key" extensionName="my_sitepackage" />
 ```
 
 Lowercase/underscored values happen to resolve today because TYPO3 normalizes
 the extension key internally, but that's an implementation detail, not a
 guarantee — always write the UpperCamelCase form.
+
+---
+
+For XLIFF format, key naming, ICU plurals and file structure, see → `xliff.md`

@@ -19,6 +19,7 @@ For integrator conventions (SiteSets, TypoScript, labels.xlf), see
 | Version | File                     |
 |---------|--------------------------|
 | v13     | `typo3/v13/developer.md` |
+| v14     | `typo3/v14/developer.md` |
 
 Load the file matching your project's TYPO3 version in addition to this one.
 

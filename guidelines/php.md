@@ -38,7 +38,7 @@ Code style is enforced by **TYPO3 Coding Standards** via PHP CS Fixer.
 2. PHP CS Fixer
 3. PHP CodeSniffer
 
-Both must pass before committing changes.
+All three must pass before committing changes.
 
 If any step fails:
 
@@ -72,6 +72,7 @@ shell-dependent scripts:
     "scripts": {
         "phpstan": "phpstan analyse",
         "php-cs-fixer": "vendor/bin/php-cs-fixer fix",
+        "php-codesniffer": "vendor/bin/phpcs",
         "fe-build": "npm --prefix Build/Default run build",
 
         "db-export": [
@@ -170,17 +171,29 @@ quality tools in the correct execution order:
 
 ```json
 {
-    "code-quality": [
-        "@phpstan",
-        "@php-cs-fixer",
-        "@php-codesniffer"
-    ]
+    "scripts": {
+        "phpstan": "phpstan analyse",
+        "php-cs-fixer": "vendor/bin/php-cs-fixer fix",
+        "php-codesniffer": "vendor/bin/phpcs",
+
+        "code-quality": [
+            "@phpstan",
+            "@php-cs-fixer",
+            "@php-codesniffer"
+        ]
+    }
 }
 ```
 
 ```bash
 ddev composer code-quality
 ```
+
+Every `@`-reference must resolve to a script defined in the same `scripts`
+block. `code-quality` alone is not enough — without `phpstan`,
+`php-cs-fixer` and `php-codesniffer` being defined too, Composer aborts with
+`Script "@phpstan" is not defined`. This is the most common copy-paste error
+when adopting the script into an existing `composer.json`.
 
 Composer aborts the chain on the first non-zero exit code, matching the
 "stop on failure" rule from the execution order above.
