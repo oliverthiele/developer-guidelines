@@ -22,6 +22,7 @@ ln -s ~/PhpstormProjects/developer-guidelines/skills/typo3-changelog-harvest \
 | [typo3-changelog-harvest](typo3-changelog-harvest/SKILL.md) | Build and query the TYPO3 changelog index (level 3 of the guidelines architecture) |
 | [create-content-block](create-content-block/SKILL.md) | Scaffold a TYPO3 Content Block following the shared conventions |
 | [guidelines-upgrade](guidelines-upgrade/SKILL.md) | Update a project's guideline references after a restructuring, and check read permissions |
+| [changelog-audit](changelog-audit/SKILL.md) | Find changelog entries the guidelines should react to, with a triage log so nothing is judged twice |
 
 ## When guidelines move
 

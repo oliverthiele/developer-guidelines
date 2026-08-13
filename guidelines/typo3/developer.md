@@ -157,6 +157,50 @@ $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
 
 ---
 
+## `$GLOBALS['TSFE']` is gone — read request attributes
+
+**Validity:** `TypoScriptFrontendController` deprecated in v13
+([#105230](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.4/Deprecation-105230-TypoScriptFrontendControllerAndGLOBALSTSFE.html)),
+removed in v14
+([#107831](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107831-RemovedTypoScriptFrontendController.html))
+· members already internal or read-only in v13
+([#102621](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102621-MostTSFEMembersMarkedInternalOrRead-only.html))
+
+> **Stale-knowledge trap:** `$GLOBALS['TSFE']->id`, `->page`, `->fe_user` and
+> friends appear in fifteen years of TYPO3 examples and dominate training data.
+> The object does not exist in v14. Anything generated from memory here is
+> wrong.
+
+Frontend state is carried on the PSR-7 request as attributes:
+
+```php
+// Correct — v13 and v14
+$pageInformation = $request->getAttribute('frontend.page.information');
+$pageId = $pageInformation->getId();
+$pageRecord = $pageInformation->getPageRecord();
+
+$frontendUser = $request->getAttribute('frontend.user');
+$typoScript = $request->getAttribute('frontend.typoscript');
+
+// Wrong — removed in v14
+$pageId = $GLOBALS['TSFE']->id;
+$pageRecord = $GLOBALS['TSFE']->page;
+```
+
+Rules:
+
+- Inject or pass the `ServerRequestInterface`; never reach for `$GLOBALS`
+- In an EventListener, take the request from the event (`$event->getRequest()`)
+  rather than from a global
+- In Fluid, the data a template needs comes from the DataProcessor or the
+  controller, not from a TSFE lookup in a ViewHelper
+
+For the exact replacement of a specific member, look up
+[#102621](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-102621-MostTSFEMembersMarkedInternalOrRead-only.html)
+in the changelog index — it lists every property with its substitution.
+
+---
+
 ## Views — never instantiate a view directly
 
 **Validity:** `Extbase\Mvc\View\AbstractView` and `Extbase\Mvc\View\ViewInterface`

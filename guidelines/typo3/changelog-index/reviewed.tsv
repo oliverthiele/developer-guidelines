@@ -1,0 +1,28 @@
+# Triage log for the changelog audit. Hand-written, never regenerated.
+#
+# columns: number	verdict	note
+# verdicts: covered | not-relevant | todo
+#
+# An entry cited by a guideline counts as covered automatically and needs no row
+# here. This file is for the other two outcomes: decided against, or decided to
+# do something and not done yet.
+#
+# Without this file the audit reports the same hundreds of candidates on every
+# run and stops being read. Record a verdict for everything the audit shows.
+102875	not-relevant	Doctrine Connection signatures — we use QueryBuilder, not raw Connection calls
+102935	not-relevant	Extension Manager installation internals, no extension code affected
+107507	not-relevant	EXT:form finisher API, not used
+108277	not-relevant	CacheHashCalculator internals, not called from our code
+110028	not-relevant	FormEngine base classes, we write no custom FormEngine nodes
+110221	not-relevant	Logger declared final, we never extend it
+101305	not-relevant	GeneralUtility type declarations, PHPStan catches a wrong call anyway
+102583	not-relevant	EXT:adminpanel context aspect, matched only on the word "typoscript"
+106405	todo	TypolinkBuilder signature — check when a custom link builder is next touched
+105441	todo	TCA select with null item values creates nullable columns — decide whether developer.md needs a line
+107594	todo	Icon overlay for TCA select items — possibly worth a mention in content-blocks.md
+108113	todo	_GET/_POST no longer reset from Request — verify no middleware of ours relies on it
+102600	covered	facet of the TSFE removal — see the $GLOBALS['TSFE'] rule in developer.md
+102605	covered	facet of the TSFE removal — see the $GLOBALS['TSFE'] rule in developer.md
+102715	covered	facet of the TSFE removal — see the $GLOBALS['TSFE'] rule in developer.md
+107578	covered	facet of the TSFE removal — event now carries the request
+109575	covered	ContentObjectRenderer members follow the same request-attribute migration

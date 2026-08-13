@@ -37,6 +37,7 @@ everywhere carry no `**Validity:**` line in their guideline file either.
 | `\PDO::PARAM_INT` | **removed** | removed | `developer.md` |
 | `Extbase\Mvc\View\AbstractView`, `Extbase\Mvc\View\ViewInterface` | removed | removed | `developer.md` |
 | `StandaloneView`, `TemplateView`, `AbstractTemplateView` ([#104773](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104773-CustomFluidViewsAndExtbase.html) → [#105377](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-105377-DeprecatedFunctionalityRemoved.html)) | deprecated | **removed** | `developer.md` |
+| `TypoScriptFrontendController`, `$GLOBALS['TSFE']` ([#105230](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.4/Deprecation-105230-TypoScriptFrontendControllerAndGLOBALSTSFE.html) → [#107831](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107831-RemovedTypoScriptFrontendController.html)) | deprecated | **removed** | `developer.md` |
 | `ViewFactoryInterface` | yes | yes | `developer.md` |
 | `record-transformation` usable in practice | no | **yes** | `developer.md` |
 | Union types in `f:argument` ([#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108148-UnionTypesForViewHelpers.html)) | no | **yes** | `developer.md` |
