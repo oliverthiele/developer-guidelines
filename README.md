@@ -51,9 +51,12 @@ Changes between releases are documented in [CHANGELOG.md](CHANGELOG.md).
 Claude Code skills that work with these guidelines. They live in this
 repository because they depend on its structure and must stay in sync with it.
 
-| File                                                        | Topics                                                            |
-|-------------------------------------------------------------|-------------------------------------------------------------------|
-| [typo3-changelog-harvest](skills/typo3-changelog-harvest/SKILL.md) | Build and query the TYPO3 changelog index |
+| File                                                               | Topics                                                                              |
+|--------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| [typo3-changelog-harvest](skills/typo3-changelog-harvest/SKILL.md) | Build and query the TYPO3 changelog index                                           |
+| [changelog-audit](skills/changelog-audit/SKILL.md)                 | Find changelog entries the guidelines should react to, with a triage log            |
+| [guidelines-upgrade](skills/guidelines-upgrade/SKILL.md)           | Update a project's guideline references after a restructuring, and check permissions |
+| [create-content-block](skills/create-content-block/SKILL.md)       | Scaffold a TYPO3 Content Block following the shared conventions                     |
 
 See [skills/README.md](skills/README.md) for installation.
 
