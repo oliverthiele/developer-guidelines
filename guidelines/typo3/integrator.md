@@ -109,7 +109,7 @@ Rules:
 
 ## TypoScript includes — `@import`, not `<INCLUDE_TYPOSCRIPT:`
 
-**Validity:** deprecated 13.4 · removed 14.0 ·
+**Validity:** deprecated in v13 · removed in v14 ·
 [#105171](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.4/Deprecation-105171-INCLUDE_TYPOSCRIPTTypoScriptSyntax.html)
 
 > **Stale-knowledge trap:** `<INCLUDE_TYPOSCRIPT:` was the standard for over a
@@ -117,7 +117,7 @@ Rules:
 > This rule outranks anything remembered about TypoScript includes.
 
 ```typoscript
-# Wrong — deprecated since 13.4, removed in v14
+# Wrong — deprecated in v13, removed in v14
 <INCLUDE_TYPOSCRIPT: source="FILE:EXT:my_extension/Configuration/TypoScript/setup.typoscript">
 <INCLUDE_TYPOSCRIPT: source="DIR:EXT:my_extension/Configuration/TypoScript/" extensions="typoscript">
 
@@ -149,9 +149,8 @@ Rules:
 
 ## SiteSets
 
-**Validity:** since 13.1 ·
+**Validity:** v13+ ·
 [#103437](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.1/Feature-103437-IntroduceSiteSets.html)
-· unchanged in v14
 
 SiteSets replaced the old "include static" mechanism.
 
@@ -183,8 +182,7 @@ dependency."_
 
 ### Settings definitions — always flat dot-notation
 
-**Validity:** canonical format since 13.4 · nested YAML still read for backwards
-compatibility · no dedicated changelog entry — verified in practice
+**Validity:** v13+ · nested YAML still read for backwards compatibility
 
 `settings.definitions.yaml` must use flat dot-notation keys. Never use nested
 YAML structure.
@@ -255,9 +253,9 @@ For the full SiteSet label conventions and enum label localization, see
 
 ## New Content Element Wizard — auto-registered via TCA
 
-**Validity:** since 13.0 ·
+**Validity:** v13+ ·
 [#102834](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Feature-102834-Auto-registrationOfNewContentElementWizardViaTCA.html)
-· unchanged in v14
+
 
 The wizard entry is generated automatically from the `CType` TCA select item — a
 separate `page.tsconfig` wizard registration is no longer needed:

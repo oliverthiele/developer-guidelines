@@ -36,7 +36,7 @@ For `<f:translate>`'s `extensionName` argument, see `../typo3/integrator.md`.
 
 ## SiteSet labels.xlf
 
-**Validity:** since 13.1 (with SiteSets) · unchanged in v14
+**Validity:** v13+ (with SiteSets)
 
 SiteSet `Configuration/Sets/{Name}/labels.xlf` provides labels via **automatic
 key resolution** — no `LLL:` reference is needed in `settings.definitions.yaml`.
@@ -129,7 +129,7 @@ displayed.
 
 ## Enum label localization
 
-**Validity:** since 14.2 ·
+**Validity:** v14+ ·
 [#106640](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Feature-106640-LocalizeEnumLabelsInSiteSettingsDefinitions.html)
 
 Enum option labels in `settings.definitions.yaml` can be localized via

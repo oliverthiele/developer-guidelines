@@ -88,7 +88,7 @@ Do not copy the entire field `config` array just to change a label.
 
 ### showitem — shortform label references
 
-**Validity:** since 14.0 ·
+**Validity:** v14+ ·
 [#107789](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107789-CoreTCAAndUserSettingsShowitemStringsUseShortFormReferences.html)
 · longform still valid in v14, required in v13
 
@@ -106,9 +106,9 @@ Do not use shortform in extensions that still support v13.
 
 ## FlexForm data structure registration
 
-**Validity:** `columnsOverrides` required since 14.0 · pointer-key approach
+**Validity:** `columnsOverrides` required in v14 · pointer-key approach
 required in v13 · `ExtensionManagementUtility::addPiFlexFormValue()` deprecated
-14.0 ([#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107047-ExtensionManagementUtilityaddPiFlexFormValue.html)),
+in v14 ([#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107047-ExtensionManagementUtilityaddPiFlexFormValue.html)),
 removal announced for v15
 
 ```php
@@ -142,7 +142,7 @@ if ((new Typo3Version())->getMajorVersion() >= 14) {
 
 ## Doctrine DBAL
 
-**Validity:** `\PDO::PARAM_INT` removed 13.0
+**Validity:** `\PDO::PARAM_INT` removed in v13
 
 ```php
 // Correct
@@ -160,9 +160,9 @@ $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
 ## Views — never instantiate a view directly
 
 **Validity:** `Extbase\Mvc\View\AbstractView` and `Extbase\Mvc\View\ViewInterface`
-removed 12.0 · `StandaloneView`, `TemplateView`, `AbstractTemplateView`
-deprecated 13.3 ([#104773](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104773-CustomFluidViewsAndExtbase.html)),
-removed 14.0 ([#105377](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-105377-DeprecatedFunctionalityRemoved.html))
+removed in v12 · `StandaloneView`, `TemplateView`, `AbstractTemplateView`
+deprecated in v13 ([#104773](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104773-CustomFluidViewsAndExtbase.html)),
+removed in v14 ([#105377](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-105377-DeprecatedFunctionalityRemoved.html))
 
 > **Stale-knowledge trap:** `GeneralUtility::makeInstance(StandaloneView::class)`
 > is the single most common way to build a view in older code and training data.
@@ -226,7 +226,7 @@ Key details:
 
 ## Fluid — argument types
 
-**Validity:** union types since 14.0 (Fluid 5) ·
+**Validity:** union types in v14+ (Fluid 5) ·
 [#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108148-UnionTypesForViewHelpers.html)
 · not supported in v13 (Fluid 4)
 
@@ -268,7 +268,7 @@ fields and must not be overridden with an empty string.
 
 ## Fluid — template file resolution `.fluid.html`
 
-**Validity:** since 14.0 ·
+**Validity:** v14+ ·
 [#108166](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108166-FluidFileExtensionAndTemplateResolving.html)
 
 Fluid 5 natively resolves `{Name}.fluid.{format}` before `{Name}.{format}` for
@@ -283,11 +283,16 @@ IDEs unambiguous syntax highlighting for Fluid vs. plain HTML.
 
 ## `record-transformation` — applied by default in v14
 
-**Validity:** DataProcessor available since 13.2
-([#103783](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.2/Feature-103783-RecordTransformationDataProcessor.html))
-· applied by `lib.contentElement` by default since 14.0 — verified in
+**Validity:** v14+ — verified in
 `EXT:fluid_styled_content/Configuration/TypoScript/Helper/ContentElement.typoscript`
 (present in v14, absent in v13)
+
+The DataProcessor itself already exists in v13
+([#103783](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.2/Feature-103783-RecordTransformationDataProcessor.html)),
+but registering it manually there does not give the v13 project what v14
+provides: the automatic application plus the surrounding record handling
+(`f:render.contentArea` and friends) is what makes it practical. Treat this as a
+v14 feature.
 
 ```typoscript
 # v14 — part of lib.contentElement out of the box
@@ -330,7 +335,7 @@ Caveats:
 
 ## Extension title comes from `composer.json`
 
-**Validity:** since 14.0 ·
+**Validity:** v14+ ·
 [#108304](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108304-PopulateExtensionTitleFromComposerJson.html)
 
 The extension title shown in the Extension Manager is derived from

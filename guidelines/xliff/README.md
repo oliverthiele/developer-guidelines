@@ -24,9 +24,9 @@ XLIFF file format conventions: versions, structure, attributes, ICU.
 | v13 only, or v13 + v14 | **1.2**              |
 | v14+ only              | **2.0**              |
 
-**Validity:** XLIFF 2.0 support since 14.0
+**Validity:** XLIFF 2.0 support in v14+
 ([#107710](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107710-SupportForXLIFF2xTranslationFiles.html))
-· ICU message format since 14.2
+· ICU message format in v14+
 
 Do not mix versions within one extension.
 
@@ -141,7 +141,7 @@ Use for extensions that support TYPO3 v13.
 
 ## XLIFF 2.0
 
-**Validity:** since 14.0 — use for extensions that target TYPO3 v14+ only
+**Validity:** v14+ — use for extensions that target TYPO3 v14 and above only
 
 ### Source file
 
@@ -209,7 +209,7 @@ Use for extensions that support TYPO3 v13.
 
 ## ICU message format
 
-**Validity:** since 14.2 ·
+**Validity:** v14+ ·
 [#104546](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Feature-104546-SupportICUMessageFormatForPluralForms.html)
 · XLIFF 2.0 files only
 

@@ -29,10 +29,21 @@ XLIFF is not in this folder: the format itself is not TYPO3-specific. See
 ```markdown
 ### TypoScript includes — `@import`, not `<INCLUDE_TYPOSCRIPT:`
 
-**Validity:** deprecated 13.4 · removed 14.0 · [#105171](…)
+**Validity:** deprecated in v13 · removed in v14 · [#105171](…)
 ```
 
 No `**Validity:**` line means the rule holds for every supported version.
+
+**Major versions only, and dated by usability.** Live sites are updated at LTS
+releases, so every site runs the latest minor of its major — `13.1` and `13.4`
+are equally available in a v13 project, which makes the minor version a number
+nobody decides anything on. Write `v13+`, `deprecated in v13 · removed in v14`.
+The exact minor stays available in column 3 of the changelog index.
+
+For the same reason a validity states when something became usable **in
+practice**, not when the API first appeared. `record-transformation` exists in
+v13 but only becomes worth using in v14, where it is applied automatically and
+the surrounding record handling exists — so it is documented as v14.
 
 This replaces the earlier "base file plus per-version overlay" layout. That
 layout encoded *"introduced in"* but was read as *"applies only to"* — four of

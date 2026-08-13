@@ -24,7 +24,7 @@ compatibility stubs.
   only key naming no longer loads 533 lines
 - **Version model replaced.** A rule now lives once, in its topic file, and
   states its validity inline:
-  `**Validity:** deprecated 13.4 · removed 14.0 · [#105171](…)`. The previous
+  `**Validity:** deprecated in v13 · removed in v14 · [#105171](…)`. The previous
   per-version overlay folders encoded *"introduced in"* but were read as
   *"applies only to"* — four of five rules in the former `v13/integrator.md`
   were current rules that hold in v14 unchanged
@@ -33,6 +33,10 @@ compatibility stubs.
   reintroducing a version folder
 - `guidelines/README.md` — the `UpperCamelCase` file naming rule now explicitly
   applies to project source trees, not to documentation repositories
+- Validity is stated in **major versions only** and dated by practical
+  usability, not by first appearance in the core. Live sites are updated at LTS
+  releases, so every site runs the latest minor of its major and the minor
+  version changes no decision. The exact minor stays in the changelog index
 
 ### Added
 
@@ -52,12 +56,13 @@ compatibility stubs.
 
 ### Fixed
 
-- SiteSets were introduced in TYPO3 **13.1** (`Feature-103437`), not 13.0
-- `record-transformation` exists since **13.2** (`Feature-103783`); only its
-  automatic application in `lib.contentElement` is new in 14.0
-- `StandaloneView`, `TemplateView` and `AbstractTemplateView` are deprecated
-  since 13.3 (`#104773`) and removed in 14.0 (`#105377`). The replacement via
-  `ViewFactoryInterface` is now documented as a rule
+- `StandaloneView`, `TemplateView` and `AbstractTemplateView` are deprecated in
+  v13 (`#104773`) and **removed in v14** (`#105377`). The replacement via
+  `ViewFactoryInterface` is now documented as a rule instead of being absent
+- `record-transformation` is documented as a v14 feature. The DataProcessor
+  exists in v13, but only v14 applies it automatically and ships the surrounding
+  record handling that makes it usable — dating it v13 would be accurate and
+  misleading at once
 
 ## [1.1.0] — 2026-08-13
 
