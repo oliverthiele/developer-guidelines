@@ -68,15 +68,19 @@ Columns, tab-separated:
    is mechanically extracted and lossy; being wrong about a breaking change is
    expensive.
 
-Read the full entry from the project's own vendor directory — it is already
-there, no download needed:
+Read the full entry from the cache next to the index. Column 10 of the index is
+the path, and it resolves inside `changelog-index/cache/`:
 
 ```bash
-sed -n '/^Migration/,$p' vendor/typo3/cms-core/Documentation/Changelog/{path}
+sed -n '/^Migration/,$p' \
+  ../developer-guidelines/guidelines/typo3/changelog-index/cache/13.3/Deprecation-104773-CustomFluidViewsAndExtbase.rst
 ```
 
-For versions not installed anywhere, the fetched copy lives in
-`changelog-index/cache/main/`.
+The cache covers **every indexed version, not just the one installed**. That is
+the point: a v13 project has no `14.x` folder in its vendor directory, so
+without the cache a v14 entry could be found but not opened. The same path also
+resolves against `vendor/typo3/cms-core/Documentation/Changelog/` when the
+installed core happens to cover that version.
 
 ## Writing a note
 
@@ -111,8 +115,14 @@ time.
 ```bash
 python3 skills/typo3-changelog-harvest/harvest.py \
   --changelog-dir ~/PhpstormProjects/<project>/vendor/typo3/cms-core/Documentation/Changelog \
-  --major 13 --major 14
+  --major 13 --major 14 --cache-local
 ```
+
+`--cache-local` copies the source `.rst` files into `changelog-index/cache/`.
+Always pass it: released changelogs never change, so this is a one-time cost,
+and it is what makes a v14 entry readable from inside a v13 project. The files
+compress well — several hundred entries add well under a megabyte to the
+repository.
 
 Pick a project whose installed core is **at least** as new as the highest
 version to index — the changelog folder only contains versions up to the

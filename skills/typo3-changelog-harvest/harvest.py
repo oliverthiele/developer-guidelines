@@ -178,7 +178,14 @@ def parse_entry(path, version):
     }
 
 
-def harvest_local(changelog_dir, major):
+def harvest_local(changelog_dir, major, cache_dir=None):
+    """Index a version present in the project's vendor directory.
+
+    With cache_dir set, the source .rst is copied alongside the index. Released
+    changelogs never change, so this is a one-time cost that makes lookups work
+    in any project regardless of which TYPO3 version it has installed — a v13
+    project cannot otherwise open a v14 entry at all.
+    """
     entries = []
     for version_dir in sorted(changelog_dir.iterdir()):
         if not version_dir.is_dir():
@@ -188,8 +195,15 @@ def harvest_local(changelog_dir, major):
             continue
         for rst_file in sorted(version_dir.glob("*.rst")):
             entry = parse_entry(rst_file, version_dir.name)
-            if entry:
-                entries.append(entry)
+            if not entry:
+                continue
+            entries.append(entry)
+            if cache_dir is not None:
+                cached = cache_dir / version_dir.name / rst_file.name
+                cached.parent.mkdir(parents=True, exist_ok=True)
+                cached.write_text(
+                    rst_file.read_text(encoding="utf-8", errors="replace"), encoding="utf-8"
+                )
     return entries
 
 
@@ -408,6 +422,12 @@ def main():
     parser.add_argument("--out", help="output directory (overrides maintainer detection)")
     parser.add_argument("--source", help="provenance label, e.g. local:13.4.7")
     parser.add_argument(
+        "--cache-local",
+        action="store_true",
+        help="copy the source .rst files next to the index, so lookups work in "
+        "projects running a different TYPO3 version",
+    )
+    parser.add_argument(
         "--provisional",
         action="store_true",
         help="mark entries as coming from an unreleased branch",
@@ -443,10 +463,13 @@ def main():
         source = arguments.source or detect_source(changelog_dir)
 
     for major in arguments.major:
+        cache_dir = out_dir / "cache"
         if arguments.remote:
-            entries = harvest_remote(major, arguments.remote, out_dir / "cache" / arguments.remote)
+            entries = harvest_remote(major, arguments.remote, cache_dir)
         else:
-            entries = harvest_local(changelog_dir, major)
+            entries = harvest_local(
+                changelog_dir, major, cache_dir if arguments.cache_local else None
+            )
         if not entries:
             print(f"v{major}: no entries found, skipped", file=sys.stderr)
             continue

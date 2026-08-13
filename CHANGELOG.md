@@ -45,6 +45,10 @@ compatibility stubs.
 - `guidelines/typo3/changelog-index/` — one line per core changelog entry for
   v13, v14 and v15, with affected symbols and a one-line migration hint.
   Searched with `grep`, never read whole
+- `guidelines/typo3/changelog-index/cache/` — the source `.rst` for every
+  indexed entry. A v13 project has no `14.x` folder in its vendor directory, so
+  without this a v14 entry could be found but not opened. Released changelogs
+  never change, so the copy never goes stale
 - `guidelines/typo3/changelog-index/notes/` — hand-written notes on individual
   changelog entries, never touched by regeneration
 - `skills/` — `typo3-changelog-harvest` (build and query the index) and
