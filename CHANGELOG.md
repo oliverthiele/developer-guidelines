@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.1] — 2026-08-13
+
+### Fixed
+
+- `README.md` — the skills table listed only `typo3-changelog-harvest` and had
+  been stale since three further skills were added. It now matches
+  `skills/README.md`
+
 ## [2.2.0] — 2026-08-13
 
 ### Added
