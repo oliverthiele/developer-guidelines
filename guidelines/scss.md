@@ -158,7 +158,7 @@ Rules:
 
 The default derivation is the extension key (`ot_gallery` → `ot-gallery-`).
 
-A project may instead define a **short prefix scheme** (`winkel_products` → `wp-`),
+A project may instead define a **short prefix scheme** (`my_productfinder` → `mp-`),
 for example when extension keys are long enough to dominate the class name. Two
 conditions apply:
 

@@ -114,6 +114,33 @@ Only stage files after both tools pass without errors.
 
 ---
 
+## No customer data in public repositories
+
+Public repositories — guideline sets, published extensions, anything on Packagist
+or a public GitHub remote — must never contain material that identifies a customer
+or a customer project.
+
+Never commit, in code, comments, documentation, examples or commit messages:
+
+- customer names, project names, domains or hostnames
+- real extension keys, vendor names, package names or CSS prefixes from a
+  customer project
+- server names, IP addresses, paths or credentials
+- excerpts from customer content, data or screenshots
+
+Use neutral placeholders instead: `my_extension` / `MyExtension`,
+`my_sitepackage`, `example.com`, `acme`. An example must not be traceable to a
+real engagement.
+
+Check before every commit to a public repository. This applies to examples in
+particular — they are the easiest place to leak a real name without noticing,
+and a pushed commit stays in the history even after the text is corrected.
+
+Project-specific material belongs in that project's own repository, in its
+`Guidelines/` folder — see the setup section in `guidelines/README.md`.
+
+---
+
 ## Branch Model
 
 ```
