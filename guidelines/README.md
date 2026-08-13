@@ -119,6 +119,7 @@ Each guideline file covers one technology or topic area.
 | [typo3/developer.md](typo3/developer.md)           | PHP, TCA, Fluid, Doctrine DBAL, views                                      |
 | [typo3/content-blocks.md](typo3/content-blocks.md) | Content Block structure, portable assets, two-layer CSS, config.yaml       |
 | [typo3/sitekit.md](typo3/sitekit.md)               | SiteKit layer model, template path abstraction (SiteKit projects only)     |
+| [typo3/practices/](typo3/practices/README.md)      | decision guides: which approach, and when deliberately not                 |
 | [typo3/versions.md](typo3/versions.md)             | which rule applies to which TYPO3 version                                  |
 | [typo3/changelog-index/](typo3/changelog-index/)   | every core changelog entry — grep only, never read whole                   |
 | [xliff/](xliff/README.md)                          | XLIFF 1.2 / 2.0 file format, attributes, ICU message format                |

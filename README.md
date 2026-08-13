@@ -21,6 +21,7 @@ Technology- and topic-specific coding guidelines that apply to **all projects**.
 | [typo3/developer.md](guidelines/typo3/developer.md)               | PHP, TCA, Fluid, Doctrine DBAL, views                                      |
 | [typo3/content-blocks.md](guidelines/typo3/content-blocks.md)     | Content Block structure, portable assets, two-layer CSS, config.yaml       |
 | [typo3/sitekit.md](guidelines/typo3/sitekit.md)                   | SiteKit layer model, template path abstraction (SiteKit projects only)     |
+| [typo3/practices/](guidelines/typo3/practices/README.md)          | decision guides: which approach, and when deliberately not                 |
 | [typo3/versions.md](guidelines/typo3/versions.md)                 | which rule applies to which TYPO3 version                                  |
 | [typo3/changelog-index/](guidelines/typo3/changelog-index/)       | every core changelog entry — grep only, never read whole                   |
 | [xliff/](guidelines/xliff/README.md)                              | XLIFF 1.2 / 2.0 file format, attributes, ICU message format                |

@@ -16,6 +16,7 @@ All TYPO3 rules live in this folder. Load the file matching the work area.
 | [developer.md](developer.md) | PHP, TCA, Fluid, Doctrine DBAL, views |
 | [content-blocks.md](content-blocks.md) | Content Block structure, assets, two-layer CSS, `config.yaml` |
 | [sitekit.md](sitekit.md) | SiteKit layer model and template path abstraction (SiteKit-based projects only) |
+| [practices/](practices/README.md) | decision guides: which approach, and when deliberately not |
 | [versions.md](versions.md) | which rule applies to which TYPO3 version |
 | [changelog-index/](changelog-index/) | every core changelog entry — **grep only, never read whole** |
 
@@ -76,6 +77,14 @@ from training data, the rule carries an explicit marker:
 
 This is deliberately stronger than a normal rule. It names *why* the default is
 wrong, which is what makes it survive under context pressure.
+
+## Rules and practice guides
+
+A rule file says *what is correct*. A [practice guide](practices/README.md) says
+*which approach to choose and when deliberately not* — longer, read when a
+decision is pending rather than on every change in the area. Menus moving from
+`HMENU` to a DataProcessor plus Fluid is that kind of knowledge: no changelog
+entry marks it, and it is the part a language model gets wrong most confidently.
 
 ## The three levels
 

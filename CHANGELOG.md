@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `guidelines/typo3/practices/` — decision guides, a fourth document type next
+  to rule files, version table and changelog index. They answer which approach
+  to choose and when deliberately not, which neither the rules nor the changelog
+  cover — some shifts (menus from `HMENU` to DataProcessor plus Fluid) have no
+  changelog entry at all
+- `guidelines/typo3/practices/fluid-components.md` — component or partial,
+  Atomic Design levels, the strict argument API and the `settings` exception,
+  v13 PHP collection class vs. v14.1 configuration, and the variant dispatcher
+  as a SiteKit pattern rather than a general one
+
 ## [2.0.0] — 2026-08-13
 
 Breaking for consumers: guideline files moved. Every project, skill or
