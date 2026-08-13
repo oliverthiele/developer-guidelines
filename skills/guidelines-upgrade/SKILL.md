@@ -14,8 +14,9 @@ Run it in the project that needs updating:
 python3 ../developer-guidelines/skills/guidelines-upgrade/upgrade.py
 ```
 
-Reports only. Add `--apply` to write. Nothing is ever committed — review the
-diff and commit it with the project's own conventions.
+Reports only. Add `--apply` to write, and `--apply --grant-read` to also add the
+missing read permission. Nothing is ever committed — review the diff and commit
+it with the project's own conventions.
 
 ## What it checks
 
@@ -30,7 +31,10 @@ the project instead of referencing it — which is exactly what the shared
 repository exists to prevent.
 
 **3. Do the referenced files still exist?** Scans `CLAUDE.md`, `AGENTS.md`,
-`.claude/memory/*.md`, `Guidelines/**` and `docs/*.md` for guideline paths,
+`.claude/memory/*.md`, `Guidelines/**`, `docs/*.md` — and the project's global
+memory at `~/.claude/projects/<slug>/memory/*.md`, which lives outside the
+project and is therefore the easiest place for stale references to survive
+unnoticed. Looks for guideline paths,
 rewrites known moves, and lists anything referenced that no longer exists and is
 not covered by the map. Those need a human decision — the rule may have moved
 somewhere the map does not know about, or it may have been dropped.

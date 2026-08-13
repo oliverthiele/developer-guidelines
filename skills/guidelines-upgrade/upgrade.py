@@ -93,11 +93,55 @@ def check_permission(project_dir):
     return False, None
 
 
+def grant_permission(project_dir):
+    """Add the guidelines read permission to .claude/settings.json.
+
+    Kept behind its own flag: rewriting a committed settings file is a different
+    kind of change than fixing a stale path, and should be asked for explicitly.
+    """
+    settings_file = project_dir / ".claude" / "settings.json"
+    if settings_file.is_file():
+        try:
+            settings = json.loads(settings_file.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            return False, "settings.json is not valid JSON — fix it by hand"
+    else:
+        settings = {}
+
+    permissions = settings.setdefault("permissions", {})
+    allowed = permissions.setdefault("allow", [])
+    if any("developer-guidelines" in entry for entry in allowed):
+        return False, "already present"
+
+    allowed.append(READ_PERMISSION)
+    settings_file.parent.mkdir(parents=True, exist_ok=True)
+    settings_file.write_text(json.dumps(settings, indent=2) + "\n", encoding="utf-8")
+    return True, str(settings_file.relative_to(project_dir))
+
+
+def global_memory_dir(project_dir):
+    """Claude Code keeps per-project memory outside the project.
+
+    ~/.claude/projects/<slug>/memory/, where the slug is the absolute path with
+    every non-alphanumeric character turned into a dash. These files name
+    guideline paths just like the in-project ones do, and are easy to miss
+    because a scan of the project directory never sees them.
+    """
+    slug = re.sub(r"[^A-Za-z0-9]+", "-", str(project_dir))
+    return Path.home() / ".claude" / "projects" / slug / "memory"
+
+
 def scan_files(project_dir):
     seen = set()
     for pattern in SCAN_GLOBS:
         for path in project_dir.glob(pattern):
             if path.is_file() and path not in seen:
+                seen.add(path)
+                yield path
+    memory_dir = global_memory_dir(project_dir)
+    if memory_dir.is_dir():
+        for path in sorted(memory_dir.glob("*.md")):
+            if path not in seen:
                 seen.add(path)
                 yield path
 
@@ -147,6 +191,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project", default=".", help="project root (default: current directory)")
     parser.add_argument("--apply", action="store_true", help="write changes instead of reporting")
+    parser.add_argument(
+        "--grant-read",
+        action="store_true",
+        help="add the guidelines read permission to .claude/settings.json (needs --apply)",
+    )
     arguments = parser.parse_args()
 
     project_dir = Path(arguments.project).expanduser().resolve()
@@ -171,7 +220,17 @@ def main():
     elif granted is None:
         print(f"  read permission: {source}")
     else:
-        print(f'  read permission: MISSING — add "{READ_PERMISSION}" to .claude/settings.json')
+        if arguments.apply and arguments.grant_read:
+            written, detail = grant_permission(project_dir)
+            if written:
+                print(f"  read permission: added to {detail}")
+            else:
+                print(f"  read permission: not added — {detail}")
+        else:
+            print(
+                f'  read permission: MISSING — add "{READ_PERMISSION}" to '
+                ".claude/settings.json, or re-run with --apply --grant-read"
+            )
 
     changed_files = 0
     total_moves = 0
@@ -180,7 +239,10 @@ def main():
         text = path.read_text(encoding="utf-8", errors="replace")
         new_text, applied = rewrite(text, moves)
         dangling = find_dangling(new_text, guidelines_dir, moves)
-        relative = path.relative_to(project_dir)
+        try:
+            relative = path.relative_to(project_dir)
+        except ValueError:
+            relative = path  # global memory, outside the project
         if applied:
             changed_files += 1
             total_moves += len(applied)
