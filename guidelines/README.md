@@ -27,6 +27,11 @@ PhpstormProjects/
 The default path used in `CLAUDE.md` and memory files is
 `../developer-guidelines/guidelines/` (relative to the project root).
 
+**Only the sibling relationship is binding, not the parent directory name.** The
+tree above happens to be called `PhpstormProjects/`, but nothing depends on that —
+every reference is relative. Teams that share a location should name it in their
+own project guidelines, so onboarding commands can be copied verbatim.
+
 If the guidelines are located elsewhere, set the environment variable
 `DEVELOPER_GUIDELINES_DIR` to the absolute path of the `guidelines/` directory.
 
