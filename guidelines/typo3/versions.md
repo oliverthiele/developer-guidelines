@@ -52,6 +52,7 @@ everywhere carry no `**Validity:**` line in their guideline file either.
 |---|---|---|---|
 | XLIFF 2.0 support ([#107710](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107710-SupportForXLIFF2xTranslationFiles.html)) | no — use 1.2 | **yes** | `../xliff/README.md` |
 | ICU MessageFormat for plurals ([#104546](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Feature-104546-SupportICUMessageFormatForPluralForms.html)) | no | **yes** | `../xliff/README.md` |
+| XLIFF whitespace follows `xml:space` ([#70867](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Important-70867-XLIFFWhitespaceHandlingNowRespectsXmlSpaceAttribute.html)) | no — raw whitespace kept | **yes — collapsed** | `../xliff/README.md` |
 | SiteSet `labels.xlf` automatic key resolution | yes | yes | `../xliff/typo3.md` |
 | Enum label localization in site settings ([#106640](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Feature-106640-LocalizeEnumLabelsInSiteSettingsDefinitions.html)) | no | **yes** | `../xliff/typo3.md` |
 

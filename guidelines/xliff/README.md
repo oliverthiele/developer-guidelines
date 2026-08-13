@@ -65,10 +65,53 @@ Additional formatting rules:
   `<!-- Navigation -->`)
 - Only use line breaks when content explicitly requires it (e.g. multiline text,
   emails)
-- Treat whitespace as meaningful — do not add or remove spaces inside `<source>`
-  or `<target>`
+- Do not add or remove spaces inside `<source>` or `<target>` — but see the
+  whitespace rule below before relying on indentation being preserved
 - Use normal spaces by default — only use `&nbsp;` when a non-breaking space is
   explicitly required
+
+---
+
+## Whitespace and `xml:space`
+
+**Validity:** v14+ ·
+[#70867](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Important-70867-XLIFFWhitespaceHandlingNowRespectsXmlSpaceAttribute.html)
+· applies to XLIFF 1.2 and 2.0 alike
+
+The parser follows the XML specification: without `xml:space="preserve"`,
+consecutive whitespace collapses into a single space and leading/trailing
+whitespace is trimmed.
+
+```xml
+<!-- Renders as "This is a multi-line string." — indentation is collapsed -->
+<trans-unit id="my.label">
+  <source>This is a
+    multi-line
+    string.</source>
+</trans-unit>
+```
+
+Practical consequence: a label may be wrapped for readability without changing
+its output. That is the normal case and needs nothing.
+
+Where whitespace is part of the content, request it explicitly — on
+`<trans-unit>` in XLIFF 1.2, on `<segment>` in XLIFF 2.0:
+
+```xml
+<trans-unit id="my.label" xml:space="preserve">
+  <source>Line one
+Line two</source>
+</trans-unit>
+```
+
+> **Stale-knowledge trap:** before this change TYPO3 kept the raw whitespace, so
+> older code and examples work around it by writing labels on a single line or
+> by trimming in PHP. Neither is needed in v14. Do not add `xml:space="preserve"`
+> by default — it makes the file's indentation part of the output.
+
+In v13 the raw whitespace is still preserved, so a multi-line label there does
+render with its indentation. Keep such labels on one line while the project runs
+v13.
 
 ---
 

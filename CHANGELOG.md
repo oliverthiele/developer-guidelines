@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `xliff/README.md` — whitespace and `xml:space`: from v14 the parser follows
+  the XML specification, so indentation in a label collapses instead of being
+  kept. Includes when `xml:space="preserve"` is warranted and why it should not
+  be set by default ([#70867](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Important-70867-XLIFFWhitespaceHandlingNowRespectsXmlSpaceAttribute.html))
+- `Important` changelog entries are now indexed as well (67 additional entries
+  for v13 and v14). They change how existing code behaves without being
+  classified as breaking, which is exactly what gets overlooked — the XLIFF
+  whitespace change above was found this way
+
 ## [2.0.0] — 2026-08-13
 
 Breaking for consumers: guideline files moved. Every project, skill or

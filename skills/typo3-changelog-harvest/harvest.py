@@ -23,7 +23,9 @@ CORE_CHANGELOG_PATH = "typo3/sysext/core/Documentation/Changelog"
 # built from file names alone and bodies are filled in on demand instead.
 REMOTE_BODY_LIMIT = 150
 
-ENTRY_TYPES = ("Breaking", "Deprecation", "Feature")
+# Important is included deliberately: entries like #70867 (XLIFF whitespace and
+# xml:space) change how existing code behaves without being classified breaking.
+ENTRY_TYPES = ("Breaking", "Deprecation", "Feature", "Important")
 
 # Documentation/Changelog/{version}/{Type}-{number}-{Title}.rst
 FILE_PATTERN = re.compile(r"^(Breaking|Deprecation|Feature|Important)-(\d+)-(.+)\.rst$")

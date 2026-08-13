@@ -47,7 +47,7 @@ Columns, tab-separated:
 | # | Column | Notes |
 |---|---|---|
 | 1 | number | changelog issue number |
-| 2 | type | `Breaking`, `Deprecation`, `Feature` |
+| 2 | type | `Breaking`, `Deprecation`, `Feature`, `Important` |
 | 3 | version | e.g. `13.4` |
 | 4 | title | from the entry heading |
 | 5 | tags | from the entry's `.. index::` directive (`TCA`, `TypoScript`, `NotScanned`, `ext:core`, …) |
@@ -126,8 +126,13 @@ repository.
 
 Pick a project whose installed core is **at least** as new as the highest
 version to index — the changelog folder only contains versions up to the
-installed core. Only `Breaking`, `Deprecation` and `Feature` are indexed;
-`Important` is dropped. Versions below 13.0 are out of scope.
+installed core. All four entry types are indexed: `Breaking`, `Deprecation`,
+`Feature` and `Important`. Versions below 13.0 are out of scope.
+
+`Important` is included on purpose. Entries such as
+`#70867 — XLIFF whitespace handling now respects xml:space` change how existing
+code behaves without being classified as breaking, which makes them exactly the
+kind of thing that gets missed.
 
 ### Write protection — maintainer only
 
