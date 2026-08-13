@@ -1,9 +1,17 @@
+---
+title: TYPO3 Content Blocks
+scope: typo3
+applies_to:
+  - "**/ContentBlocks/**"
+typo3: ["13", "14"]
+see_also: ["typo3/integrator.md", "xliff/typo3.md", "scss.md"]
+---
 # TYPO3 Content Blocks Guidelines
 
 Conventions for creating portable, reusable TYPO3 Content Blocks.
 
 For general CSS conventions, see → `scss.md`.
-For XLIFF conventions, see → `xliff.md`.
+For XLIFF conventions, see → `../xliff/README.md` and `../xliff/keys.md`.
 For JavaScript conventions, see → `javascript.md`.
 
 ---
@@ -231,7 +239,7 @@ Content Blocks resolve labels automatically from `language/labels.xlf` inside th
 - Field labels: `{fieldIdentifier}.label` and `{fieldIdentifier}.description`
 - Collection child fields: `{collectionIdentifier}.{childFieldIdentifier}.label`
 - Remove all `title:` and `label:` strings from config.yaml after creating the XLIFF files
-- See → `xliff.md` for format rules
+- See → `../xliff/README.md` for format rules
 
 ---
 

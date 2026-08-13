@@ -1,3 +1,10 @@
+---
+title: Git workflow
+scope: git
+applies_to:
+  - "**/.git/**"
+see_also: ["documentation.md"]
+---
 # Git Guidelines
 
 Git workflow and commit conventions for all projects.

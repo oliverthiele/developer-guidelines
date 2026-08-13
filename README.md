@@ -14,23 +14,26 @@ here reflect how I structure, name, and maintain code across all my work.
 
 Technology- and topic-specific coding guidelines that apply to **all projects**.
 
-| File                                                          | Topics                                                                  |
-|---------------------------------------------------------------|-------------------------------------------------------------------------|
-| [xliff.md](guidelines/xliff.md)                               | XLIFF 1.2 / 2.0 file format, attributes, source/translation conventions |
-| [typo3-developer.md](guidelines/typo3-developer.md)           | TCA, Doctrine DBAL, Fluid — universal + links to version files          |
-| [typo3-integrator.md](guidelines/typo3-integrator.md)         | TypoScript, translations — universal + links to version files           |
-| [typo3/content-blocks.md](guidelines/typo3/content-blocks.md) | Content Block structure, portable assets, two-layer CSS, config.yaml    |
-| [typo3/v13/developer.md](guidelines/typo3/v13/developer.md)   | v13-specific: Fluid 4 argument types, custom views, union types         |
-| [typo3/v13/integrator.md](guidelines/typo3/v13/integrator.md) | v13-specific: SiteSets, labels.xlf key naming, @import, CE wizard       |
-| [typo3/v14/developer.md](guidelines/typo3/v14/developer.md)   | v14-specific: Fluid 5, FlexForm DS, TCA shortform, record-transformation |
-| [php.md](guidelines/php.md)                                   | Naming conventions, PHPStan, PHP CS Fixer, type safety                  |
-| [testing.md](guidelines/testing.md)                           | Quality checks, execution order, PHPUnit, Playwright                    |
-| [git.md](guidelines/git.md)                                   | Branching workflow, commit messages, release process                    |
-| [scss.md](guidelines/scss.md)                                 | Bootstrap-first, CUBE CSS, prefix system, custom properties, state classes |
-| [javascript.md](guidelines/javascript.md)                     | data-js hooks, Bootstrap JS, ID conventions, framework choice           |
-| [vue.md](guidelines/vue.md)                                   | Component syntax, script setup, state management, when to use Vue       |
-| [playwright.md](guidelines/playwright.md)                     | Playwright test patterns, visual regression, functional tests, helpers  |
-| [documentation.md](guidelines/documentation.md)               | README.md and CHANGELOG.md structure for Packagist extensions           |
+| File                                                              | Topics                                                                     |
+|-------------------------------------------------------------------|----------------------------------------------------------------------------|
+| [typo3/](guidelines/typo3/README.md)                              | TYPO3 topic root — index and version model                                 |
+| [typo3/integrator.md](guidelines/typo3/integrator.md)             | TypoScript, SiteSets, CE wizard, backend configuration                     |
+| [typo3/developer.md](guidelines/typo3/developer.md)               | PHP, TCA, Fluid, Doctrine DBAL, views                                      |
+| [typo3/content-blocks.md](guidelines/typo3/content-blocks.md)     | Content Block structure, portable assets, two-layer CSS, config.yaml       |
+| [typo3/sitekit.md](guidelines/typo3/sitekit.md)                   | SiteKit layer model, template path abstraction (SiteKit projects only)     |
+| [typo3/versions.md](guidelines/typo3/versions.md)                 | which rule applies to which TYPO3 version                                  |
+| [typo3/changelog-index/](guidelines/typo3/changelog-index/)       | every core changelog entry — grep only, never read whole                   |
+| [xliff/](guidelines/xliff/README.md)                              | XLIFF 1.2 / 2.0 file format, attributes, ICU message format                |
+| [xliff/keys.md](guidelines/xliff/keys.md)                         | Key naming conventions, key lifecycle                                      |
+| [xliff/typo3.md](guidelines/xliff/typo3.md)                       | LLL references, SiteSet labels.xlf, enum label localization                |
+| [php.md](guidelines/php.md)                                       | Naming conventions, PHPStan, PHP CS Fixer, type safety                     |
+| [testing.md](guidelines/testing.md)                               | Quality checks, execution order, PHPUnit, Playwright                       |
+| [git.md](guidelines/git.md)                                       | Branching workflow, commit messages, release process                       |
+| [scss.md](guidelines/scss.md)                                     | Bootstrap-first, CUBE CSS, prefix system, custom properties, state classes |
+| [javascript.md](guidelines/javascript.md)                         | data-js hooks, Bootstrap JS, ID conventions, framework choice              |
+| [vue.md](guidelines/vue.md)                                       | Component syntax, script setup, state management, when to use Vue          |
+| [playwright.md](guidelines/playwright.md)                         | Playwright test patterns, visual regression, functional tests, helpers     |
+| [documentation.md](guidelines/documentation.md)                   | README.md and CHANGELOG.md structure for Packagist extensions              |
 
 See [guidelines/README.md](guidelines/README.md) for shared rules that cut
 across
@@ -38,14 +41,16 @@ all files (naming, formatting, tooling).
 
 Changes between releases are documented in [CHANGELOG.md](CHANGELOG.md).
 
-### `sitekit/`
+### `skills/`
 
-Architecture conventions specific to **SiteKit-based TYPO3 extensions** only.
-These rules do not apply to generic TYPO3 projects.
+Claude Code skills that work with these guidelines. They live in this
+repository because they depend on its structure and must stay in sync with it.
 
-| File                                     | Topics                                                            |
-|------------------------------------------|-------------------------------------------------------------------|
-| [sitekit/sitekit.md](sitekit/sitekit.md) | Layer model, template path abstraction, content element rendering |
+| File                                                        | Topics                                                            |
+|-------------------------------------------------------------|-------------------------------------------------------------------|
+| [typo3-changelog-harvest](skills/typo3-changelog-harvest/SKILL.md) | Build and query the TYPO3 changelog index |
+
+See [skills/README.md](skills/README.md) for installation.
 
 ---
 

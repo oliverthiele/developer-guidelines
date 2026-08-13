@@ -1,3 +1,11 @@
+---
+title: SiteKit architecture
+scope: sitekit-only
+applies_to:
+  - "**/Resources/Private/Templates/**"
+typo3: ["13", "14"]
+see_also: ["typo3/integrator.md"]
+---
 # SiteKit Guidelines
 
 Conventions and architecture patterns for SiteKit-based TYPO3 projects.

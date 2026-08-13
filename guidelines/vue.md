@@ -1,3 +1,10 @@
+---
+title: Vue
+scope: frontend
+applies_to:
+  - "**/*.vue"
+see_also: ["javascript.md"]
+---
 # Vue Guidelines
 
 Vue conventions for all projects.

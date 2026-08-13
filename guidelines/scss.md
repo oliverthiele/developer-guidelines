@@ -1,3 +1,11 @@
+---
+title: SCSS and CSS
+scope: frontend
+applies_to:
+  - "**/*.scss"
+  - "**/*.css"
+see_also: ["javascript.md", "typo3/content-blocks.md"]
+---
 # SCSS / CSS Guidelines
 
 CSS and SCSS conventions for all projects.

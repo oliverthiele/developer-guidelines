@@ -1,3 +1,11 @@
+---
+title: JavaScript
+scope: frontend
+applies_to:
+  - "**/*.js"
+  - "**/*.ts"
+see_also: ["scss.md", "vue.md"]
+---
 # JavaScript Guidelines
 
 JavaScript conventions for all projects.
