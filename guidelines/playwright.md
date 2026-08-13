@@ -1,3 +1,11 @@
+---
+title: Playwright
+scope: testing
+applies_to:
+  - "**/*.spec.ts"
+  - "**/playwright.config.*"
+see_also: ["testing.md"]
+---
 # Playwright Guidelines
 
 Patterns and conventions for Playwright tests in TYPO3 projects.

@@ -4,3 +4,8 @@
 /.idea/
 
 /Archiv/
+
+# Marks the maintainer's checkout — enables generating files into this repo.
+# Absent in every clone, so generated output never dirties a collaborator's
+# working tree.
+/.maintainer

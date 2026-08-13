@@ -1,3 +1,11 @@
+---
+title: Documentation
+scope: documentation
+applies_to:
+  - "**/README.md"
+  - "**/CHANGELOG.md"
+see_also: ["git.md"]
+---
 # Documentation Guidelines
 
 Standards for README.md and CHANGELOG.md in TYPO3 extensions published on

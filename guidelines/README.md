@@ -112,23 +112,50 @@ Each guideline file covers one technology or topic area.
 
 ## Guidelines
 
-| File                                               | Topics                                                                                 |
-|----------------------------------------------------|----------------------------------------------------------------------------------------|
-| [xliff.md](xliff.md)                               | XLIFF 1.2 / 2.0 file format, attributes, source/translation conventions                |
-| [typo3-developer.md](typo3-developer.md)           | TCA, Doctrine DBAL, Fluid — universal + links to version files                         |
-| [typo3-integrator.md](typo3-integrator.md)         | TypoScript, translations — universal + links to version files                          |
-| [typo3/content-blocks.md](typo3/content-blocks.md) | Content Block structure, portable assets, two-layer CSS, config.yaml                    |
-| [typo3/v13/developer.md](typo3/v13/developer.md)   | v13-specific: Fluid 4 argument types, custom views, union types                         |
-| [typo3/v13/integrator.md](typo3/v13/integrator.md) | v13-specific: SiteSets, labels.xlf key naming, @import, CE wizard                       |
-| [typo3/v14/developer.md](typo3/v14/developer.md)   | v14-specific: Fluid 5, FlexForm DS, TCA shortform, extension title, record-transformation |
-| [php.md](php.md)                                   | Naming conventions, PHPStan, PHP CS Fixer, type safety                                 |
-| [testing.md](testing.md)                           | Quality checks, execution order, PHPUnit, Playwright                                   |
-| [git.md](git.md)                                   | Branching workflow, commit messages, release process                                   |
-| [scss.md](scss.md)                                 | Bootstrap-first, CUBE CSS, prefix system, custom properties, state classes             |
-| [javascript.md](javascript.md)                     | data-js hooks, Bootstrap JS, ID conventions, framework choice                          |
-| [vue.md](vue.md)                                   | Component syntax, script setup, state management, when to use Vue                      |
-| [playwright.md](playwright.md)                     | Playwright test patterns, visual regression, functional tests, helpers                 |
-| [documentation.md](documentation.md)               | README.md and CHANGELOG.md structure for Packagist extensions                          |
+| File                                               | Topics                                                                     |
+|----------------------------------------------------|----------------------------------------------------------------------------|
+| [typo3/](typo3/README.md)                          | TYPO3 topic root — index and version model                                 |
+| [typo3/integrator.md](typo3/integrator.md)         | TypoScript, SiteSets, CE wizard, backend configuration                     |
+| [typo3/developer.md](typo3/developer.md)           | PHP, TCA, Fluid, Doctrine DBAL, views                                      |
+| [typo3/content-blocks.md](typo3/content-blocks.md) | Content Block structure, portable assets, two-layer CSS, config.yaml       |
+| [typo3/sitekit.md](typo3/sitekit.md)               | SiteKit layer model, template path abstraction (SiteKit projects only)     |
+| [typo3/versions.md](typo3/versions.md)             | which rule applies to which TYPO3 version                                  |
+| [typo3/changelog-index/](typo3/changelog-index/)   | every core changelog entry — grep only, never read whole                   |
+| [xliff/](xliff/README.md)                          | XLIFF 1.2 / 2.0 file format, attributes, ICU message format                |
+| [xliff/keys.md](xliff/keys.md)                     | Key naming conventions, key lifecycle                                      |
+| [xliff/typo3.md](xliff/typo3.md)                   | LLL references, SiteSet labels.xlf, enum label localization                |
+| [php.md](php.md)                                   | Naming conventions, PHPStan, PHP CS Fixer, type safety                     |
+| [testing.md](testing.md)                           | Quality checks, execution order, PHPUnit, Playwright                       |
+| [git.md](git.md)                                   | Branching workflow, commit messages, release process                       |
+| [scss.md](scss.md)                                 | Bootstrap-first, CUBE CSS, prefix system, custom properties, state classes |
+| [javascript.md](javascript.md)                     | data-js hooks, Bootstrap JS, ID conventions, framework choice              |
+| [vue.md](vue.md)                                   | Component syntax, script setup, state management, when to use Vue          |
+| [playwright.md](playwright.md)                     | Playwright test patterns, visual regression, functional tests, helpers     |
+| [documentation.md](documentation.md)               | README.md and CHANGELOG.md structure for Packagist extensions              |
+
+Each file starts with YAML frontmatter (`applies_to`, `typo3`, `see_also`). The
+`applies_to` globs say which files a guideline governs; the table above is
+derived from that metadata.
+
+## What belongs in here
+
+These files are **not** a TYPO3 manual. A rule earns its place only when both
+hold:
+
+1. the mistake actually happened — in this project or another one, by a human or
+   by an AI assistant; and
+2. the correct rule is not derivable from the surrounding project code.
+
+Everything else stays out. The reason is cost: every rule here is read on every
+task in its area, so an unnecessary rule is paid for repeatedly and dilutes the
+ones that matter.
+
+Version facts that do not meet this bar belong in
+[typo3/changelog-index/](typo3/changelog-index/) — searched on demand, free
+until then.
+
+**Expiry:** when a TYPO3 version leaves support, its pure stale-knowledge traps
+are removed. The changelog index keeps them at no cost.
 
 ## General rules (apply everywhere)
 
@@ -152,6 +179,11 @@ Each guideline file covers one technology or topic area.
 - Trust framework guarantees — avoid defensive overengineering
 
 ## File and directory naming
+
+Applies to **project source trees**, not to documentation repositories. This
+repository and other documentation repos use lowercase file names, following
+GitHub convention — `readme.md`, `guidelines/typo3/integrator.md`. The rule
+below governs the code you write, not the docs you write about it.
 
 `UpperCamelCase` for all directories and file names, unless TYPO3 or a tool
 requires otherwise.

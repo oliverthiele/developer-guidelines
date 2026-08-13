@@ -1,3 +1,10 @@
+---
+title: PHP
+scope: php
+applies_to:
+  - "**/*.php"
+see_also: ["typo3/developer.md", "testing.md"]
+---
 # PHP Guidelines
 
 PHP coding conventions for all TYPO3 projects.

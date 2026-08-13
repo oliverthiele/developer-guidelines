@@ -7,6 +7,81 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] — 2026-08-13
+
+Breaking for consumers: guideline files moved. Every project, skill or
+`CLAUDE.md` referencing the old paths must be updated — there are no
+compatibility stubs.
+
+### Changed
+
+- **All TYPO3 rules moved to `guidelines/typo3/`**: `typo3-integrator.md` →
+  `typo3/integrator.md`, `typo3-developer.md` → `typo3/developer.md`,
+  `sitekit/sitekit.md` → `typo3/sitekit.md`
+- **All XLIFF rules moved to `guidelines/xliff/`** and split by purpose:
+  `README.md` (format, attributes, ICU), `keys.md` (key naming and lifecycle),
+  `typo3.md` (LLL references, SiteSet `labels.xlf`, enum labels). A task needing
+  only key naming no longer loads 533 lines
+- **Version model replaced.** A rule now lives once, in its topic file, and
+  states its validity inline:
+  `**Validity:** deprecated in v13 · removed in v14 · [#105171](…)`. The previous
+  per-version overlay folders encoded *"introduced in"* but were read as
+  *"applies only to"* — four of five rules in the former `v13/integrator.md`
+  were current rules that hold in v14 unchanged
+- `guidelines/typo3/v13/` and `v14/` removed; every difference is clearer as one
+  rule showing both variants. `typo3/README.md` documents the criterion for
+  reintroducing a version folder
+- `guidelines/README.md` — the `UpperCamelCase` file naming rule now explicitly
+  applies to project source trees, not to documentation repositories
+- Validity is stated in **major versions only** and dated by practical
+  usability, not by first appearance in the core. Live sites are updated at LTS
+  releases, so every site runs the latest minor of its major and the minor
+  version changes no decision. The exact minor stays in the changelog index
+
+### Added
+
+- `skills/guidelines-upgrade/` — checks a project against the current guidelines
+  release: are they reachable, is `Read(../developer-guidelines/guidelines/**)`
+  pre-granted, and do the referenced files still exist. Rewrites moved paths
+  from a cumulative `path-map.tsv`, so a project that skipped releases is still
+  carried forward. Reports by default, writes only with `--apply`, never commits
+
+- `xliff/README.md` — whitespace and `xml:space`: from v14 the parser follows
+  the XML specification, so indentation in a label collapses instead of being
+  kept. Includes when `xml:space="preserve"` is warranted and why it should not
+  be set by default ([#70867](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Important-70867-XLIFFWhitespaceHandlingNowRespectsXmlSpaceAttribute.html))
+- `Important` changelog entries are now indexed as well (67 additional entries
+  for v13 and v14). They change how existing code behaves without being
+  classified as breaking, which is exactly what gets overlooked — the XLIFF
+  whitespace change above was found this way
+- `guidelines/typo3/versions.md` — validity table with changelog references,
+  the entry point when unsure whether a rule still applies
+- `guidelines/typo3/changelog-index/` — one line per core changelog entry for
+  v13, v14 and v15, with affected symbols and a one-line migration hint.
+  Searched with `grep`, never read whole
+- `guidelines/typo3/changelog-index/cache/` — the source `.rst` for every
+  indexed entry. A v13 project has no `14.x` folder in its vendor directory, so
+  without this a v14 entry could be found but not opened. Released changelogs
+  never change, so the copy never goes stale
+- `guidelines/typo3/changelog-index/notes/` — hand-written notes on individual
+  changelog entries, never touched by regeneration
+- `skills/` — `typo3-changelog-harvest` (build and query the index) and
+  `create-content-block` (moved in from a personal commands folder)
+- YAML frontmatter in every guideline file (`applies_to`, `typo3`, `see_also`)
+- `guidelines/README.md` — inclusion criterion: a rule earns its place only if
+  the mistake actually happened and is not derivable from surrounding project
+  code. Plus an expiry rule for versions leaving support
+
+### Fixed
+
+- `StandaloneView`, `TemplateView` and `AbstractTemplateView` are deprecated in
+  v13 (`#104773`) and **removed in v14** (`#105377`). The replacement via
+  `ViewFactoryInterface` is now documented as a rule instead of being absent
+- `record-transformation` is documented as a v14 feature. The DataProcessor
+  exists in v13, but only v14 applies it automatically and ships the surrounding
+  record handling that makes it usable — dating it v13 would be accurate and
+  misleading at once
+
 ## [1.1.0] — 2026-08-13
 
 ### Added

@@ -1,3 +1,12 @@
+---
+title: Testing and quality
+scope: testing
+applies_to:
+  - "**/Tests/**"
+  - "**/*Test.php"
+  - "**/phpunit.xml*"
+see_also: ["php.md", "playwright.md"]
+---
 # Testing & Quality Guidelines
 
 Quality assurance rules for TYPO3 projects.
