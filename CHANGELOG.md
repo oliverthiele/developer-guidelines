@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] — 2026-08-13
+
+### Added
+
+- `guidelines/README.md` — what to do when no rule covers the case: look it up
+  in the changelog index or the surrounding project code, ask when that does
+  not settle it, and never invent a fallback. The index said how to follow the
+  rules that exist but was silent on the gaps, and silence reads as permission
+  to guess — which is where the expensive errors come from
+- `AGENTS.md` — entry point for AI assistants that read that filename but not a
+  personal `CLAUDE.md`: read order, routing to the index, and the missing-rule
+  protocol. It restates no rule, so nothing in it can drift out of sync
+
 ## [2.1.1] — 2026-08-13
 
 ### Changed
