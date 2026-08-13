@@ -20,6 +20,7 @@ ln -s ~/PhpstormProjects/developer-guidelines/skills/typo3-changelog-harvest \
 | Skill | Purpose |
 |---|---|
 | [typo3-changelog-harvest](typo3-changelog-harvest/SKILL.md) | Build and query the TYPO3 changelog index (level 3 of the guidelines architecture) |
+| [create-content-block](create-content-block/SKILL.md) | Scaffold a TYPO3 Content Block following the shared conventions |
 
 ## Write protection
 

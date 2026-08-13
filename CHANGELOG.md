@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] — 2026-08-13
+
+Breaking for consumers: guideline files moved. Every project, skill or
+`CLAUDE.md` referencing the old paths must be updated — there are no
+compatibility stubs.
+
+### Changed
+
+- **All TYPO3 rules moved to `guidelines/typo3/`**: `typo3-integrator.md` →
+  `typo3/integrator.md`, `typo3-developer.md` → `typo3/developer.md`,
+  `sitekit/sitekit.md` → `typo3/sitekit.md`
+- **All XLIFF rules moved to `guidelines/xliff/`** and split by purpose:
+  `README.md` (format, attributes, ICU), `keys.md` (key naming and lifecycle),
+  `typo3.md` (LLL references, SiteSet `labels.xlf`, enum labels). A task needing
+  only key naming no longer loads 533 lines
+- **Version model replaced.** A rule now lives once, in its topic file, and
+  states its validity inline:
+  `**Validity:** deprecated 13.4 · removed 14.0 · [#105171](…)`. The previous
+  per-version overlay folders encoded *"introduced in"* but were read as
+  *"applies only to"* — four of five rules in the former `v13/integrator.md`
+  were current rules that hold in v14 unchanged
+- `guidelines/typo3/v13/` and `v14/` removed; every difference is clearer as one
+  rule showing both variants. `typo3/README.md` documents the criterion for
+  reintroducing a version folder
+- `guidelines/README.md` — the `UpperCamelCase` file naming rule now explicitly
+  applies to project source trees, not to documentation repositories
+
+### Added
+
+- `guidelines/typo3/versions.md` — validity table with changelog references,
+  the entry point when unsure whether a rule still applies
+- `guidelines/typo3/changelog-index/` — one line per core changelog entry for
+  v13, v14 and v15, with affected symbols and a one-line migration hint.
+  Searched with `grep`, never read whole
+- `guidelines/typo3/changelog-index/notes/` — hand-written notes on individual
+  changelog entries, never touched by regeneration
+- `skills/` — `typo3-changelog-harvest` (build and query the index) and
+  `create-content-block` (moved in from a personal commands folder)
+- YAML frontmatter in every guideline file (`applies_to`, `typo3`, `see_also`)
+- `guidelines/README.md` — inclusion criterion: a rule earns its place only if
+  the mistake actually happened and is not derivable from surrounding project
+  code. Plus an expiry rule for versions leaving support
+
+### Fixed
+
+- SiteSets were introduced in TYPO3 **13.1** (`Feature-103437`), not 13.0
+- `record-transformation` exists since **13.2** (`Feature-103783`); only its
+  automatic application in `lib.contentElement` is new in 14.0
+- `StandaloneView`, `TemplateView` and `AbstractTemplateView` are deprecated
+  since 13.3 (`#104773`) and removed in 14.0 (`#105377`). The replacement via
+  `ViewFactoryInterface` is now documented as a rule
+
 ## [1.1.0] — 2026-08-13
 
 ### Added
