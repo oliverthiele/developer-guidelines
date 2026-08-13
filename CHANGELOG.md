@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.1] — 2026-08-13
+
+### Changed
+
+- `guidelines/README.md` — only the sibling relationship between a project and
+  this repository is binding, not the name of the parent directory. The setup
+  tree happens to be called `PhpstormProjects/`, which read as a requirement.
+  A shared location within a team belongs in that team's project guidelines, so
+  onboarding commands can be copied verbatim
+- `guidelines/README.md` — projects read this clone's working tree, not a
+  release tag: whichever branch is checked out is what every project sees, so
+  the clone belongs on `main` outside of work on the guidelines themselves
+
 ## [2.1.0] — 2026-08-13
 
 ### Added
