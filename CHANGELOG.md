@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.1] — 2026-08-13
+
+### Changed
+
+- `AGENTS.md` — the read order said "only that one file", which contradicted the
+  `see_also` mechanism two lines below it and left a task spanning two areas
+  without a correct move. It is now one file per work area the task actually
+  touches
+- `AGENTS.md` — "never read the changelog index whole" carries its reason and
+  the size that causes it. A bare prohibition is followed less reliably than one
+  that states the cost
+- `AGENTS.md` — lists the four document types, so practice guides are reachable
+  from the entry point. They were only discoverable by browsing into
+  `guidelines/typo3/`, where they read as a TYPO3 detail rather than as the
+  place architecture decisions are settled
+
 ## [2.3.0] — 2026-08-13
 
 ### Changed
