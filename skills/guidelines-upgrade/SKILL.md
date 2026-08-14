@@ -25,9 +25,10 @@ it with the project's own conventions.
 neither exists, that is the finding — everything else is moot.
 
 **2. Is reading them pre-granted?** `.claude/settings.json` must allow
-`Read(../developer-guidelines/guidelines/**)`. Without it every single read
-prompts, and the predictable result is that someone copies guideline text into
-the project instead of referencing it — which is exactly what the shared
+`Read(../developer-guidelines/**)` — the whole repository, since `AGENTS.md` is
+in the root and `skills/` sits next to `guidelines/`. Without it every single
+read prompts, and the predictable result is that someone copies guideline text
+into the project instead of referencing it — which is exactly what the shared
 repository exists to prevent.
 
 **3. Do the referenced files still exist?** Scans `CLAUDE.md`, `AGENTS.md`,
@@ -38,6 +39,12 @@ unnoticed. Looks for guideline paths,
 rewrites known moves, and lists anything referenced that no longer exists and is
 not covered by the map. Those need a human decision — the rule may have moved
 somewhere the map does not know about, or it may have been dropped.
+
+A reference is resolved against the repository root when it names one
+(`../developer-guidelines/AGENTS.md`), and against `guidelines/` otherwise. Not
+everything referenced lives under `guidelines/`: `AGENTS.md` is the prescribed
+entry point and `skills/` sits beside it, so resolving those against
+`guidelines/` would report a correctly set up project as broken.
 
 ## The path map
 

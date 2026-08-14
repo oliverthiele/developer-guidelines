@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.2] — 2026-08-14
+
+### Fixed
+
+- `skills/guidelines-upgrade/upgrade.py` — every reference was resolved against
+  `guidelines/`, so `../developer-guidelines/AGENTS.md` was checked for as
+  `guidelines/AGENTS.md` and reported as missing. Since 2.2.0 that reference is
+  the prescribed entry point, so every correctly set up project reported the
+  same false alarm. References naming the repository root now resolve against
+  it; `skills/…` was affected the same way
+- `skills/guidelines-upgrade/upgrade.py` — `--grant-read` wrote the pre-2.3.0
+  permission `Read(../developer-guidelines/guidelines/**)`, which does not cover
+  the entry point it is granted for. It now writes
+  `Read(../developer-guidelines/**)`, as does the check's hint text
+- `skills/guidelines-upgrade/SKILL.md` — documents the widened grant and how a
+  reference is resolved
+
 ## [2.3.1] — 2026-08-13
 
 ### Changed

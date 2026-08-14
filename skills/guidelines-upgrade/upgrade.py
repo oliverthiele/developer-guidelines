@@ -28,10 +28,14 @@ SCAN_GLOBS = [
     "docs/*.md",
 ]
 
-READ_PERMISSION = "Read(../developer-guidelines/guidelines/**)"
+READ_PERMISSION = "Read(../developer-guidelines/**)"
 
-# Any reference to a markdown file below guidelines/, in whatever prefix form.
-REFERENCE_PATTERN = re.compile(r"(?:[\w./~-]*guidelines/)?([\w./-]+\.md)")
+# Any reference to a markdown file in the guidelines repository, in whatever
+# prefix form. Matches the whole path; resolve_reference() decides what it is
+# relative to — the repository root or guidelines/.
+REFERENCE_PATTERN = re.compile(r"[\w./~-]*(?:developer-guidelines|guidelines)/[\w./-]+\.md")
+
+REPOSITORY_MARKER = "developer-guidelines/"
 
 
 def load_path_map(skill_dir):
@@ -172,18 +176,38 @@ def rewrite(text, moves):
     return text, applied
 
 
+def resolve_reference(reference, guidelines_dir):
+    """Where a matched reference actually points.
+
+    Not every referenced file lives under guidelines/. AGENTS.md is in the
+    repository root and is the prescribed entry point, and skills/ sits next to
+    guidelines/ — resolving those against guidelines/ reports the entry point of
+    a correctly set up project as missing.
+
+    Returns (path to check, guidelines-relative form or None for repository-root
+    files, which the path map never covers).
+    """
+    if REPOSITORY_MARKER in reference:
+        remainder = reference.rsplit(REPOSITORY_MARKER, 1)[1]
+        if remainder.startswith("guidelines/"):
+            return guidelines_dir.parent / remainder, remainder[len("guidelines/"):]
+        return guidelines_dir.parent / remainder, None
+    remainder = reference.rsplit("guidelines/", 1)[1]
+    return guidelines_dir / remainder, remainder
+
+
 def find_dangling(text, guidelines_dir, moves):
     """Referenced guideline files that do not exist and the map cannot fix."""
     known_old = {old for _, old, _ in moves}
     dangling = []
     for match in REFERENCE_PATTERN.finditer(text):
-        if "guidelines/" not in match.group(0):
+        reference = match.group(0)
+        target, relative = resolve_reference(reference, guidelines_dir)
+        label = relative if relative is not None else reference
+        if label in known_old or label in dangling:
             continue
-        reference = match.group(1)
-        if reference in known_old or reference in dangling:
-            continue
-        if not (guidelines_dir / reference).exists():
-            dangling.append(reference)
+        if not target.exists():
+            dangling.append(label)
     return dangling
 
 
