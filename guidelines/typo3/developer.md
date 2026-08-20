@@ -268,6 +268,41 @@ Key details:
 
 ---
 
+## Fluid — backend module templates need the `Module` layout
+
+A template rendered through `ModuleTemplate::renderResponse()` must declare the
+core layout and put its markup into a `Content` section:
+
+```html
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
+<f:layout name="Module"/>
+
+<f:section name="Content">
+    …
+</f:section>
+
+</html>
+```
+
+> **Common AI-generation error:** a template without `f:layout` still renders,
+> and the module looks almost right — which is why this slips through. Nothing
+> errors, so only a side-by-side comparison with another module reveals it.
+
+`EXT:backend/Resources/Private/Layouts/Module.html` supplies three things the
+template does not get on its own:
+
+| Element | Consequence when the layout is missing |
+|---|---|
+| `<div class="module-body t3js-module-body">` | The content sits flush against the edge — every other backend module has padding, this one does not |
+| `<f:flashMessages/>` | **Flash messages never appear.** `addFlashMessage()` still queues them, so the code looks correct and the message is silently swallowed |
+| `DocHeader` partial | Doc header buttons and the module menu are not rendered |
+
+The second one is the damaging one: an action reports success or failure through
+a flash message, the user sees nothing, and there is no error anywhere to notice.
+
+---
+
 ## Fluid — argument types
 
 **Validity:** union types in v14+ (Fluid 5) ·
