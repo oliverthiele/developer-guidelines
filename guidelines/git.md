@@ -121,6 +121,27 @@ Only stage files after both tools pass without errors.
 
 ---
 
+## Verify the branch before committing
+
+Check the currently checked-out branch (`git branch --show-current` or
+`git status`) immediately before every `git commit` — not once at the start of
+a session, but again right before each individual commit, since a prior
+`checkout`, `reset`, or a manual fix run by someone else in between can have
+moved it without that being obvious from context.
+
+There is no single correct branch to check against — it depends on what is
+actually being worked on: `develop`, a `feature/*` branch, a `hotfix/*` branch,
+or something else. The check is procedural, not a fixed target.
+
+**`main` is the one exception worth calling out on its own.** In the standard
+release workflow (`develop` → release-merge `--no-ff` → `main`, tag on the
+merge commit), the only commit that legitimately lands directly on `main` is
+that merge commit. A commit on `main` carrying actual file content — not a
+merge — is almost always a mistake, regardless of the project's specific
+workflow.
+
+---
+
 ## No customer data in public repositories
 
 Public repositories — guideline sets, published extensions, anything on Packagist
