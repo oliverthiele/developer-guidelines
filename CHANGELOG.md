@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] — 2026-08-21
+
+### Added
+
+- `guidelines/git.md` — verify the active branch immediately before every
+  commit, not just once at the start of a session; `main` is off-limits for
+  any commit other than the release-merge commit itself
+- `guidelines/shell.md` — bash 3.2 (macOS default) vs. bash 4.4+/5.x
+  (DDEV, Live/Staging) compatibility rules: guard `"${array[@]}"` expansions
+  under `set -u` against empty arrays, and prefer `ddev exec bash <script>`
+  over running non-DDEV-orchestrating scripts directly on the host
+- `guidelines/typo3/developer.md` — a Backend Module template rendered through
+  `ModuleTemplate::renderResponse()` without an `f:layout` declaration still
+  renders, silently dropping the module-body wrapper, the DocHeader partial,
+  and every queued flash message. Requires the `Module` layout in module
+  templates
+
 ## [2.3.2] — 2026-08-14
 
 ### Fixed
