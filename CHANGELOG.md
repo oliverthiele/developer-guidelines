@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `guidelines/shell.md` — bash 3.2 (macOS default) vs. bash 4.4+/5.x
+  (DDEV, Live/Staging) compatibility rules: guard `"${array[@]}"` expansions
+  under `set -u` against empty arrays, and prefer `ddev exec bash <script>`
+  over running non-DDEV-orchestrating scripts directly on the host
+
 ## [2.3.2] — 2026-08-14
 
 ### Fixed
