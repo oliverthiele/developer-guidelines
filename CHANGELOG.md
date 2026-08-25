@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] — 2026-08-25
+
+### Added
+
+- `guidelines/typo3/developer.md` — deletions and updates go through
+  `QueryBuilder`, never through `Connection`. `Connection::delete()` and
+  `update()` take `$types` as their last argument, not further conditions, and
+  `expr()` sits on `QueryBuilder`. Mixing the two up reads plausibly, fails with
+  an `Error`, and becomes an unbounded `DELETE` or `UPDATE` the moment someone
+  repairs only the `Error`. With the rules that follow: share the criteria
+  between the counting and the writing path, guard against the column default,
+  and make `--dry-run` report rather than merely warn
+- `guidelines/php.md` — a PHPStan baseline is not neutral debt. It freezes
+  whatever is in it, including code that cannot run. The identifiers reporting
+  runtime failures (`method.notFound`, `method.nonObject`, `class.notFound`,
+  `binaryOp.invalid`, `foreach.nonIterable`, `return.type`) must be fixed rather
+  than frozen. `class.notFound` is listed separately: a missing `use` makes
+  `instanceof` silently `false`, so the guard rejects everything and the endpoint
+  behind it stops answering without an error anywhere
+- `guidelines/php.md` — ordered chains: normalise before inspecting. Encoding
+  checks and type narrowing belong ahead of any regex, and `preg_*` returns
+  `null`/`false` on a PCRE error, which `/u` makes reachable with ordinary user
+  input
+- `guidelines/php.md` — declared shapes are promises. An `array{…}` annotation is
+  read as a guarantee by callers and by PHPStan; one the code does not keep is
+  worse than `array<string, mixed>`, because it stops people from checking
+
 ## [2.4.0] — 2026-08-21
 
 ### Added
