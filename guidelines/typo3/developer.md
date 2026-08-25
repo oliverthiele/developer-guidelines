@@ -2,13 +2,13 @@
 title: TYPO3 Developer
 scope: typo3
 applies_to:
-  - "**/Classes/**/*.php"
-  - "**/Configuration/TCA/**/*.php"
-  - "**/Resources/Private/**/*.html"
-  - "**/ext_localconf.php"
-  - "**/ext_tables.php"
-typo3: ["13", "14"]
-see_also: ["typo3/integrator.md", "typo3/versions.md", "php.md"]
+    - "**/Classes/**/*.php"
+    - "**/Configuration/TCA/**/*.php"
+    - "**/Resources/Private/**/*.html"
+    - "**/ext_localconf.php"
+    - "**/ext_tables.php"
+typo3: [ "13", "14" ]
+see_also: [ "typo3/integrator.md", "typo3/versions.md", "php.md" ]
 ---
 
 # TYPO3 Developer Guidelines
@@ -106,9 +106,9 @@ Do not use shortform in extensions that still support v13.
 
 ## FlexForm data structure registration
 
-**Validity:** `columnsOverrides` required in v14 · pointer-key approach
-required in v13 · `ExtensionManagementUtility::addPiFlexFormValue()` deprecated
-in v14 ([#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107047-ExtensionManagementUtilityaddPiFlexFormValue.html)),
+**Validity:** `columnsOverrides` required in v14 · pointer-key approach required
+in v13 · `ExtensionManagementUtility::addPiFlexFormValue()` deprecated in v14
+([#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107047-ExtensionManagementUtilityaddPiFlexFormValue.html)),
 removal announced for v15
 
 ```php
@@ -154,6 +154,68 @@ $queryBuilder->expr()->eq(
 // Wrong — PDO constant removed in TYPO3 v13
 $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
 ```
+
+---
+
+## Deleting and updating — use `QueryBuilder`, never `Connection`
+
+**Validity:** all versions. This is an API-shape trap, not a version change.
+
+`Connection::delete()` and `Connection::update()` take **types** as their last
+argument, not further conditions:
+
+```php
+public function delete(string $tableName, array $identifier = [], array $types = []): int
+public function update(string $tableName, array $data, array $identifier = [], array $types = []): int
+```
+
+And `expr()` sits on `QueryBuilder`, not on `Connection`. Code that mixes the
+two up looks plausible and is silently catastrophic:
+
+```php
+// WRONG — three defects in five lines
+$connection->delete(
+    'fe_users',
+    ['disable' => 1],                                  // the only real criterion
+    [$connection->expr()->lt('token_expires', time())] // lands in $types, and
+);                                                     // expr() does not exist here
+```
+
+`expr()` raises an `Error`, so the statement never runs. Repairing only that
+error turns the query into "delete every disabled user" — the expression was
+never part of the WHERE clause. The same shape with `update()` and an empty
+`$identifier` produces an `UPDATE` across the whole table.
+
+**Rules:**
+
+1. Write deletions and updates through `QueryBuilder`, where a condition cannot
+   end up in a parameter meant for something else.
+2. Put the criteria in **one** private method that the counting path and the
+   writing path share, so a dry run cannot diverge from the real run.
+3. Guard against the column default. `int` columns default to `0` or `NULL`, so
+   `expires < time()` matches every row that never carried a value. Require the
+   column to be set as well.
+4. For a cleanup that can delete a lot, add a count method and let the command's
+   `--dry-run` report what it would remove. A `--dry-run` that only prints a
+   warning and does nothing is worse than none: it looks like a safety net.
+
+```php
+// Correct
+private function expiredConstraints(QueryBuilder $queryBuilder, int $maxAge): array
+{
+    return [
+        $queryBuilder->expr()->eq('disable', $queryBuilder->createNamedParameter(1, Connection::PARAM_INT)),
+        $queryBuilder->expr()->gt('token_expires', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)),
+        $queryBuilder->expr()->lt('token_expires', $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT)),
+    ];
+}
+```
+
+Whether a cleanup deletes hard or sets `deleted = 1` is a data protection
+decision, not a habit. Records that exist to prove something once — an
+unconfirmed registration, a verification code — have no basis for retention once
+that purpose is spent, and a soft delete would keep the personal data
+indefinitely. A record a person or editor may want back is the opposite case.
 
 ---
 
@@ -203,12 +265,16 @@ in the changelog index — it lists every property with its substitution.
 
 ## Views — never instantiate a view directly
 
-**Validity:** `Extbase\Mvc\View\AbstractView` and `Extbase\Mvc\View\ViewInterface`
+**Validity:** `Extbase\Mvc\View\AbstractView` and
+`Extbase\Mvc\View\ViewInterface`
 removed in v12 · `StandaloneView`, `TemplateView`, `AbstractTemplateView`
-deprecated in v13 ([#104773](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104773-CustomFluidViewsAndExtbase.html)),
-removed in v14 ([#105377](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-105377-DeprecatedFunctionalityRemoved.html))
+deprecated in v13
+([#104773](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104773-CustomFluidViewsAndExtbase.html)),
+removed in v14
+([#105377](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-105377-DeprecatedFunctionalityRemoved.html))
 
-> **Stale-knowledge trap:** `GeneralUtility::makeInstance(StandaloneView::class)`
+> **Stale-knowledge trap:**
+> `GeneralUtility::makeInstance(StandaloneView::class)`
 > is the single most common way to build a view in older code and training data.
 > It is gone in v14. The ExtensionScanner reports it as a *strong* match.
 
@@ -274,7 +340,9 @@ A template rendered through `ModuleTemplate::renderResponse()` must declare the
 core layout and put its markup into a `Content` section:
 
 ```html
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
 <f:layout name="Module"/>
 
@@ -292,14 +360,15 @@ core layout and put its markup into a `Content` section:
 `EXT:backend/Resources/Private/Layouts/Module.html` supplies three things the
 template does not get on its own:
 
-| Element | Consequence when the layout is missing |
-|---|---|
-| `<div class="module-body t3js-module-body">` | The content sits flush against the edge — every other backend module has padding, this one does not |
-| `<f:flashMessages/>` | **Flash messages never appear.** `addFlashMessage()` still queues them, so the code looks correct and the message is silently swallowed |
-| `DocHeader` partial | Doc header buttons and the module menu are not rendered |
+| Element                                      | Consequence when the layout is missing                                                                                                  |
+|----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| `<div class="module-body t3js-module-body">` | The content sits flush against the edge — every other backend module has padding, this one does not                                     |
+| `<f:flashMessages/>`                         | **Flash messages never appear.** `addFlashMessage()` still queues them, so the code looks correct and the message is silently swallowed |
+| `DocHeader` partial                          | Doc header buttons and the module menu are not rendered                                                                                 |
 
 The second one is the damaging one: an action reports success or failure through
-a flash message, the user sees nothing, and there is no error anywhere to notice.
+a flash message, the user sees nothing, and there is no error anywhere to
+notice.
 
 ---
 
@@ -313,7 +382,7 @@ a flash message, the user sees nothing, and there is no error anywhere to notice
 <!-- v14 / Fluid 5 -->
 <f:argument name="columns" type="int|array"/>
 
-<!-- v13 / Fluid 4 — one explicit type per argument -->
+    <!-- v13 / Fluid 4 — one explicit type per argument -->
 <f:argument name="columns" type="integer"/>
 <f:argument name="breakpoints" type="array"/>
 ```
@@ -462,24 +531,24 @@ Rules:
 The TYPO3 ExtensionScanner matches property and method names lexically,
 regardless of the actual class. A property or method we define ourselves can
 accidentally collide with a name used by a since-removed/deprecated core API,
-producing a "weak" match. Unlike PHPStan baselines, the ExtensionScanner has
-no way to mark a finding as reviewed/dismissed — it resurfaces every time the
-scan runs.
+producing a "weak" match. Unlike PHPStan baselines, the ExtensionScanner has no
+way to mark a finding as reviewed/dismissed — it resurfaces every time the scan
+runs.
 
-Avoid generic names for properties/methods we define ourselves when they
-collide with a removed/deprecated core pattern:
+Avoid generic names for properties/methods we define ourselves when they collide
+with a removed/deprecated core pattern:
 
-| Avoid   | Collides with (removed TYPO3 v14)             | Prefer instead                     |
-|---------|------------------------------------------------|-------------------------------------|
-| `$config` | `TypoScriptFrontendController::$config`       | specific name, e.g. `$apiConfiguration` |
-| `$data`   | `TypoScriptFrontendController::$data`         | specific name, e.g. `$articleData`  |
+| Avoid                               | Collides with (removed TYPO3 v14)               | Prefer instead                                    |
+|-------------------------------------|-------------------------------------------------|---------------------------------------------------|
+| `$config`                           | `TypoScriptFrontendController::$config`         | specific name, e.g. `$apiConfiguration`           |
+| `$data`                             | `TypoScriptFrontendController::$data`           | specific name, e.g. `$articleData`                |
 | `error()` (custom method we define) | any core class with a same-named removed method | specific name, e.g. `logError()`, `reportError()` |
 
-This only applies to properties/methods **we name ourselves**. It does not
-apply to calls on external interfaces we don't control — e.g.
+This only applies to properties/methods **we name ourselves**. It does not apply
+to calls on external interfaces we don't control — e.g.
 `LoggerInterface::error()` (PSR-3) is the prescribed method name and must be
-called as-is. The resulting scanner false positive there is unavoidable and
-not worth working around.
+called as-is. The resulting scanner false positive there is unavoidable and not
+worth working around.
 
 When a scanner finding names a changelog number, look it up in the changelog
 index instead of guessing the migration — see

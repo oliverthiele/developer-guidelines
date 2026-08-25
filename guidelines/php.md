@@ -2,13 +2,14 @@
 title: PHP
 scope: php
 applies_to:
-  - "**/*.php"
-see_also: ["typo3/developer.md", "testing.md"]
+    - "**/*.php"
+see_also: [ "typo3/developer.md", "testing.md" ]
 ---
+
 # PHP Guidelines
 
-PHP coding conventions for all TYPO3 projects.
-These rules are mandatory unless explicitly overridden.
+PHP coding conventions for all TYPO3 projects. These rules are mandatory unless
+explicitly overridden.
 
 ---
 
@@ -81,7 +82,6 @@ shell-dependent scripts:
         "php-cs-fixer": "vendor/bin/php-cs-fixer fix",
         "php-codesniffer": "vendor/bin/phpcs",
         "fe-build": "npm --prefix Build/Default run build",
-
         "db-export": [
             "typo3 database:export -c Default -e 'cf_*' > data/dev_dump.sql"
         ],
@@ -182,7 +182,6 @@ quality tools in the correct execution order:
         "phpstan": "phpstan analyse",
         "php-cs-fixer": "vendor/bin/php-cs-fixer fix",
         "php-codesniffer": "vendor/bin/phpcs",
-
         "code-quality": [
             "@phpstan",
             "@php-cs-fixer",
@@ -258,13 +257,75 @@ declare(strict_types=1);
 
 ## PHPStan Configuration
 
-Project-wide level is defined in `phpstan.neon` at the project root.  
+Project-wide level is defined in `phpstan.neon` at the project root.
 Standalone Packagist packages use their own `phpstan.neon.dist`.
 
 | Context            | Level | Config                             |
 |--------------------|-------|------------------------------------|
 | Project (monorepo) | 8     | `phpstan.neon`                     |
 | Standalone package | 9     | `phpstan.neon.dist` in the package |
+
+---
+
+## A baseline is not neutral debt — it hides crashes
+
+A baseline created over existing code freezes whatever is in it, and some of
+that is not typing debt but code that cannot run. One package's baseline of 349
+findings concealed three fatal errors, two of which would have deleted
+production data the moment someone "repaired" them without reading the API.
+
+**Never baseline these identifiers.** They report code that fails at runtime,
+not types PHPStan cannot follow:
+
+| Identifier                                     | What it actually means                                             |
+|------------------------------------------------|--------------------------------------------------------------------|
+| `method.notFound`                              | the method does not exist — `Error` on the first call              |
+| `method.nonObject`                             | the call target may be `null` or a scalar                          |
+| `class.notFound`                               | the class does not exist under that name — usually a missing `use` |
+| `binaryOp.invalid`                             | arithmetic or concatenation on something that is not one           |
+| `foreach.nonIterable`                          | iterating `false` or `null`                                        |
+| `return.type`                                  | the declared shape is not what the code returns                    |
+| `ternary.alwaysTrue` / `identical.alwaysFalse` | a branch that can never be taken                                   |
+
+Fix those before generating the baseline. What may be frozen is
+`missingType.iterableValue`, `argument.type`, `cast.*` and `offsetAccess.*` —
+they describe values PHPStan cannot narrow, not code that breaks.
+
+`class.notFound` deserves its place on that list even though it sounds like a
+tooling complaint. A missing `use` makes the name resolve into the current
+namespace, and PHP raises no error for that in the one place it matters most:
+
+```php
+// The import is missing, so this is Vendor\Extension\Middleware\NormalizedParams
+if (!$normalizedParams instanceof NormalizedParams) {
+    return $handler->handle($request);
+}
+```
+
+`instanceof` against a class that does not exist is `false`, silently. The guard
+therefore rejects every request instead of the malformed ones, and the endpoint
+behind it stops answering without a single error in any log. Static analysis is
+the only thing that sees it.
+
+A `class.notFound` that is genuinely fine — a class from an optional dependency,
+guarded by `class_exists()` — belongs in `ignoreErrors` with a comment, not in a
+baseline where it is indistinguishable from the case above.
+
+Head the baseline include with the date and the reason:
+
+```neon
+includes:
+  # Frozen 2026-08-24. Existing code only; new code is checked at level 9.
+  # Regenerate with --generate-baseline after working off a batch.
+  - phpstan-baseline.neon
+```
+
+**Work it off one class per pass, not by annotation type.** Adding
+`array<string, mixed>` to signatures does not reduce the count — it raises it,
+because the `mixed` that was hidden behind an untyped `array` becomes visible.
+That is the point, and it is why a batch has to be a unit that can be reasoned
+about: narrow the untyped input **once** at its boundary, in a small private
+accessor, instead of casting at every use.
 
 ---
 
@@ -331,6 +392,47 @@ if (is_array($overlayedRow[0])) {
     $translatedRow = $overlayedRow[0];
 }
 ```
+
+---
+
+## Ordered chains — the guard has to come before what it guards
+
+A sanitiser or cleanup written as numbered steps invites an ordering bug that
+reads correctly from top to bottom and is wrong anyway.
+
+One `sanitizeForEmail()` listed "malformed UTF-8" among the things it protects
+against. Step 3 applied a `/u` regex; PCRE returns `null` for invalid UTF-8, so
+every later step operated on `null` and `strip_tags(null)` raised a `TypeError`
+under `strict_types`. Step 8 normalised the encoding — unreachable for exactly
+the input it existed for.
+
+**Rules:**
+
+- Normalise before you inspect. Encoding checks, null-byte removal and type
+  narrowing belong at the top, before any regex, `strip_tags()` or `mb_*` call.
+- `preg_replace()`, `preg_replace_callback()` and `preg_split()` return
+  `null`/`false` on a PCRE error, and `/u` makes that reachable with ordinary
+  user input. Handle it — `?? $value` to leave the value unchanged, `?: []` for
+  a split — rather than letting `null` travel down the chain.
+- When a step exists to repair a specific input, ask which earlier step sees
+  that input first. If an earlier one does, the repair is in the wrong place.
+- Write down **why** the order is what it is. A comment naming the constraint is
+  what keeps the next person from "tidying" the steps back into a broken order.
+
+---
+
+## Declared shapes are promises — keep them or do not make them
+
+An `array{…}` annotation is read by callers and by PHPStan as a guarantee. One
+method promised `array{email: string, …, gender: int}` while its fallback branch
+selected four columns, so `gender` could not exist there. Callers reading
+`$data['gender']` hit an undefined key in every installation without that
+column, and PHPStan reported the mismatch — in the baseline, where nobody
+looked.
+
+Either narrow the value to the shape you declare, or declare what you actually
+return (`gender?: int`). A shape that the code does not keep is worse than
+`array<string, mixed>`, because it stops people from checking.
 
 ---
 
