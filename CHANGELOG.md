@@ -15,6 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   by hand what a linter already fixes. The rules stay independent of the tools:
   a `**Tooling:**` line says a check can be automated, never that the rule
   exists because the tool does
+- `guidelines/fluid/README.md` — CDATA no longer comments code out. Fluid used
+  to strip `<![CDATA[ ]]>` before parsing, which is what made
+  `<f:comment><![CDATA[ … ]]></f:comment>` safe for invalid Fluid. Fluid 5 stops
+  stripping it, so the construct comments nothing out and writes a deprecation
+  on every render from TYPO3 13.4.21 on. A plain `<f:comment>` suffices since
+  v13.3, where it began ignoring Fluid syntax errors on its own
+- `guidelines/fluid/README.md` — CDATA is not gone but reassigned: inside a
+  section `{…}` is ignored and `{{{…}}}` accesses variables, so that inline CSS
+  and JavaScript stop colliding with Fluid's braces. Noted with the core's own
+  caveat that inline CSS/JS in a template remains bad practice
+- `guidelines/fluid/README.md` — the namespace URI is `http://`, never
+  `https://`. It is an identifier, not an address; the https form throws a
+  runtime exception, and "fixing" the scheme is a plausible-looking wrong move
 
 ## [2.6.0] — 2026-09-01
 
