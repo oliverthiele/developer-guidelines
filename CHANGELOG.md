@@ -26,6 +26,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   every `<target>`, so a `de.locallang.xlf` can look fully translated in the
   editor and serve English. Not a v14 change, just easy to miss — and invisible
   in the editor, which is what makes it survive review.
+- `guidelines/playwright.md` — how to read a run's result. The line reporter
+  prints failed test titles after the counts, so `tail -n` shows test names and
+  a pass count while the `failed` line scrolls away, and a red run reads exactly
+  like a green one. Says what to grep for instead, and that "N passed" alone
+  proves nothing.
 
 ## [2.5.0] — 2026-08-25
 

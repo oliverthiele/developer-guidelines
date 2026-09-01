@@ -217,6 +217,37 @@ if the underlying code is later refactored.
 
 ---
 
+## Reading a run's result
+
+**Never truncate the output positionally.** `tail -n` on a Playwright run is the
+one shortcut that reliably produces a wrong conclusion: the line reporter prints
+the *titles of the failed tests* after the counts, so a truncated view shows a
+list of test names and the number of passes, while the `failed` line scrolls
+away. A red run then reads exactly like a green one.
+
+Grep for the summary instead:
+
+```bash
+npx playwright test 2>&1 | grep -E '^\s+[0-9]+ (failed|passed|skipped|flaky)'
+```
+
+A run is green only when **no `failed` line appears**. `N passed` on its own
+proves nothing — it is equally consistent with a run in which a dozen tests
+failed.
+
+The same applies to reading a failure in detail: filter for what carries the
+information rather than cutting at a position.
+
+```bash
+npx playwright test --reporter=list 2>&1 | grep '✘'   # which tests failed
+npx playwright test 2>&1 | grep -E '^\s+Error:'      # why they failed
+```
+
+This matters most when a test run is being used as evidence — "no regression
+from this change" is a claim, and a truncated result does not support it.
+
+---
+
 ## TYPO3/PHP error detection — `expectNoError()`
 
 ```typescript
