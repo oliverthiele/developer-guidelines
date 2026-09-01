@@ -34,6 +34,8 @@ Related files:
 
 ## `f:format.html` — never pass an empty `parseFuncTSPath`
 
+**Tooling:** `fluid-lint` detects this · auto-fixable
+
 Always use the inline notation for RTE content. Never pass `parseFuncTSPath=""`.
 
 ```html

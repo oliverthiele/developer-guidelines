@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `guidelines/README.md` — a `**Tooling:**` line may sit next to `**Validity:**`
+  on any rule that can be checked automatically, plus an index of the packages
+  that do it. The point is that nobody — a person or an assistant — starts doing
+  by hand what a linter already fixes. The rules stay independent of the tools:
+  a `**Tooling:**` line says a check can be automated, never that the rule
+  exists because the tool does
+
 ## [2.6.0] — 2026-09-01
 
 ### Changed

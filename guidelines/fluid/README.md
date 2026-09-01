@@ -138,6 +138,7 @@ as a last resort.
 
 **Validity:** Fluid 5 · TYPO3 v14+ ·
 [#108166](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108166-FluidFileExtensionAndTemplateResolving.html)
+**Tooling:** `fluid-lint` flags templates not yet renamed · auto-fixable
 
 Fluid 5 natively resolves `{Name}.fluid.{format}` before `{Name}.{format}` for
 Templates, Partials and Layouts — see `TemplatePaths::resolveFileInPaths()` in
