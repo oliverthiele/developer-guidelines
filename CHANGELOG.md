@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `guidelines/xliff/README.md` — a `<trans-unit>` without `<target>` is no longer
+  harmless in a translation file. Up to v13 it was skipped and the source
+  language answered; from v14 on `XliffLoader` sets the key to an empty string
+  regardless, and a present key does not fall through. Left as a "still to
+  translate" placeholder it renders the label as nothing at all. Replaces the
+  previous line stating that TYPO3 handles the fallback automatically, which was
+  true only up to v13. Because nothing fails under v13, these accumulate
+  unnoticed and turn blank all at once on the upgrade — with a `grep` pair for
+  auditing a file before it happens.
+
+### Added
+
+- `guidelines/xliff/README.md` — `target-language` on the `<file>` element is what
+  makes a file a translation. Without it the loader reads `<source>` and ignores
+  every `<target>`, so a `de.locallang.xlf` can look fully translated in the
+  editor and serve English. Not a v14 change, just easy to miss — and invisible
+  in the editor, which is what makes it survive review.
+
 ## [2.5.0] — 2026-08-25
 
 ### Added

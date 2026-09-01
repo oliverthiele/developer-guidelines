@@ -346,8 +346,59 @@ treated as a nested placeholder and causes a parse error at runtime.
   files
 - `<source>` must be identical in all language files
 - Only `<target>` contains translated content
-- Missing `<target>` values use `<source>` as fallback (TYPO3 handles this
-  automatically)
+
+### A trans-unit without `<target>` belongs only in the source file
+
+**Validity:** v14+ ·
+[#107436](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107436-LocalizationSystemChanges.html)
+
+Up to v13 a translation unit without a `<target>` was skipped and the source
+language answered instead, so leaving one in as a "still to translate" placeholder
+was harmless. From v14 on it is not: `XliffLoader` sets the key regardless of
+whether a target exists —
+
+```php
+$catalogue->set($id, $this->extractText($translationElement->target, …), $domain);
+```
+
+`extractText()` on a missing element returns `''`, so the key is **present and
+empty**. A present key does not fall through to the source language, and the label
+renders as nothing at all.
+
+```xml
+<!-- Wrong in a translation file: renders empty from v14 on -->
+<trans-unit id="button.request" resname="button.request">
+  <source>Request a quote</source>
+</trans-unit>
+```
+
+Delete the unit instead. The key lives in the source file, which is where the
+fallback takes the text from — and the gap becomes countable, because what is
+missing is now missing rather than empty.
+
+These accumulate silently. Nothing fails under v13, so a placeholder unit is
+never cleaned up, and a long-lived project with many languages can reach four
+digits without anyone having reason to look. The upgrade to v14 turns all of
+them blank at once, which makes this worth auditing before the upgrade rather
+than after:
+
+```bash
+grep -c '<trans-unit' de.locallang.xlf
+grep -c '<target' de.locallang.xlf
+```
+
+### `target-language` decides which element is read
+
+A translation file without `target-language` on its `<file>` element is read as a
+**source file**: the loader takes `<source>` and never looks at `<target>`. The
+filename does not enter into it, so a `de.locallang.xlf` missing the attribute
+silently serves English while looking perfectly translated in the editor. This
+holds in v13 as well — it is not a v14 change, just easy to miss.
+
+```xml
+<!-- Every <target> in this file is ignored -->
+<file source-language="en" datatype="plaintext" original="…" product-name="…">
+```
 
 ---
 
