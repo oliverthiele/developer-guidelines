@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.0] — 2026-09-01
+
 ### Changed
 
 - **Fluid moved out of `guidelines/typo3/` into its own `guidelines/fluid/`
