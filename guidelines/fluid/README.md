@@ -138,6 +138,7 @@ as a last resort.
 
 **Validity:** Fluid 5 · TYPO3 v14+ ·
 [#108166](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108166-FluidFileExtensionAndTemplateResolving.html)
+**Tooling:** `fluid-lint` flags templates not yet renamed · auto-fixable
 
 Fluid 5 natively resolves `{Name}.fluid.{format}` before `{Name}.{format}` for
 Templates, Partials and Layouts — see `TemplatePaths::resolveFileInPaths()` in
@@ -151,6 +152,85 @@ The resolution lives in the engine, not in the core, so it is **not** available
 on Fluid 4 or on a standalone project pinned below 5 — `TemplatePaths.php` in
 2.15 has no `.fluid.` handling at all. Renaming files there silently stops them
 being found.
+
+---
+
+## CDATA no longer comments code out
+
+**Validity:** Fluid 5 · TYPO3 v14+ ·
+[#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108148-CDATASectionsNoLongerRemoved.html)
+**Tooling:** `fluid-lint` detects this · auto-fixable with `--fix`
+
+> **Stale-knowledge trap:** `<f:comment><![CDATA[ … ]]></f:comment>` is the
+> idiom a decade of templates and examples use to comment out Fluid safely. It
+> is the first thing to reach for, and from v14 on it does the opposite of what
+> it says.
+
+Fluid used to **remove** everything wrapped in `<![CDATA[ ]]>` from the template
+before parsing. That is what made it a comment: the parser never saw the block,
+so invalid Fluid or a stray ViewHelper call inside it could not break rendering.
+
+Fluid 5 stops stripping CDATA. The content is no longer removed, so the
+construct comments nothing out — and it writes a deprecation entry on **every
+render** from TYPO3 13.4.21 on. A template set that used the idiom consistently
+fills its deprecation log with them.
+
+```html
+<!-- Wrong from v14 on — no longer a comment -->
+<f:comment><![CDATA[
+    <f:render partial="Old" />
+]]></f:comment>
+
+<!-- Correct -->
+<f:comment>
+    <f:render partial="Old" />
+</f:comment>
+```
+
+The plain `<f:comment>` is enough on its own: since v13.3 it ignores Fluid
+syntax errors in its body
+([#104904](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Feature-104904-IgnoreFluidSyntaxErrorInFComment.html)),
+which is exactly what the CDATA used to provide.
+
+### CDATA is not gone — it means something else now
+
+**Validity:** Fluid 5 · TYPO3 v14+ ·
+[#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108148-AlternativeFluidSyntaxForCDATASections.html)
+
+Inside a CDATA section, Fluid now ignores the normal `{…}` syntax and disables
+tag-based syntax entirely; `{{{…}}}` accesses variables and ViewHelpers. This
+exists to stop inline CSS and JavaScript from colliding with Fluid's braces:
+
+```html
+<style>
+<![CDATA[
+    @media (min-width: 1000px) {
+        p { background-color: {{{color}}}; }
+    }
+]]>
+</style>
+```
+
+Do not read that as an invitation. The core changelog says plainly that inline
+CSS and JavaScript in a template remains bad practice — pass values through
+`data-*` attributes or CSS custom properties instead. The point here is that
+CDATA is *reserved for something else now*, which is why it can no longer be a
+comment.
+
+---
+
+## Namespace URI — `http://`, never `https://`
+
+**Tooling:** `fluid-lint` detects this · auto-fixable
+
+```html
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+```
+
+The `xmlns` value is an identifier, not an address — nothing is ever fetched
+from it. `https://typo3.org/ns/…` throws a runtime exception. The scheme is not
+a modernisation candidate: leave it as `http://`, in every template, forever.
 
 ---
 

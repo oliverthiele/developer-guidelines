@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] — 2026-09-01
+
+### Added
+
+- `guidelines/README.md` — a `**Tooling:**` line may sit next to `**Validity:**`
+  on any rule that can be checked automatically, plus an index of the packages
+  that do it. The point is that nobody — a person or an assistant — starts doing
+  by hand what a linter already fixes. The rules stay independent of the tools:
+  a `**Tooling:**` line says a check can be automated, never that the rule
+  exists because the tool does
+- `guidelines/fluid/README.md` — CDATA no longer comments code out. Fluid used
+  to strip `<![CDATA[ ]]>` before parsing, which is what made
+  `<f:comment><![CDATA[ … ]]></f:comment>` safe for invalid Fluid. Fluid 5 stops
+  stripping it, so the construct comments nothing out and writes a deprecation
+  on every render from TYPO3 13.4.21 on. A plain `<f:comment>` suffices since
+  v13.3, where it began ignoring Fluid syntax errors on its own
+- `guidelines/fluid/README.md` — CDATA is not gone but reassigned: inside a
+  section `{…}` is ignored and `{{{…}}}` accesses variables, so that inline CSS
+  and JavaScript stop colliding with Fluid's braces. Noted with the core's own
+  caveat that inline CSS/JS in a template remains bad practice
+- `guidelines/fluid/README.md` — the namespace URI is `http://`, never
+  `https://`. It is an identifier, not an address; the https form throws a
+  runtime exception, and "fixing" the scheme is a plausible-looking wrong move
+- `guidelines/fluid/typo3.md` — `f:render.contentArea` renders a content area
+  from the `page-content` DataProcessor, with `recordAs` replacing the `f:for`.
+  The established `f:cObject` / `f:for` pattern does not fail, which is why it
+  survives review — but it emits no `ModifyRenderedContentAreaEvent`, so the
+  extension point other extensions rely on is silently absent
+- `guidelines/playwright.md` — a test that triggers mail must ask whether mail
+  is being captured **before** it submits, and skip when it is not. On a staging
+  system cloned from live those recipients are real people. The check has to be
+  answerable while capturing is off, which is what a catcher that merely
+  intercepts cannot report
+
 ## [2.6.0] — 2026-09-01
 
 ### Changed
