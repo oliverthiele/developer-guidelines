@@ -4,19 +4,18 @@ scope: typo3
 applies_to:
     - "**/Classes/**/*.php"
     - "**/Configuration/TCA/**/*.php"
-    - "**/Resources/Private/**/*.html"
     - "**/ext_localconf.php"
     - "**/ext_tables.php"
 typo3: [ "13", "14" ]
-see_also: [ "typo3/integrator.md", "typo3/versions.md", "php.md" ]
+see_also: [ "typo3/integrator.md", "typo3/versions.md", "fluid/typo3.md", "php.md" ]
 ---
 
 # TYPO3 Developer Guidelines
 
-TYPO3 conventions for extension development: PHP, TCA, Fluid, database access.
+TYPO3 conventions for extension development: PHP, TCA, database access.
 
 For integrator conventions (SiteSets, TypoScript, backend configuration), see
-`integrator.md`.
+`integrator.md`. For Fluid templates, see [`../fluid/`](../fluid/README.md).
 
 Every rule below states the versions it applies to. A rule without a
 `**Validity:**` line holds for all supported versions. See `versions.md` for the
@@ -334,98 +333,15 @@ Key details:
 
 ---
 
-## Fluid — backend module templates need the `Module` layout
+## Fluid
 
-A template rendered through `ModuleTemplate::renderResponse()` must declare the
-core layout and put its markup into a `Content` section:
+Fluid rules live in [`../fluid/`](../fluid/README.md), not here — the engine is
+its own package and also runs standalone.
 
-```html
-
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      data-namespace-typo3-fluid="true">
-
-<f:layout name="Module"/>
-
-<f:section name="Content">
-    …
-</f:section>
-
-</html>
-```
-
-> **Common AI-generation error:** a template without `f:layout` still renders,
-> and the module looks almost right — which is why this slips through. Nothing
-> errors, so only a side-by-side comparison with another module reveals it.
-
-`EXT:backend/Resources/Private/Layouts/Module.html` supplies three things the
-template does not get on its own:
-
-| Element                                      | Consequence when the layout is missing                                                                                                  |
-|----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| `<div class="module-body t3js-module-body">` | The content sits flush against the edge — every other backend module has padding, this one does not                                     |
-| `<f:flashMessages/>`                         | **Flash messages never appear.** `addFlashMessage()` still queues them, so the code looks correct and the message is silently swallowed |
-| `DocHeader` partial                          | Doc header buttons and the module menu are not rendered                                                                                 |
-
-The second one is the damaging one: an action reports success or failure through
-a flash message, the user sees nothing, and there is no error anywhere to
-notice.
-
----
-
-## Fluid — argument types
-
-**Validity:** union types in v14+ (Fluid 5) ·
-[#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108148-UnionTypesForViewHelpers.html)
-· not supported in v13 (Fluid 4)
-
-```xml
-<!-- v14 / Fluid 5 -->
-<f:argument name="columns" type="int|array"/>
-
-    <!-- v13 / Fluid 4 — one explicit type per argument -->
-<f:argument name="columns" type="integer"/>
-<f:argument name="breakpoints" type="array"/>
-```
-
-In Fluid 4 a union type causes `Cannot cast an array to string` at runtime.
-Where multiple types are needed there: use separate arguments, or `type="mixed"`
-as a last resort.
-
----
-
-## Fluid — `f:format.html`
-
-Always use the inline notation for RTE content. Never pass `parseFuncTSPath=""`.
-
-```html
-{record.bodytext -> f:format.html()}
-```
-
-`parseFuncTSPath=""` (empty string) causes
-`Invoked ContentObjectRenderer::parseFunc without any configuration` — a fatal
-error at runtime. The default value (`lib.parseFunc_RTE`) is correct for RTE
-fields and must not be overridden with an empty string.
-
-| Pattern                                                     | Result                             |
-|-------------------------------------------------------------|------------------------------------|
-| `{field -> f:format.html()}`                                | correct — uses `lib.parseFunc_RTE` |
-| `<f:format.html>{field}</f:format.html>`                    | correct — same as above            |
-| `<f:format.html parseFuncTSPath="">{field}</f:format.html>` | **wrong — runtime error**          |
-
----
-
-## Fluid — template file resolution `.fluid.html`
-
-**Validity:** v14+ ·
-[#108166](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108166-FluidFileExtensionAndTemplateResolving.html)
-
-Fluid 5 natively resolves `{Name}.fluid.{format}` before `{Name}.{format}` for
-Templates, Partials and Layouts — see `TemplatePaths::resolveFileInPaths()` in
-`typo3fluid/fluid`. No TypoScript or `view.format` configuration is needed.
-
-Prefer naming Fluid template files `*.fluid.html` (e.g. `Default.fluid.html`) in
-v14-only extensions — this is the project convention going forward and gives
-IDEs unambiguous syntax highlighting for Fluid vs. plain HTML.
+| | |
+|---|---|
+| [../fluid/README.md](../fluid/README.md) | syntax, ViewHelper arguments, tag attributes, `.fluid.html` resolution |
+| [../fluid/typo3.md](../fluid/typo3.md) | `f:format.html`, backend module `Module` layout, core ViewHelpers |
 
 ---
 

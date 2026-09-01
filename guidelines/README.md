@@ -166,12 +166,14 @@ ones that fill a gap with a plausible-looking guess instead of leaving it open.
 |----------------------------------------------------|----------------------------------------------------------------------------|
 | [typo3/](typo3/README.md)                          | TYPO3 topic root — index and version model                                 |
 | [typo3/integrator.md](typo3/integrator.md)         | TypoScript, SiteSets, CE wizard, backend configuration                     |
-| [typo3/developer.md](typo3/developer.md)           | PHP, TCA, Fluid, Doctrine DBAL, views                                      |
+| [typo3/developer.md](typo3/developer.md)           | PHP, TCA, Doctrine DBAL, views                                              |
 | [typo3/content-blocks.md](typo3/content-blocks.md) | Content Block structure, portable assets, two-layer CSS, config.yaml       |
 | [typo3/sitekit.md](typo3/sitekit.md)               | SiteKit layer model, template path abstraction (SiteKit projects only)     |
 | [typo3/practices/](typo3/practices/README.md)      | decision guides: which approach, and when deliberately not                 |
 | [typo3/versions.md](typo3/versions.md)             | which rule applies to which TYPO3 version                                  |
 | [typo3/changelog-index/](typo3/changelog-index/)   | every core changelog entry — grep only, never read whole                   |
+| [fluid/](fluid/README.md)                          | Fluid engine: syntax, ViewHelper arguments, template resolution            |
+| [fluid/typo3.md](fluid/typo3.md)                   | Fluid in TYPO3: core ViewHelpers, backend modules, RTE output              |
 | [xliff/](xliff/README.md)                          | XLIFF 1.2 / 2.0 file format, attributes, ICU message format                |
 | [xliff/keys.md](xliff/keys.md)                     | Key naming conventions, key lifecycle                                      |
 | [xliff/typo3.md](xliff/typo3.md)                   | LLL references, SiteSet labels.xlf, enum label localization                |

@@ -4,7 +4,7 @@ scope: typo3
 applies_to:
   - "**/ContentBlocks/**"
 typo3: ["13", "14"]
-see_also: ["typo3/integrator.md", "xliff/typo3.md", "scss.md"]
+see_also: ["typo3/integrator.md", "fluid/typo3.md", "xliff/typo3.md", "scss.md"]
 ---
 # TYPO3 Content Blocks Guidelines
 

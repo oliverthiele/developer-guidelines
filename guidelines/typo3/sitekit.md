@@ -4,7 +4,7 @@ scope: sitekit-only
 applies_to:
   - "**/Resources/Private/Templates/**"
 typo3: ["13", "14"]
-see_also: ["typo3/integrator.md"]
+see_also: ["typo3/integrator.md", "fluid/typo3.md"]
 ---
 # SiteKit Guidelines
 

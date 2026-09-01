@@ -5,7 +5,7 @@ applies_to:
   - "**/Resources/Private/Language/*.xlf"
   - "**/Configuration/Sets/**/*.xlf"
 typo3: ["13", "14"]
-see_also: ["xliff/keys.md", "xliff/typo3.md"]
+see_also: ["xliff/keys.md", "xliff/typo3.md", "fluid/typo3.md"]
 ---
 
 # XLIFF Guidelines

@@ -13,15 +13,21 @@ All TYPO3 rules live in this folder. Load the file matching the work area.
 | File | Covers |
 |---|---|
 | [integrator.md](integrator.md) | TypoScript, SiteSets, CE wizard, backend configuration |
-| [developer.md](developer.md) | PHP, TCA, Fluid, Doctrine DBAL, views |
+| [developer.md](developer.md) | PHP, TCA, Doctrine DBAL, views |
 | [content-blocks.md](content-blocks.md) | Content Block structure, assets, two-layer CSS, `config.yaml` |
 | [sitekit.md](sitekit.md) | SiteKit layer model and template path abstraction (SiteKit-based projects only) |
 | [practices/](practices/README.md) | decision guides: which approach, and when deliberately not |
 | [versions.md](versions.md) | which rule applies to which TYPO3 version |
 | [changelog-index/](changelog-index/) | every core changelog entry — **grep only, never read whole** |
 
-XLIFF is not in this folder: the format itself is not TYPO3-specific. See
-[../xliff/](../xliff/), whose `typo3.md` covers `labels.xlf` and SiteSet labels.
+Two topics are not in this folder, because neither is TYPO3-specific:
+
+- **XLIFF** — see [../xliff/](../xliff/), whose `typo3.md` covers `labels.xlf`
+  and SiteSet labels.
+- **Fluid** — see [../fluid/](../fluid/README.md), whose `typo3.md` covers the
+  core ViewHelpers and backend module templates. `typo3fluid/fluid` is its own
+  package and also runs standalone, on a version that is then unrelated to any
+  TYPO3 release.
 
 ## How versions are handled
 
