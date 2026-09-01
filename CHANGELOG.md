@@ -29,6 +29,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   true only up to v13. Because nothing fails under v13, these accumulate
   unnoticed and turn blank all at once on the upgrade — with a `grep` pair for
   auditing a file before it happens.
+- `guidelines/git.md` — the rule against customer data in public repositories now
+  covers the vocabulary of a project (product and article names, article numbers,
+  category and tag names, project-specific CSS classes, JS variables and
+  `data-js` values) and quantities (defect counts, language counts, record
+  counts). Quantities are the part that slips through, because a number reads as
+  neutral: it describes one specific project, it combines with other details into
+  a fingerprint that identifies the customer without naming them, and it reads as
+  if the author had built the defects rather than inherited them. State the
+  mechanism, not the measurement.
 
 ### Added
 

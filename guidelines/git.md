@@ -148,21 +148,48 @@ Public repositories — guideline sets, published extensions, anything on Packag
 or a public GitHub remote — must never contain material that identifies a customer
 or a customer project.
 
-Never commit, in code, comments, documentation, examples or commit messages:
+**The risk is fingerprinting, not naming.** A single detail rarely identifies
+anyone; several harmless-looking ones together do. A product term, a language
+count and a category name narrow the field to one company for any reader who
+knows the sector. Assume every detail will be combined with every other one.
 
-- customer names, project names, domains or hostnames
-- real extension keys, vendor names, package names or CSS prefixes from a
-  customer project
-- server names, IP addresses, paths or credentials
+Never commit — in code, comments, documentation, examples, or commit messages:
+
+**Names and identifiers**
+
+- customer names, company names, project names, domains, hostnames
+- real extension keys, vendor names, package names
+- server names, IP addresses, paths, credentials
 - excerpts from customer content, data or screenshots
+
+**Vocabulary taken from the project**
+
+- product, article or object names, article numbers, SKUs
+- category names, tag names, menu labels, section titles
+- project-specific CSS classes, JS variables and `data-js` values, TypoScript
+  object paths, database table or column names
+
+**Quantities — these identify too**
+
+- number of defects, findings, or affected records
+- number of languages, sites, domains, or editors
+- number of content elements, extensions, or templates
+
+A count reads as neutral, which is why it slips through. It is not: a figure
+describes one specific project, and it also reads as if the author had built
+those defects rather than inherited them.
 
 Use neutral placeholders instead: `my_extension` / `MyExtension`,
 `my_sitepackage`, `example.com`, `acme`. An example must not be traceable to a
-real engagement.
+real engagement. **State the mechanism, not the measurement** — why something
+accumulates unnoticed is the transferable part; how much of it one project had
+is not.
 
-Check before every commit to a public repository. This applies to examples in
-particular — they are the easiest place to leak a real name without noticing,
-and a pushed commit stays in the history even after the text is corrected.
+Check before every commit to a public repository. This applies to examples and
+commit messages in particular — they are the easiest place to leak without
+noticing, and a pushed commit keeps the text in its diff even after a later
+commit corrects it. The fix has to happen before the push, or the history has to
+be rewritten.
 
 Project-specific material belongs in that project's own repository, in its
 `Guidelines/` folder — see the setup section in `guidelines/README.md`.
