@@ -40,8 +40,8 @@ everywhere carry no `**Validity:**` line in their guideline file either.
 | `TypoScriptFrontendController`, `$GLOBALS['TSFE']` ([#105230](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.4/Deprecation-105230-TypoScriptFrontendControllerAndGLOBALSTSFE.html) → [#107831](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107831-RemovedTypoScriptFrontendController.html)) | deprecated | **removed** | `developer.md` |
 | `ViewFactoryInterface` | yes | yes | `developer.md` |
 | `record-transformation` usable in practice | no | **yes** | `developer.md` |
-| Union types in `f:argument` ([#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108148-UnionTypesForViewHelpers.html)) | no | **yes** | `developer.md` |
-| Fluid `.fluid.html` resolution ([#108166](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108166-FluidFileExtensionAndTemplateResolving.html)) | no | **yes** | `developer.md` |
+| Union types in `f:argument` ([#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108148-UnionTypesForViewHelpers.html)) | no | **yes** | `../fluid/README.md` |
+| Fluid `.fluid.html` resolution ([#108166](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108166-FluidFileExtensionAndTemplateResolving.html)) | no | **yes** | `../fluid/README.md` |
 | `showitem` shortform label references ([#107789](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107789-CoreTCAAndUserSettingsShowitemStringsUseShortFormReferences.html)) | no | **yes** | `developer.md` |
 | FlexForm DS via `columnsOverrides` | no — pointer key | **yes — required** | `developer.md` |
 | `ExtensionManagementUtility::addPiFlexFormValue()` ([#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107047-ExtensionManagementUtilityaddPiFlexFormValue.html)) | yes | deprecated, removal announced for v15 | `developer.md` |

@@ -7,6 +7,73 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.0] — 2026-09-01
+
+### Changed
+
+- **Fluid moved out of `guidelines/typo3/` into its own `guidelines/fluid/`
+  folder**, split into `README.md` (the `typo3fluid/fluid` engine) and
+  `typo3.md` (Fluid as the core ships it). Fluid is an independent package that
+  also runs standalone, where its version comes from `composer.json` and is
+  unrelated to any TYPO3 release — a rule filed under "TYPO3 Developer" cannot
+  state that. The split also makes an inversion visible that a single file hid:
+  instantiating a view directly is forbidden in TYPO3 v14 and is the only
+  correct way standalone. Same reasoning as the existing `guidelines/xliff/`
+  folder. Moved unchanged: `f:format.html`, the backend module `Module` layout,
+  ViewHelper argument types, `.fluid.html` resolution. `typo3/developer.md`
+  keeps a pointer and drops from 636 to 496 lines.
+- `guidelines/xliff/README.md` — a `<trans-unit>` without `<target>` is no longer
+  harmless in a translation file. Up to v13 it was skipped and the source
+  language answered; from v14 on `XliffLoader` sets the key to an empty string
+  regardless, and a present key does not fall through. Left as a "still to
+  translate" placeholder it renders the label as nothing at all. Replaces the
+  previous line stating that TYPO3 handles the fallback automatically, which was
+  true only up to v13. Because nothing fails under v13, these accumulate
+  unnoticed and turn blank all at once on the upgrade — with a `grep` pair for
+  auditing a file before it happens.
+- `guidelines/git.md` — the rule against customer data in public repositories now
+  covers the vocabulary of a project (product and article names, article numbers,
+  category and tag names, project-specific CSS classes, JS variables and
+  `data-js` values) and quantities (defect counts, language counts, record
+  counts). Quantities are the part that slips through, because a number reads as
+  neutral: it describes one specific project, it combines with other details into
+  a fingerprint that identifies the customer without naming them, and it reads as
+  if the author had built the defects rather than inherited them. State the
+  mechanism, not the measurement.
+
+### Added
+
+- `guidelines/xliff/README.md` — `target-language` on the `<file>` element is what
+  makes a file a translation. Without it the loader reads `<source>` and ignores
+  every `<target>`, so a `de.locallang.xlf` can look fully translated in the
+  editor and serve English. Not a v14 change, just easy to miss — and invisible
+  in the editor, which is what makes it survive review.
+- `guidelines/fluid/README.md` — arbitrary tag attributes are dropped when their
+  value is the empty string. `AbstractTagBasedViewHelper::initialize()` filters
+  `''` out of `$this->additionalArguments`, so `data-caption=""` produces no
+  attribute at all while `data="{caption: ''}"` does. It fails silently and the
+  template still looks correct. Matters wherever the attribute is load-bearing:
+  a `[data-fancybox]` selector a script binds on, or a marker that switches
+  behaviour off.
+- `guidelines/fluid/README.md` — the Fluid ↔ TYPO3 version map (v13.1 → 2.11,
+  v13.2 → 2.12, v13.3 → 4.0, v14.0 → 5.0) and the rule that in a TYPO3 project
+  the TYPO3 major is enough. The 2 → 4 jump in v13 carried no breaking changes,
+  which is why the Fluid number never has to be looked up there. Standalone is
+  the exception: only `composer.json` answers it.
+- `guidelines/fluid/README.md` — `getTemplatePaths()` is gone from the view in
+  Fluid 5 and lives only on the `RenderingContext`. Verified against
+  `AbstractTemplateView` in 2.15.0 (line 96) and its absence in 5.3.1, whose
+  view exposes only `getRenderingContext()`, `setRenderingContext()`,
+  `assign()`, `assignMultiple()`, `render()`, `renderSection()` and
+  `renderPartial()`. Affects standalone wrapper classes on upgrade;
+  `new TemplateView()` itself stays correct, since `TYPO3Fluid\Fluid\View\
+  TemplateView` is a different class from the core one v14 removed.
+- `guidelines/playwright.md` — how to read a run's result. The line reporter
+  prints failed test titles after the counts, so `tail -n` shows test names and
+  a pass count while the `failed` line scrolls away, and a red run reads exactly
+  like a green one. Says what to grep for instead, and that "N passed" alone
+  proves nothing.
+
 ## [2.5.0] — 2026-08-25
 
 ### Added

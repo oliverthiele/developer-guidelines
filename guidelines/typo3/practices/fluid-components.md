@@ -7,7 +7,7 @@ applies_to:
   - "**/Configuration/Fluid/ComponentCollections.php"
   - "**/Configuration/Fluid/Namespaces.php"
 typo3: ["13", "14"]
-see_also: ["typo3/developer.md", "typo3/versions.md", "scss.md"]
+see_also: ["fluid/README.md", "fluid/typo3.md", "typo3/versions.md", "scss.md"]
 ---
 
 # Fluid Components — when to use them

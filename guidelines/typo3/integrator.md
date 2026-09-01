@@ -13,7 +13,8 @@ see_also: ["typo3/developer.md", "typo3/versions.md", "xliff/typo3.md"]
 
 TYPO3 conventions for integrators: TypoScript, SiteSets, backend configuration.
 
-For PHP / TCA / Fluid conventions, see `developer.md`. For XLIFF file format and
+For PHP / TCA conventions, see `developer.md`. For Fluid templates, see
+[`../fluid/`](../fluid/README.md). For XLIFF file format and
 key naming, see `../xliff/`.
 
 Every rule below states the versions it applies to. A rule without a

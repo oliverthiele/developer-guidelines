@@ -24,7 +24,7 @@ Four kinds of file, read in different situations:
 
 | Type | Where | Read it |
 |---|---|---|
-| Rule files | `guidelines/*.md`, `guidelines/typo3/*.md` | Whenever work touches the area |
+| Rule files | `guidelines/*.md`, `guidelines/typo3/*.md`, `guidelines/fluid/*.md`, `guidelines/xliff/*.md` | Whenever work touches the area |
 | Practice guides | [`guidelines/typo3/practices/`](guidelines/typo3/practices/README.md) | When choosing an approach — which one, and when deliberately not |
 | Version table | [`guidelines/typo3/versions.md`](guidelines/typo3/versions.md) | When a rule depends on the TYPO3 version |
 | Changelog index | [`guidelines/typo3/changelog-index/`](guidelines/typo3/changelog-index/) | Grep only, for a specific API or changelog number |
