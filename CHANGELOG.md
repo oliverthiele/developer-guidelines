@@ -28,6 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `guidelines/fluid/README.md` — the namespace URI is `http://`, never
   `https://`. It is an identifier, not an address; the https form throws a
   runtime exception, and "fixing" the scheme is a plausible-looking wrong move
+- `guidelines/fluid/typo3.md` — `f:render.contentArea` renders a content area
+  from the `page-content` DataProcessor, with `recordAs` replacing the `f:for`.
+  The established `f:cObject` / `f:for` pattern does not fail, which is why it
+  survives review — but it emits no `ModifyRenderedContentAreaEvent`, so the
+  extension point other extensions rely on is silently absent
 
 ## [2.6.0] — 2026-09-01
 

@@ -93,6 +93,66 @@ notice.
 
 ---
 
+## `f:render.contentArea` — content areas without `f:cObject`
+
+**Validity:** v14+ ·
+[#108726](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Feature-108726-IntroduceFluidRenderContentAreaViewHelper.html)
+· verified in `ContentAreaViewHelper` (core 14.3.4)
+
+Render a content area from the `page-content` DataProcessor directly:
+
+```html
+<f:render.contentArea contentArea="{content.main}"/>
+
+{content.main -> f:render.contentArea()}
+```
+
+The `{content}` variable comes from the processor, commonly behind `PAGEVIEW`:
+
+```typoscript
+page = PAGE
+page {
+    10 = PAGEVIEW
+    10 {
+        paths.10 = EXT:my_sitepackage/Resources/Private/Templates/
+        dataProcessing.10 = page-content
+    }
+}
+```
+
+> **Stale-knowledge trap:** the established way to render a column is
+> `<f:cObject typoscriptObjectPath="lib.dynamicContent">`, or an `<f:for>` over
+> the column with a partial per element. Both dominate a decade of examples and
+> are the default a language model reaches for. Neither *fails* — which is why
+> it survives review — but both opt the template out of the event below.
+
+Two arguments, and no others:
+
+| Argument | Type | Purpose |
+|---|---|---|
+| `contentArea` | `TYPO3\CMS\Core\Page\ContentArea` | the area from the processor |
+| `recordAs` | `string` | variable name for the current record |
+
+`recordAs` is what replaces the `f:for` — wrap each element without leaving the
+ViewHelper:
+
+```html
+<div id="sidebar">
+    <f:render.contentArea contentArea="{content.left}" recordAs="record">
+        <div id="sidebarItem{record.uid}">
+            <f:render.record record="{record}"/>
+        </div>
+    </f:render.contentArea>
+</div>
+```
+
+**Why this matters beyond convenience:** rendering through the ViewHelper emits
+`ModifyRenderedContentAreaEvent`, so other extensions can modify a content
+area's output. An `f:cObject` or `f:for` template produces the same HTML and no
+event — the extension point is simply absent, and nothing indicates that.
+
+---
+
 ## Building a view
 
 Never instantiate a view directly — inject `ViewFactoryInterface`. The full
