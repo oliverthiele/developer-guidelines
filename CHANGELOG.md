@@ -33,6 +33,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The established `f:cObject` / `f:for` pattern does not fail, which is why it
   survives review — but it emits no `ModifyRenderedContentAreaEvent`, so the
   extension point other extensions rely on is silently absent
+- `guidelines/playwright.md` — a test that triggers mail must ask whether mail
+  is being captured **before** it submits, and skip when it is not. On a staging
+  system cloned from live those recipients are real people. The check has to be
+  answerable while capturing is off, which is what a catcher that merely
+  intercepts cannot report
 
 ## [2.6.0] — 2026-09-01
 
