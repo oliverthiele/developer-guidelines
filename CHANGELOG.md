@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `guidelines/typo3/developer.md` — Extbase honours `fallbackType` from TYPO3
+  14.3.6 on (#88886). On `strict` languages, untranslated records disappear —
+  aggregate roots and related objects, including children of parents without a
+  language field and of `-1` parents. Up to 14.3.5 Extbase always fell back to
+  the default language, and the change came in a patch release without any
+  signature change, so neither ExtensionScanner nor PHPStan can see it. Rules:
+  nullable getters for 1:1 relations, no validators on display-only models, a
+  per-table decision instead of a global fallback, language changes through
+  DataHandler, and translated pages tested before the update
+- `guidelines/typo3/practices/record-languages.md` — decision guide: translate,
+  `-1`, `0` with `OVERLAYS_MIXED`, not language aware, or `l10n_mode: exclude`.
+  Records from the core source that `-1` is not a fallback — a translation of a
+  `-1` record is never loaded — and shows how to restore "mixed" for a single
+  table, including relations of models you do not own
+- `changelog-index/notes/88886.md` — the template guard, `-1` on the parent only,
+  and SQL fixes as antipatterns
+- `guidelines/typo3/versions.md` — row for #88886
+
+### Changed
+
+- `guidelines/typo3/versions.md`, `guidelines/typo3/README.md` — exception to
+  "major versions only": a behaviour change shipped in a patch release names that
+  release in full, because the patch update is the moment it breaks
+- `changelog-index/` — regenerated from core 14.3.7, adding the Important entries
+  of the 13.4.x and 14.3.x patch releases; v15 re-harvested from `main`
+
 ## [2.7.0] — 2026-09-01
 
 ### Added

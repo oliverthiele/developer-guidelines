@@ -262,6 +262,84 @@ in the changelog index — it lists every property with its substitution.
 
 ---
 
+## Extbase and `fallbackType: strict` — untranslated records disappear
+
+**Validity:** v14 **from 14.3.6**
+([#88886](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.3.x/Important-88886-ExtbasePersistenceRespectsLanguageOverlayType.html))
+· v13 and v14 up to 14.3.5 always overlay with "mixed" semantics · related:
+`setIgnoreEnableFields()` now reveals hidden translations
+([#100638](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.3.x/Important-100638-ExtbaseIgnoreEnableFieldsAppliesToTranslations.html))
+
+> **Stale-knowledge trap:** up to 14.3.5, Extbase returned the default-language
+> record whenever no translation existed, regardless of the site's
+> `fallbackType`. Existing extensions and nearly every example rely on it. The
+> change arrived in a patch release, classified as Important rather than
+> Breaking, and no tool can see it: no signature changes, only results.
+> `hideNonTranslated` is not a way back — it is the legacy name of
+> `OVERLAYS_ON` and `OVERLAYS_ON_WITH_FLOATING`, the strict behaviour itself.
+> `Typo3QuerySettings::setLanguageOverlayMode()` does not exist.
+
+| `fallbackType` | Overlay type | Untranslated record in language 0 |
+|---|---|---|
+| `strict` | `OVERLAYS_ON_WITH_FLOATING` | **dropped** — aggregate roots and related objects |
+| `fallback` | `OVERLAYS_MIXED` | default-language record, unchanged |
+| `free` | `OVERLAYS_OFF` | no overlay; `findByUid()` still resolves with "mixed" semantics |
+
+What `strict` does to relations on a translated page:
+
+| Relation | Effect |
+|---|---|
+| 1:1 (`select`, value field) | property is `null` |
+| 1:n, m:n, file references | items missing from the collection, no error |
+| child of a parent **without** a language field | dropped as well — children are overlaid to the requested language |
+| child of a parent with `sys_language_uid = -1` | dropped as well, unless the child is `-1` itself or translated |
+
+Kept: records with `-1`, and translated records without a translation parent
+("floating"). Records created through Extbase in the frontend are stored in
+language `0` unless a language is assigned, and are therefore invisible in
+strict languages until translated.
+
+Rules:
+
+1. **Nullable getters for 1:1 relations.** A required TCA field does not
+   guarantee an object in every language.
+
+   ```php
+   // Correct
+   protected ?Contact $contact = null;
+
+   public function getContact(): ?Contact
+   {
+       return $this->contact;
+   }
+
+   // Wrong — TypeError on a translated page when the contact is not translated
+   public function getContact(): Contact
+   ```
+
+   Guard the template block (`<f:if condition="{event.contact}">`) — as a
+   consequence of the nullable getter, never as the fix. A guard alone renders
+   the page without the record and reports nothing.
+2. **No property validators on models that are only displayed.** A
+   `#[Validate(validator: 'NotEmpty')]` on a relation of an object passed as
+   action argument fails argument validation when the related record is dropped;
+   the page answers HTTP 400. Validators belong on objects that are submitted.
+3. **Decide per table what the data is** — translate, `-1`, `0` with a fallback,
+   or not language aware. See
+   [`practices/record-languages.md`](practices/record-languages.md). Never
+   restore "mixed" globally.
+4. **Change languages through the backend or DataHandler, never with SQL.** A
+   translation consists of `l10n_parent`, `l10n_source`, `l10n_state`, its own
+   file references and the reference index; a partial SQL fix can make the
+   frontend look right while the backend's localization view is broken.
+5. **Third-party extensions:** do not patch them. Fix the data, or add a
+   project-level listener. They may set their own `LanguageAspect`, so compare
+   the rendered output per language instead of trusting the configuration.
+6. **Test translated pages before updating to 14.3.6 or later** — see
+   [`../testing.md`](../testing.md) → *Multilingual Sites*.
+
+---
+
 ## Views — never instantiate a view directly
 
 **Validity:** `Extbase\Mvc\View\AbstractView` and

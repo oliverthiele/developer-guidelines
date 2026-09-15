@@ -17,6 +17,12 @@ arrived in 13.4 are equally available in a v13 project. The minor version
 changes no decision and is therefore not carried here. Where it is ever needed,
 it sits in column 3 of the changelog index, one `grep` away.
 
+**Exception: a behaviour change inside a patch release.** When the core changes
+how existing code behaves within a maintained major, the release that brought it
+is named in full — `from 14.3.6`. A patch update is exactly the moment such a
+change breaks a site, and a plain "v14" would also describe the sites that are not
+affected yet.
+
 Only rules that **changed between majors** are listed. Rules that hold
 everywhere carry no `**Validity:**` line in their guideline file either.
 
@@ -39,6 +45,7 @@ everywhere carry no `**Validity:**` line in their guideline file either.
 | `StandaloneView`, `TemplateView`, `AbstractTemplateView` ([#104773](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104773-CustomFluidViewsAndExtbase.html) → [#105377](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-105377-DeprecatedFunctionalityRemoved.html)) | deprecated | **removed** | `developer.md` |
 | `TypoScriptFrontendController`, `$GLOBALS['TSFE']` ([#105230](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.4/Deprecation-105230-TypoScriptFrontendControllerAndGLOBALSTSFE.html) → [#107831](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107831-RemovedTypoScriptFrontendController.html)) | deprecated | **removed** | `developer.md` |
 | `ViewFactoryInterface` | yes | yes | `developer.md` |
+| Extbase respects `fallbackType` for records and relations ([#88886](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.3.x/Important-88886-ExtbasePersistenceRespectsLanguageOverlayType.html)) | no — always "mixed" | **from 14.3.6** — `strict` drops untranslated records | `developer.md` |
 | `record-transformation` usable in practice | no | **yes** | `developer.md` |
 | Union types in `f:argument` ([#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108148-UnionTypesForViewHelpers.html)) | no | **yes** | `../fluid/README.md` |
 | Fluid `.fluid.html` resolution ([#108166](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108166-FluidFileExtensionAndTemplateResolving.html)) | no | **yes** | `../fluid/README.md` |
