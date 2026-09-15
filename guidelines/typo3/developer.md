@@ -101,6 +101,27 @@ Do not copy the entire field `config` array just to change a label.
 
 Do not use shortform in extensions that still support v13.
 
+### `cropVariants` — every variant needs a `cropArea`
+
+**Validity:** reproduced on v14 · not checked on v13
+
+```php
+'cropVariants' => [
+    'free' => [
+        'title' => 'Free',
+        'cropArea' => ['x' => 0, 'y' => 0, 'width' => 1, 'height' => 1],
+        'allowedAspectRatios' => [
+            'free' => ['title' => 'Free', 'value' => 0.0],
+        ],
+    ],
+],
+```
+
+The image manipulation element fills in a missing `cropArea`, so the mistake is
+invisible where the configuration is usually checked. The `OtherLanguageThumbnails`
+field wizard does not: editing a **translated** record with an image raises
+`Undefined array key "cropArea"` and shows no preview thumbnails.
+
 ---
 
 ## FlexForm data structure registration

@@ -34,6 +34,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   included
 - `guidelines/playwright.md` — one generated test per language, and a count
   comparison for content that is meant to be identical across languages
+- `guidelines/typo3/developer.md` — every `cropVariants` entry needs a
+  `cropArea`. The image manipulation element fills a missing one in; the
+  `OtherLanguageThumbnails` wizard does not and raises a warning when a
+  translated record with an image is edited
 
 ### Changed
 
