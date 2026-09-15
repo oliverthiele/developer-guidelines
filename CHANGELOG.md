@@ -26,6 +26,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `changelog-index/notes/88886.md` — the template guard, `-1` on the parent only,
   and SQL fixes as antipatterns
 - `guidelines/typo3/versions.md` — row for #88886
+- `guidelines/testing.md` — multilingual sites: pages that render records are
+  tested in at least one translated language as well, preferably a strict one.
+  Translation state is data, and the default language never runs an overlay, so
+  it cannot show what is missing. Compare structure rather than text, use a copy
+  of production content, and repeat after every core update, patch releases
+  included
+- `guidelines/playwright.md` — one generated test per language, and a count
+  comparison for content that is meant to be identical across languages
 
 ### Changed
 

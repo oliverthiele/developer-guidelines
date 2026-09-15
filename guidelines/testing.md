@@ -41,7 +41,7 @@ Always check at least:
     - `phpstan.neon.dist`
     - `phpunit.xml`
     - `phpunit.xml.dist`
-    - `playwright.config.*` or site-specific configs like `playwright.carstens.config.ts`
+    - `playwright.config.*` or site-specific configs like `playwright.acme.config.ts`
     - `package.json`
 
 ## Detection Rules
@@ -209,7 +209,7 @@ Typical tools:
 #### Multi-Site Projects
 
 Some projects serve multiple sites from the same repository and define one Playwright
-config file per site (e.g. `playwright.carstens.config.ts`, `playwright.num.config.ts`).
+config file per site (e.g. `playwright.acme.config.ts`, `playwright.example.config.ts`).
 
 Detection: look for multiple `playwright.*.config.ts` files in the project root.
 
@@ -218,6 +218,30 @@ Rules:
 - Change affects a site-specific package → run only the config for that site
 - Change affects a shared package (theme, base extensions) → run all site configs
 - Always use the npm script that references the correct config file, not a generic `playwright test` call
+
+#### Multilingual Sites
+
+Pages that render records are tested in the default language **and in at least
+one translated language** — detail views, lists, filters, and JavaScript apps fed
+by JSON. If a language uses `fallbackType: strict`, it is one of them.
+
+Whether a record is translated is data, not code. The default language never
+passes through a language overlay, so a test there cannot show a missing
+translation. Since TYPO3 14.3.6, Extbase drops untranslated records on strict
+languages (see `typo3/developer.md`), which turns a formerly invisible fallback
+into an HTTP 500 or an empty value — on translated pages only.
+
+Rules:
+
+- Compare structure, not text: number of items, `null` vs. set, identifiers.
+  Translated strings differ by design
+- Test against a copy of production content. Translation gaps exist in real data,
+  not in fixtures
+- Run the translated tests after every core update, patch releases included
+- Cover detail pages reached from outside the site — newsletters, search results,
+  printed links. Nobody navigates there through the default language first
+
+The Playwright pattern is in `playwright.md` → *Multilingual pages*.
 
 #### Playwright Patterns
 

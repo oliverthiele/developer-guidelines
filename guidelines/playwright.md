@@ -201,6 +201,52 @@ test('Unknown record — returns 404 without PHP exception', async ({page}) => {
 });
 ```
 
+### Multilingual pages
+
+Generate one test per language instead of testing the default language only —
+see `testing.md` → *Multilingual Sites* for why. Keep the language list next to
+the paths in `helpers/urls.ts`:
+
+```typescript
+// helpers/urls.ts
+export const languages = [
+    {label: 'English', prefix: ''},
+    {label: 'German', prefix: '/de'},
+] as const;
+```
+
+```typescript
+import {languages, url} from '../helpers/urls';
+
+for (const language of languages) {
+    test(`${language.label} — detail page renders its related data`, async ({page}) => {
+        const response = await page.goto(language.prefix + url('productDetail'));
+
+        expect(response?.status()).toBe(200);
+        await expectNoError(page);
+        await expect(page.locator('[data-js="productCategory"]')).not.toBeEmpty();
+    });
+}
+```
+
+Where the content is meant to be the same in every language, compare counts
+rather than texts:
+
+```typescript
+test('Product list — same number of items in every language', async ({page}) => {
+    const counts: number[] = [];
+    for (const language of languages) {
+        await page.goto(language.prefix + url('productList'));
+        counts.push(await page.locator('[data-js="productItem"]').count());
+    }
+
+    expect(new Set(counts).size).toBe(1);
+});
+```
+
+Assert the status code explicitly: an Extbase error on a translated page is often
+a plain 500 or 400, and only the translated variant returns it.
+
 ### Bug regression tests
 
 Link every regression test to its origin in the file-level comment block:
