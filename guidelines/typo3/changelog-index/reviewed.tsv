@@ -7,16 +7,27 @@
 # here. This file is for the other two outcomes: decided against, or decided to
 # do something and not done yet.
 #
+# A verdict decides one question only: does this entry deserve a RULE in the
+# guidelines? It never removes anything from the index — every entry stays
+# greppable with its migration hint, which is what a project taken over from
+# another developer is searched with.
+#
+# A not-relevant reason therefore names the mechanism that already covers the
+# entry — ExtensionScanner, PHPStan, PHP itself, or a grep in the index. Never
+# the current project inventory: "we do not use it" is wrong the day a legacy
+# project arrives, and that is the day the entry is looked up.
+#
 # Without this file the audit reports the same hundreds of candidates on every
 # run and stops being read. Record a verdict for everything the audit shows.
-102875	not-relevant	Doctrine Connection signatures — we use QueryBuilder, not raw Connection calls
-102935	not-relevant	Extension Manager installation internals, no extension code affected
-107507	not-relevant	EXT:form finisher API, not used
-108277	not-relevant	CacheHashCalculator internals, not called from our code
-110028	not-relevant	FormEngine base classes, we write no custom FormEngine nodes
-110221	not-relevant	Logger declared final, we never extend it
-101305	not-relevant	GeneralUtility type declarations, PHPStan catches a wrong call anyway
-102583	not-relevant	EXT:adminpanel context aspect, matched only on the word "typoscript"
+102875	not-relevant	Doctrine DBAL 4 signatures — the shipped type declarations make PHPStan flag a wrong call; per-method migration is in the index
+102935	not-relevant	Extension Manager installation events — the removed event names are found by grepping the index; nothing teaches the old registration
+108277	not-relevant	CacheHashCalculator public methods removed — the ExtensionScanner reports the call, the index entry carries the migration
+110028	not-relevant	LoggerAwareInterface removed from FormEngine base classes — a subclass fails at PHP level on upgrade; index names the constructor injection
+110221	not-relevant	Logger declared final — PHP fails at the extending class; the index names the PSR-3 route
+101305	not-relevant	GeneralUtility type declarations — PHPStan flags a wrong call against the declared types
+102583	not-relevant	EXT:adminpanel context aspect, matched only on the word "typoscript" — one grep in the index away, no rule to teach
+107784	not-relevant	Backend layout data providers no longer registered via $GLOBALS — the changelog states the ExtensionScanner reports such usages, and the index carries the tag-based replacement
+110233	not-relevant	Page tree search query moved into AfterPageTreeItemsPreparedEvent — reachable by grepping the event name; no widespread habit a rule would have to correct
 106405	todo	TypolinkBuilder signature — check when a custom link builder is next touched
 105441	todo	TCA select with null item values creates nullable columns — decide whether developer.md needs a line
 107594	todo	Icon overlay for TCA select items — possibly worth a mention in content-blocks.md
@@ -24,5 +35,6 @@
 102600	covered	facet of the TSFE removal — see the $GLOBALS['TSFE'] rule in developer.md
 102605	covered	facet of the TSFE removal — see the $GLOBALS['TSFE'] rule in developer.md
 102715	covered	facet of the TSFE removal — see the $GLOBALS['TSFE'] rule in developer.md
+107507	covered	EXT:form AbstractFinisher->getTypoScriptFrontendController() — facet of the TSFE removal, see the $GLOBALS['TSFE'] rule in developer.md
 107578	covered	facet of the TSFE removal — event now carries the request
 109575	covered	ContentObjectRenderer members follow the same request-attribute migration

@@ -49,6 +49,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   release in full, because the patch update is the moment it breaks
 - `changelog-index/` — regenerated from core 14.3.7, adding the Important entries
   of the 13.4.x and 14.3.x patch releases; v15 re-harvested from `main`
+- `skills/changelog-audit/SKILL.md`, `changelog-index/reviewed.tsv` — a
+  `not-relevant` reason now names the mechanism that already covers the entry —
+  ExtensionScanner, PHPStan, PHP itself, or a grep in the index — instead of the
+  current project inventory. A verdict decides only whether an entry deserves a
+  rule; the index stays complete, and "we do not use it" is wrong the day a
+  project from another developer arrives
 
 ## [2.7.0] — 2026-09-01
 
