@@ -52,9 +52,13 @@ release in full (`from 14.3.6`), because the patch update is when it breaks. See
 `versions.md`.
 
 For the same reason a validity states when something became usable **in
-practice**, not when the API first appeared. `record-transformation` exists in
-v13 but only becomes worth using in v14, where it is applied automatically and
-the surrounding record handling exists — so it is documented as v14.
+practice**, not when the API first appeared — but it says both where they
+differ. `record-transformation` is the example: available since v13.2 and
+registrable by hand there, applied automatically from v14 on, which is where the
+surrounding record handling makes it worth using. Written as "available since
+v13.2, recommended from v14", never as a bare "v14" — that reads as "does not
+exist before", and a rule that creates a false version assumption is worse than
+no rule.
 
 This replaces the earlier "base file plus per-version overlay" layout. That
 layout encoded *"introduced in"* but was read as *"applies only to"* — four of
