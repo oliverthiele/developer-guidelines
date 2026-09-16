@@ -76,11 +76,10 @@
 109286	covered	Explicit request handling in PageRenderer — same principle as the request rule in developer.md
 101559	covered	Extbase uses the core ViewInterface — see the views rule in developer.md
 104764	covered	TemplatePaths->fillDefaultsByPackageName — see the ViewFactoryInterface rule in developer.md
-108227	todo	#[Validate] and #[IgnoreValidation] at method level deprecated in v14 — used in several project extensions; one line at the validator rule in developer.md
-104684	todo	Fluid RenderingContext->getRequest() deprecated — one line in fluid/typo3.md for ViewHelpers
 110414	todo	Global access time variables removed in v15 — still work in v14, the Context date aspect is writable today; add to the $GLOBALS rule when v15 approaches
 110578	todo	SingletonInterface removed from core services in v15 — own classes may keep implementing it; what changes is fetching a core service with makeInstance() instead of injecting it, which still works in v14
 105549	todo	ISO8601 date handling in DataHandler since v14 — check whether the manual timezone conversion can go when an importer with date fields is next touched
 101793	not-relevant	DataHandler checkStoredRecords properties deprecated — the ExtensionScanner reports the property access
 106118	not-relevant	DataHandler->storeLogMessages removed — the ExtensionScanner reports the property access; log() always writes now
 104477	not-relevant	Hyphen prefix removed from the sys_log data field — log rendering, no extension API to adapt
+107791	not-relevant	Report interfaces removed — PHP fails on the class implementing the removed interface; the index carries the submodule registration

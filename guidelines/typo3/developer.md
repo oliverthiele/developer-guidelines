@@ -370,6 +370,31 @@ Rules:
    `#[Validate(validator: 'NotEmpty')]` on a relation of an object passed as
    action argument fails argument validation when the related record is dropped;
    the page answers HTTP 400. Validators belong on objects that are submitted.
+
+   Where a validator does belong, put the attribute **on the parameter**, not on
+   the method with an argument name — `#[Validate(param: …)]` and
+   `#[IgnoreValidation(argumentName: …)]` are deprecated in v14 and stop working
+   in v15
+   ([#108227](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-108227-UsageOfIgnoreValidationAndValidateAttributesForParametersAtMethodLevel.html)):
+
+   ```php
+   // Correct — v14
+   public function updateAction(
+       #[IgnoreValidation]
+       Event $event,
+       #[Validate(validator: 'NotEmpty')]
+       string $comment,
+   ): ResponseInterface {
+
+   // Deprecated in v14, removed in v15
+   #[IgnoreValidation(argumentName: 'event')]
+   #[Validate(param: 'comment', validator: 'NotEmpty')]
+   public function updateAction(Event $event, string $comment): ResponseInterface {
+   ```
+
+   Only the parameter-naming properties are affected. An attribute on the method
+   that applies to the whole method, and `#[Validate]` on a model property, stay
+   valid.
 3. **Decide per table what the data is** — translate, `-1`, `0` with a fallback,
    or not language aware. See
    [`practices/record-languages.md`](practices/record-languages.md). Never

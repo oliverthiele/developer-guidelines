@@ -49,6 +49,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   boilerplate does not make a table less language aware — removing
   `languageField` does
 
+- `guidelines/fluid/typo3.md` — the request in a ViewHelper comes from
+  `getAttribute(ServerRequestInterface::class)`. `RenderingContext->getRequest()`
+  was removed in v14 and the ExtensionScanner deliberately does not look for it,
+  because the method name is too common to scan — so nothing warns before the
+  fatal error (#104684)
+- `guidelines/typo3/developer.md` — a validator attribute belongs on the
+  parameter. `#[Validate(param: …)]` and `#[IgnoreValidation(argumentName: …)]`
+  are deprecated in v14 and stop working in v15; attributes applying to a whole
+  method and `#[Validate]` on a property are unaffected (#108227)
+- `guidelines/typo3/versions.md` — rows for both
+
 ### Changed
 
 - `guidelines/typo3/practices/record-languages.md` — the Extbase identity map

@@ -153,6 +153,42 @@ event — the extension point is simply absent, and nothing indicates that.
 
 ---
 
+## The request in a ViewHelper — an attribute, not `getRequest()`
+
+**Validity:** deprecated in v13 · **removed in v14** ·
+[#104684](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104684-FluidRenderingContext-getRequest.html)
+
+> **Stale-knowledge trap:** `$this->renderingContext->getRequest()` is the line
+> nearly every custom ViewHelper used to reach the request with. It no longer
+> exists in v14, and the ExtensionScanner deliberately does not look for it —
+> the method name is too common to scan without flooding the report with false
+> positives. Nothing warns before the fatal error.
+
+Fluid standalone keeps its rendering context free of PSR-7, so the request is
+carried as an attribute instead:
+
+```php
+use Psr\Http\Message\ServerRequestInterface;
+
+// Correct — v14
+$request = null;
+if ($this->renderingContext->hasAttribute(ServerRequestInterface::class)) {
+    $request = $this->renderingContext->getAttribute(ServerRequestInterface::class);
+}
+
+// Wrong — removed in v14, fatal error
+$request = $this->renderingContext->getRequest();
+```
+
+Check with `hasAttribute()` first: a ViewHelper rendered outside a request —
+a CLI command building a mail body, for instance — has no request, and
+`getAttribute()` alone would fail there.
+
+The core's own ViewHelpers use exactly this call; `TranslateViewHelper` and
+`CObjectViewHelper` are short examples to read.
+
+---
+
 ## Building a view
 
 Never instantiate a view directly — inject `ViewFactoryInterface`. The full
