@@ -115,7 +115,7 @@ $querySettings->setLanguageAspect(new LanguageAspect(
 relations, so this also covers relations loaded through that query.
 
 When the table is reached as a relation of models you do not own, use
-`ModifyQueryBeforeFetchingObjectDataEvent` *(untested)*. It is dispatched in
+`ModifyQueryBeforeFetchingObjectDataEvent` *(verified)*. It is dispatched in
 `Backend::getObjectDataByQuery()` for every Extbase query, relation queries
 included, after `DataMapper` has set their language aspect:
 
@@ -145,9 +145,19 @@ final readonly class FallBackToDefaultLanguageForGroups
 }
 ```
 
-Two gaps: `findByUid()` returns an object already held by the persistence session
-without running a query, so no event is dispatched for it; and `count()` runs
-through the separate `ModifyQueryBeforeFetchingObjectCountEvent`.
+The listener changes the relation's records only, while the aggregate root stays
+strict — verified with a translated parent whose untranslated child came back
+through the listener alone.
+
+Three gaps:
+
+- **File references cannot be addressed by type.** Every file relation of every
+  table arrives as `TYPO3\CMS\Extbase\Domain\Model\FileReference`, so
+  `getType()` cannot tell one table's images from another's. Either accept the
+  fallback for all of them or read the query's source instead.
+- `findByUid()` returns an object already held by the persistence session without
+  running a query, so no event is dispatched for it.
+- `count()` runs through the separate `ModifyQueryBeforeFetchingObjectCountEvent`.
 
 ## Migration
 
