@@ -60,6 +60,31 @@ Rules:
 - `'type' => 'passthrough'` only for fields already defined in `ext_tables.sql`
 - passthrough fields must not be rendered in backend forms
 
+### System columns come from `ctrl` — do not write them by hand
+
+**Validity:** v13.3+ ·
+[#104311](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Feature-104311-AutoCreatedSystemTCAColumns.html)
+
+A `ctrl` entry creates the matching `columns` definition: `languageField`,
+`transOrigPointerField`, `transOrigDiffSourceField`, `enablecolumns`,
+`descriptionColumn`, `editlock`. Extensions can drop that boilerplate — keeping
+a hand-written copy means maintaining a definition the core already ships.
+
+`columns` definitions do **not** make a table language aware; `ctrl` does. When
+only `languageField` is set, the core adds `transOrigPointerField` on its own.
+Whether a table should be language aware at all is a design decision — see
+[`practices/record-languages.md`](practices/record-languages.md).
+
+The core does not add the fields to `types` or `palettes`. Placing them in
+`showitem`, and setting the access permissions, stays with the extension.
+
+The database side follows the same route: columns are created from the TCA
+definition since v13
+([#101553](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Feature-101553-Auto-createDBFieldsFromTCAColumns.html)),
+so `ext_tables.sql` only needs what TCA does not describe. A column that loses
+its TCA definition is no longer managed, and the schema compare offers to drop
+it — a separate decision from removing the definition.
+
 ### columnsOverrides — label and config overrides
 
 Use `columnsOverrides` to change a label or partial config for a specific CType

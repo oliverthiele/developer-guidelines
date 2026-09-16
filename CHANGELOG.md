@@ -42,8 +42,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `OtherLanguageThumbnails` wizard does not and raises a warning when a
   translated record with an image is edited
 
+- `guidelines/typo3/developer.md` — TCA system columns come from `ctrl`, not from
+  hand-written `columns` definitions (#104311): the core creates them, adds
+  `transOrigPointerField` on its own when only `languageField` is set, and
+  creates the database columns from TCA (#101553). Removing the `columns`
+  boilerplate does not make a table less language aware — removing
+  `languageField` does
+
 ### Changed
 
+- `guidelines/typo3/practices/record-languages.md` — the Extbase identity map
+  keys on the language aspect since v14.2 (#93765), so a second query in another
+  language needs no `clearState()` and returns a distinct object. The migration
+  step said the opposite, which held for v13
 - `guidelines/typo3/versions.md`, `guidelines/typo3/README.md` — exception to
   "major versions only": a behaviour change shipped in a patch release names that
   release in full, because the patch update is the moment it breaks

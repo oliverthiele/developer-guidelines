@@ -33,7 +33,7 @@ Decide per table what its records **are**, not what the TCA template generated:
 | content that differs per language — article, news, event | language aware, translated; `strict` is correct |
 | language-neutral master data, no translation intended — contact, address | language aware, records set to `-1` — **and their child records and file references as well** |
 | maintained in the default language today, translation possible later, with no date for it | language aware, records in `0`, `OVERLAYS_MIXED` for this table only |
-| without language by nature — copied from a system that has no languages, pure configuration values | **not** language aware: remove `languageField`, `transOrigPointerField` and `transOrigDiffSourceField` from `ctrl` |
+| without language by nature — copied from a system that has no languages, pure configuration values | **not** language aware: remove `languageField` from `ctrl` — that entry is the switch, see *Why* |
 | a relation whose value must not differ per language — e.g. category assignments a filter depends on | `l10n_mode: exclude` on the relation field |
 
 ## When not to
@@ -81,6 +81,22 @@ Decide per table what its records **are**, not what the TCA template generated:
   in the importer or make the table not language aware.
 - **New records default to language `0`.** A TCA `default` of `-1` for
   `type => language` is *(untested)*.
+- **`ctrl['languageField']` is the switch, not the `columns` definitions.**
+  *(core source)* Since v13.3
+  ([#104311](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Feature-104311-AutoCreatedSystemTCAColumns.html))
+  `TcaEnrichment` creates the `columns` entries for the language fields whenever
+  `ctrl['languageField']` is set and they are not defined by hand — and it adds
+  `transOrigPointerField => 'l10n_parent'` to `ctrl` on its own when only
+  `languageField` is there. Removing the hand-written `columns` definitions
+  therefore makes a table no less language aware; removing `languageField` does.
+  Conversely, a table that stays language aware needs none of that boilerplate
+  in its TCA any more.
+- **The identity map separates languages since v14.2**
+  ([#93765](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Important-93765-ExtbaseIdentityMapNowLanguageAware.html)).
+  Its key carries `contentId`, overlay type and fallback chain, so the same
+  record fetched under two language aspects comes back as **two distinct
+  objects**. Code comparing objects with `===` across language contexts breaks.
+  *(verified)*
 - **Relations without `l10n_mode: exclude` are stored per language**, with their
   own MM rows per translation. Editors change one language and forget the other;
   filters then behave differently per language.
@@ -186,9 +202,13 @@ Three gaps:
    admin backend user so DataHandler works, create the records through
    DataHandler, then set the language aspect on the singleton `Context` from
    `LanguageAspectFactory::createFromSiteLanguage()` and run the repository query
-   once per language. `PersistenceManager::clearState()` between the runs, or the
-   identity map answers the second query from the first one's objects. Overriding
-   the overlay type on the aspect shows the "mixed" result in the same run.
+   once per language. Overriding the overlay type on the aspect shows the "mixed"
+   result in the same run.
+
+   On v14.2 and later no `PersistenceManager::clearState()` is needed between the
+   languages — the identity map keys on the language aspect and answers each run
+   separately *(verified)*. On v13 it is, or the second query is answered from
+   the first run's objects.
 6. **Removing language awareness from the TCA** leaves the database columns; the
    schema compare then only proposes dropping the language index. Decide the
    column drop separately. *(verified)*
