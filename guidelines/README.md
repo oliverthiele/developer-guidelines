@@ -14,118 +14,9 @@ Always prefer minimal, targeted changes.
 
 ## Setup
 
-Clone this repository as a sibling directory next to your projects:
-
-```
-PhpstormProjects/
-├── developer-guidelines/    ← this repo
-├── my-project-a/
-├── my-project-b/
-└── ...
-```
-
-The default path used in `CLAUDE.md` and memory files is
-`../developer-guidelines/guidelines/` (relative to the project root).
-
-**Only the sibling relationship is binding, not the parent directory name.** The
-tree above happens to be called `PhpstormProjects/`, but nothing depends on that —
-every reference is relative. Teams that share a location should name it in their
-own project guidelines, so onboarding commands can be copied verbatim.
-
-If the guidelines are located elsewhere, set the environment variable
-`DEVELOPER_GUIDELINES_DIR` to the absolute path of the `guidelines/` directory.
-
-Update with `git pull` in this repository — every project reads it directly, so there
-is no copy to refresh.
-
-Projects read the **working tree**, not a tag. Whatever branch this clone has
-checked out is what every project sees, so keep it on `main` and switch
-deliberately when working on the guidelines themselves — otherwise a project
-silently reads unreleased rules. Do not vendor these files into a project (no submodule, no
-duplication); that would pin each project to a commit and defeat the single pull.
-
-### Project-specific guidelines
-
-Rules that hold for one project only — CSS prefix assignments, build paths, extension
-conventions — do not belong in this repository. They live in a `Guidelines/` folder in
-the project root, committed with the project:
-
-```
-PhpstormProjects/
-├── developer-guidelines/    ← this repo, shared rules
-└── my-project/
-    └── Guidelines/
-        └── README.md        ← index of the project rules
-```
-
-**`Guidelines/` is evaluated first**, before any file in this repository — comparable to
-`Configuration/TCA/Overrides/` in TYPO3, which refines the base definition rather than
-replacing it. One difference matters: nothing loads `Guidelines/` automatically. The
-project's own `CLAUDE.md` has to point at it, which is what the setup below does.
-
-**On conflict, the project file wins.** Every override there names the shared rule it
-replaces and the reason for it.
-
-Never copy shared rules into a project folder. If a rule holds for every project,
-propose it here instead.
-
-The folder is spelled `Guidelines/` with a capital G in every project. This is binding:
-macOS resolves paths case-insensitively, Linux and CI do not, so a mixed spelling works
-on one machine and silently fails on another.
-
-### Setting up a project
-
-Three steps, once per project.
-
-**1.** Create `Guidelines/README.md` as the index — precedence rule, and a table naming
-which file covers which work area.
-
-**2.** Point the project's `CLAUDE.md` (and `AGENTS.md`, if present) at it. The project
-file must be self-contained — never refer to a personal `~/.claude/CLAUDE.md`, since
-collaborators do not have it:
-
-```markdown
-## Guidelines — mandatory read protocol
-
-Project rules live in `Guidelines/`. They extend the shared, project-independent
-guidelines cloned next to this project in `../developer-guidelines/` — start there
-at `../developer-guidelines/AGENTS.md` for the read order and the routing table.
-
-**Read the relevant file before starting work in that area** — also when the task
-looks small or the rule seems obvious.
-
-@Guidelines/README.md
-
-When no rule covers the case: look it up — `guidelines/typo3/changelog-index/` for
-TYPO3 version questions (grep it, never read it whole), otherwise the surrounding
-project code. Ask if that does not settle it, and never invent a fallback. Silence
-in the guidelines is not permission.
-
-On conflict, the project file wins. Never edit files in `../developer-guidelines/`
-without explicit confirmation.
-```
-
-A project without a `Guidelines/` folder uses the same block without the first
-sentence and the `@Guidelines/README.md` line.
-
-**3.** Commit `.claude/settings.json` so reading the shared guidelines does not prompt
-every collaborator:
-
-```json
-{
-  "permissions": {
-    "allow": [
-      "Read(../developer-guidelines/**)"
-    ]
-  }
-}
-```
-
-The grant covers the whole repository, not just `guidelines/` — `AGENTS.md` in the
-root is the entry point, and `skills/` is read from projects that run
-`guidelines-upgrade`. Both sit outside a `guidelines/**` pattern, so a narrower
-grant prompts on exactly the files a project reads first. Nothing here is writable
-by a project, so there is no risk in the wider read.
+How to clone this repository next to a project, how a project's own
+`Guidelines/` folder relates to it, and the three steps that wire a project up:
+[setup.md](setup.md). Read it once per project, not per task.
 
 ## How to use
 
@@ -141,17 +32,33 @@ These files do not cover everything, and they are not meant to. When a task
 needs a TYPO3 API, a TCA type, a configuration key or a convention that neither
 a guideline nor the project's own `Guidelines/` folder covers:
 
-1. **Look it up.** For TYPO3 version questions — does this class still exist,
-   what replaced it, when was it removed — the answer is in
-   [typo3/changelog-index/](typo3/changelog-index/). Grep it, never read it
-   whole. Otherwise read the surrounding project code, which is the binding
-   pattern for anything project-specific.
-2. **Ask.** If the lookup does not settle it, stop and ask. An unanswered
-   question costs one message; a wrong assumption is found in review, or later.
-3. **Never invent a fallback.** Do not write against a remembered API, do not
+1. **Establish the version first.** Which TYPO3 version does *this* project run?
+   Read it from `composer.lock` or `vendor/typo3/cms-core/`, never from memory
+   and never from the version a neighbouring project uses. Every answer below
+   depends on it, and a right answer for the wrong version is still wrong.
+2. **Grep the changelog index.** For version questions — does this class still
+   exist, what replaced it, when was it removed —
+   [typo3/changelog-index/](typo3/changelog-index/) answers it. Grep it, never
+   read it whole.
+3. **Read the installed source.** A changelog says what *changed*; it does not
+   say how an API is meant to be used. The code in the project's own `vendor/`
+   is the version that actually runs — class signatures, docblocks and the
+   core's own usages of a class settle most API questions in a minute. Prefer it
+   over the published documentation, which defaults to another version, and over
+   memory, which has no version at all.
+4. **Read the surrounding project code.** The binding pattern for anything
+   project-specific. It can be outdated — check it against steps 2 and 3 before
+   copying it.
+5. **Ask.** If that does not settle it, stop and ask. An unanswered question
+   costs one message; a wrong assumption is found in review, or later.
+6. **Never invent a fallback.** Do not write against a remembered API, do not
    reconstruct a missing rule by analogy from a neighbouring guideline, and do
    not carry a pattern over from an older TYPO3 version because it used to work
    there.
+
+Steps 2 to 4 are cheap and answer most cases. Step 5 is for the questions they
+cannot answer — a decision, a preference, anything where the code shows what is
+possible but not what is wanted.
 
 **Silence in these files is not permission.** It usually means the case has not
 come up yet — see [What belongs in here](#what-belongs-in-here) for why the set
@@ -193,24 +100,9 @@ derived from that metadata.
 
 ## Own tooling
 
-Published packages that support or enforce rules in these guidelines. Where a
-rule can be checked automatically, its section carries a `**Tooling:**` line
-next to `**Validity:**` — reach for the tool instead of doing the work by hand.
-
-| Package | Covers | Guideline |
-|---|---|---|
-| [`oliverthiele/typo3-fluid-linter`](https://packagist.org/packages/oliverthiele/typo3-fluid-linter) | Fluid templates: encoding artifacts, namespace and XML issues, deprecated ViewHelpers, Fluid 5 breaking changes — several rules auto-fixable with `--fix`; no TYPO3 installation required | [fluid/](fluid/README.md) |
-| [`oliverthiele/ot-mailcatcher`](https://packagist.org/packages/oliverthiele/ot-mailcatcher) | captures outgoing mail as files instead of sending it; token-protected HTTP API so an E2E test can assert on a mail — or ask first whether it is being captured at all | [playwright.md](playwright.md) |
-
-The core ships a Fluid check of its own, `typo3 fluid:analyze` (v14.2+, alias
-`fluid:analyse`). It is AST-based and finds real parse errors, but needs a
-bootable instance and only reads `*.fluid.*` files. Where both are available,
-they answer different questions — run both.
-
-**The rules never depend on a tool being present.** A project that uses none of
-these still follows them; a `**Tooling:**` line says a check *can* be automated,
-never that the rule exists because the tool does. Every rule states its own
-reason and holds without it.
+Packages that check rules automatically, and the `**Tooling:**` line that points
+at them from a rule: [tooling.md](tooling.md). The rules never depend on a tool
+being present.
 
 ## What belongs in here
 
@@ -229,8 +121,12 @@ Version facts that do not meet this bar belong in
 [typo3/changelog-index/](typo3/changelog-index/) — searched on demand, free
 until then.
 
-**Expiry:** when a TYPO3 version leaves support, its pure stale-knowledge traps
-are removed. The changelog index keeps them at no cost.
+**Expiry:** the end of a version's support removes **instructions**, not
+**warnings**. A rule explaining how to do something in a version nobody runs any
+more can go — the changelog index keeps it at no cost. A warning about a pattern
+that was removed stays as long as the wrong pattern is still being produced:
+support ends on a schedule, training data does not. `StandaloneView` is the
+example — gone since v14, and still the first thing a model reaches for.
 
 ## General rules (apply everywhere)
 

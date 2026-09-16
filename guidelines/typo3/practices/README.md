@@ -15,6 +15,7 @@ document type next to the rule files, the version table and the changelog index.
 | File | Decision it covers |
 |---|---|
 | [fluid-components.md](fluid-components.md) | Component or partial, Atomic Design levels, v13 vs v14 registration |
+| [record-languages.md](record-languages.md) | Translate, `-1`, `0` with fallback, not language aware, or `l10n_mode: exclude` — per table and per relation |
 
 ## Why these are separate files
 

@@ -17,6 +17,10 @@ missing. See [AGENTS.md](AGENTS.md).
 ### `guidelines/`
 
 Technology- and topic-specific coding guidelines that apply to **all projects**.
+Two files sit next to them and are read once, not per task:
+[setup.md](guidelines/setup.md) (placing the repository, wiring up a project)
+and [tooling.md](guidelines/tooling.md) (the packages that check rules
+automatically).
 
 | File                                                              | Topics                                                                     |
 |-------------------------------------------------------------------|----------------------------------------------------------------------------|

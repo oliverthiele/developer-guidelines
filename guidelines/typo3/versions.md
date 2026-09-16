@@ -17,6 +17,12 @@ arrived in 13.4 are equally available in a v13 project. The minor version
 changes no decision and is therefore not carried here. Where it is ever needed,
 it sits in column 3 of the changelog index, one `grep` away.
 
+**Exception: a behaviour change inside a patch release.** When the core changes
+how existing code behaves within a maintained major, the release that brought it
+is named in full — `from 14.3.6`. A patch update is exactly the moment such a
+change breaks a site, and a plain "v14" would also describe the sites that are not
+affected yet.
+
 Only rules that **changed between majors** are listed. Rules that hold
 everywhere carry no `**Validity:**` line in their guideline file either.
 
@@ -39,6 +45,7 @@ everywhere carry no `**Validity:**` line in their guideline file either.
 | `StandaloneView`, `TemplateView`, `AbstractTemplateView` ([#104773](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104773-CustomFluidViewsAndExtbase.html) → [#105377](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-105377-DeprecatedFunctionalityRemoved.html)) | deprecated | **removed** | `developer.md` |
 | `TypoScriptFrontendController`, `$GLOBALS['TSFE']` ([#105230](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.4/Deprecation-105230-TypoScriptFrontendControllerAndGLOBALSTSFE.html) → [#107831](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107831-RemovedTypoScriptFrontendController.html)) | deprecated | **removed** | `developer.md` |
 | `ViewFactoryInterface` | yes | yes | `developer.md` |
+| Extbase respects `fallbackType` for records and relations ([#88886](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.3.x/Important-88886-ExtbasePersistenceRespectsLanguageOverlayType.html)) | no — always "mixed" | **from 14.3.6** — `strict` drops untranslated records | `developer.md` |
 | `record-transformation` usable in practice | no | **yes** | `developer.md` |
 | Union types in `f:argument` ([#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108148-UnionTypesForViewHelpers.html)) | no | **yes** | `../fluid/README.md` |
 | Fluid `.fluid.html` resolution ([#108166](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108166-FluidFileExtensionAndTemplateResolving.html)) | no | **yes** | `../fluid/README.md` |
@@ -46,6 +53,8 @@ everywhere carry no `**Validity:**` line in their guideline file either.
 | FlexForm DS via `columnsOverrides` | no — pointer key | **yes — required** | `developer.md` |
 | `ExtensionManagementUtility::addPiFlexFormValue()` ([#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107047-ExtensionManagementUtilityaddPiFlexFormValue.html)) | yes | deprecated, removal announced for v15 | `developer.md` |
 | Extension title from `composer.json` ([#108304](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108304-PopulateExtensionTitleFromComposerJson.html)) | no | **yes** | `developer.md` |
+| `#[Validate(param: …)]`, `#[IgnoreValidation(argumentName: …)]` ([#108227](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-108227-UsageOfIgnoreValidationAndValidateAttributesForParametersAtMethodLevel.html)) | yes | deprecated, removal announced for v15 — put the attribute on the parameter | `developer.md` |
+| `RenderingContext->getRequest()` in ViewHelpers ([#104684](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104684-FluidRenderingContext-getRequest.html)) | deprecated | **removed** — `getAttribute(ServerRequestInterface::class)` | `../fluid/typo3.md` |
 
 ## XLIFF
 
@@ -59,13 +68,19 @@ everywhere carry no `**Validity:**` line in their guideline file either.
 
 ---
 
-## Date it by usability, not by first appearance
+## Date it by usability — but say so when that differs from availability
 
 A row says when something became usable **in practice**, not when the API first
 landed in the core. `record-transformation` is the example: the DataProcessor
 exists in v13, but only v14 applies it automatically and ships the surrounding
 record handling that makes it worth using. Listing it as a v13 feature would be
 technically accurate and practically misleading.
+
+**Where the two differ, name both** — "available since v13.2, recommended from
+v14". A bare "v14" is read as "does not exist before v14", and a rule that
+produces a false version assumption is worse than no rule: it is the kind of
+statement an assistant repeats as fact. Where availability and recommendation
+coincide, which is the normal case, one version is enough.
 
 ## Keeping this table honest
 

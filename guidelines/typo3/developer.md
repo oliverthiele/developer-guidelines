@@ -60,6 +60,31 @@ Rules:
 - `'type' => 'passthrough'` only for fields already defined in `ext_tables.sql`
 - passthrough fields must not be rendered in backend forms
 
+### System columns come from `ctrl` — do not write them by hand
+
+**Validity:** v13.3+ ·
+[#104311](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Feature-104311-AutoCreatedSystemTCAColumns.html)
+
+A `ctrl` entry creates the matching `columns` definition: `languageField`,
+`transOrigPointerField`, `transOrigDiffSourceField`, `enablecolumns`,
+`descriptionColumn`, `editlock`. Extensions can drop that boilerplate — keeping
+a hand-written copy means maintaining a definition the core already ships.
+
+`columns` definitions do **not** make a table language aware; `ctrl` does. When
+only `languageField` is set, the core adds `transOrigPointerField` on its own.
+Whether a table should be language aware at all is a design decision — see
+[`practices/record-languages.md`](practices/record-languages.md).
+
+The core does not add the fields to `types` or `palettes`. Placing them in
+`showitem`, and setting the access permissions, stays with the extension.
+
+The database side follows the same route: columns are created from the TCA
+definition since v13
+([#101553](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Feature-101553-Auto-createDBFieldsFromTCAColumns.html)),
+so `ext_tables.sql` only needs what TCA does not describe. A column that loses
+its TCA definition is no longer managed, and the schema compare offers to drop
+it — a separate decision from removing the definition.
+
 ### columnsOverrides — label and config overrides
 
 Use `columnsOverrides` to change a label or partial config for a specific CType
@@ -100,6 +125,27 @@ Do not copy the entire field `config` array just to change a label.
 ```
 
 Do not use shortform in extensions that still support v13.
+
+### `cropVariants` — every variant needs a `cropArea`
+
+**Validity:** reproduced on v14 · not checked on v13
+
+```php
+'cropVariants' => [
+    'free' => [
+        'title' => 'Free',
+        'cropArea' => ['x' => 0, 'y' => 0, 'width' => 1, 'height' => 1],
+        'allowedAspectRatios' => [
+            'free' => ['title' => 'Free', 'value' => 0.0],
+        ],
+    ],
+],
+```
+
+The image manipulation element fills in a missing `cropArea`, so the mistake is
+invisible where the configuration is usually checked. The `OtherLanguageThumbnails`
+field wizard does not: editing a **translated** record with an image raises
+`Undefined array key "cropArea"` and shows no preview thumbnails.
 
 ---
 
@@ -262,6 +308,109 @@ in the changelog index — it lists every property with its substitution.
 
 ---
 
+## Extbase and `fallbackType: strict` — untranslated records disappear
+
+**Validity:** v14 **from 14.3.6**
+([#88886](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.3.x/Important-88886-ExtbasePersistenceRespectsLanguageOverlayType.html))
+· v13 and v14 up to 14.3.5 always overlay with "mixed" semantics · related:
+`setIgnoreEnableFields()` now reveals hidden translations
+([#100638](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.3.x/Important-100638-ExtbaseIgnoreEnableFieldsAppliesToTranslations.html))
+
+> **Stale-knowledge trap:** up to 14.3.5, Extbase returned the default-language
+> record whenever no translation existed, regardless of the site's
+> `fallbackType`. Existing extensions and nearly every example rely on it. The
+> change arrived in a patch release, classified as Important rather than
+> Breaking, and no tool can see it: no signature changes, only results.
+> `hideNonTranslated` is not a way back — it is the legacy name of
+> `OVERLAYS_ON` and `OVERLAYS_ON_WITH_FLOATING`, the strict behaviour itself.
+> `Typo3QuerySettings::setLanguageOverlayMode()` does not exist.
+
+| `fallbackType` | Overlay type | Untranslated record in language 0 |
+|---|---|---|
+| `strict` | `OVERLAYS_ON_WITH_FLOATING` | **dropped** — aggregate roots and related objects |
+| `fallback` | `OVERLAYS_MIXED` | default-language record, unchanged |
+| `free` | `OVERLAYS_OFF` | no overlay; `findByUid()` still resolves with "mixed" semantics |
+
+What `strict` does to relations on a translated page:
+
+| Relation | Effect |
+|---|---|
+| 1:1 (`select`, value field) | property is `null` |
+| 1:n, m:n, file references | items missing from the collection, no error |
+| child of a parent **without** a language field | dropped as well — children are overlaid to the requested language |
+| child of a parent with `sys_language_uid = -1` | dropped as well, unless the child is `-1` itself or translated |
+
+Kept: records with `-1`, and translated records without a translation parent
+("floating"). Records created through Extbase in the frontend are stored in
+language `0` unless a language is assigned, and are therefore invisible in
+strict languages until translated.
+
+Rules:
+
+1. **Nullable getters for 1:1 relations.** A required TCA field does not
+   guarantee an object in every language.
+
+   ```php
+   // Correct
+   protected ?Contact $contact = null;
+
+   public function getContact(): ?Contact
+   {
+       return $this->contact;
+   }
+
+   // Wrong — TypeError on a translated page when the contact is not translated
+   public function getContact(): Contact
+   ```
+
+   Guard the template block (`<f:if condition="{event.contact}">`) — as a
+   consequence of the nullable getter, never as the fix. A guard alone renders
+   the page without the record and reports nothing.
+2. **No property validators on models that are only displayed.** A
+   `#[Validate(validator: 'NotEmpty')]` on a relation of an object passed as
+   action argument fails argument validation when the related record is dropped;
+   the page answers HTTP 400. Validators belong on objects that are submitted.
+
+   Where a validator does belong, put the attribute **on the parameter**, not on
+   the method with an argument name — `#[Validate(param: …)]` and
+   `#[IgnoreValidation(argumentName: …)]` are deprecated in v14 and stop working
+   in v15
+   ([#108227](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-108227-UsageOfIgnoreValidationAndValidateAttributesForParametersAtMethodLevel.html)):
+
+   ```php
+   // Correct — v14
+   public function updateAction(
+       #[IgnoreValidation]
+       Event $event,
+       #[Validate(validator: 'NotEmpty')]
+       string $comment,
+   ): ResponseInterface {
+
+   // Deprecated in v14, removed in v15
+   #[IgnoreValidation(argumentName: 'event')]
+   #[Validate(param: 'comment', validator: 'NotEmpty')]
+   public function updateAction(Event $event, string $comment): ResponseInterface {
+   ```
+
+   Only the parameter-naming properties are affected. An attribute on the method
+   that applies to the whole method, and `#[Validate]` on a model property, stay
+   valid.
+3. **Decide per table what the data is** — translate, `-1`, `0` with a fallback,
+   or not language aware. See
+   [`practices/record-languages.md`](practices/record-languages.md). Never
+   restore "mixed" globally.
+4. **Change languages through the backend or DataHandler, never with SQL.** A
+   translation consists of `l10n_parent`, `l10n_source`, `l10n_state`, its own
+   file references and the reference index; a partial SQL fix can make the
+   frontend look right while the backend's localization view is broken.
+5. **Third-party extensions:** do not patch them. Fix the data, or add a
+   project-level listener. They may set their own `LanguageAspect`, so compare
+   the rendered output per language instead of trusting the configuration.
+6. **Test translated pages before updating to 14.3.6 or later** — see
+   [`../testing.md`](../testing.md) → *Multilingual Sites*.
+
+---
+
 ## Views — never instantiate a view directly
 
 **Validity:** `Extbase\Mvc\View\AbstractView` and
@@ -280,19 +429,37 @@ removed in v14
 Inject `ViewFactoryInterface` and call `create()`:
 
 ```php
-use TYPO3\CMS\Core\View\ViewFactoryInterface;
 use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
 
 public function __construct(
     private readonly ViewFactoryInterface $viewFactory,
 ) {}
 
 $view = $this->viewFactory->create(new ViewFactoryData(
-    templatePathAndFilename: 'EXT:my_ext/Resources/Private/Templates/Mail.html',
+    templateRootPaths: ['EXT:my_ext/Resources/Private/Templates/'],
+    partialRootPaths: ['EXT:my_ext/Resources/Private/Partials/'],
+    layoutRootPaths: ['EXT:my_ext/Resources/Private/Layouts/'],
+    request: $request,
 ));
+$view->assign('order', $order);
+$html = $view->render('Mail/OrderConfirmation');
 ```
 
-Template paths belong in `ViewFactoryData`, not in setter calls afterwards.
+Rules, taken from the best-practice block in `ViewFactoryData` itself (read in
+core 14.3.7):
+
+- **Root paths, not `templatePathAndFilename`.** The core names it as the thing
+  to avoid. Root paths keep partials and layouts resolvable and let a project
+  override the template by adding its own path to the array — a single file name
+  cannot be overridden. Reserve `templatePathAndFilename` for a template that
+  genuinely lives outside any root path structure.
+- **`render()` takes the template name without extension**, relative to
+  `templateRootPaths` — `'Mail/OrderConfirmation'`, not a path with `.html`.
+- **Hand over the request** whenever the code has one. Core lists that first;
+  ViewHelpers that need it read it from the rendering context. Code without a
+  request — a CLI command, a scheduler task — passes none.
+- Template paths belong in `ViewFactoryData`, not in setter calls afterwards.
 
 For a custom view class, implement `TYPO3\CMS\Core\View\ViewInterface`
 (namespace `Core\View`, **not** Extbase):
@@ -347,16 +514,20 @@ its own package and also runs standalone.
 
 ## `record-transformation` — applied by default in v14
 
-**Validity:** v14+ — verified in
-`EXT:fluid_styled_content/Configuration/TypoScript/Helper/ContentElement.typoscript`
-(present in v14, absent in v13)
-
-The DataProcessor itself already exists in v13
+**Validity:** available since v13.2
 ([#103783](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.2/Feature-103783-RecordTransformationDataProcessor.html)),
-but registering it manually there does not give the v13 project what v14
-provides: the automatic application plus the surrounding record handling
-(`f:render.contentArea` and friends) is what makes it practical. Treat this as a
-v14 feature.
+**recommended from v14**, where `lib.contentElement` applies it by default —
+verified in
+`EXT:fluid_styled_content/Configuration/TypoScript/Helper/ContentElement.typoscript`
+(present in v14, absent in v13) · TCA values are transformed for record objects
+since v13.3
+([#103581](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Feature-103581-AutomaticallyTransformTCAFieldValuesForRecordObjects.html))
+
+The DataProcessor exists in v13 and can be registered manually there — the
+recommendation is about practice, not availability. What v13 lacks is the
+automatic application plus the surrounding record handling
+(`f:render.contentArea` and friends), which is what makes it worth using. So:
+usable in v13 if a project wants it, the default from v14 on.
 
 ```typoscript
 # v14 — part of lib.contentElement out of the box

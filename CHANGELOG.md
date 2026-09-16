@@ -7,6 +7,105 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.0] — 2026-09-16
+
+### Added
+
+- `guidelines/typo3/developer.md` — Extbase honours `fallbackType` from TYPO3
+  14.3.6 on (#88886). On `strict` languages, untranslated records disappear —
+  aggregate roots and related objects, including children of parents without a
+  language field and of `-1` parents. Up to 14.3.5 Extbase always fell back to
+  the default language, and the change came in a patch release without any
+  signature change, so neither ExtensionScanner nor PHPStan can see it. Rules:
+  nullable getters for 1:1 relations, no validators on display-only models, a
+  per-table decision instead of a global fallback, language changes through
+  DataHandler, and translated pages tested before the update
+- `guidelines/typo3/practices/record-languages.md` — decision guide: translate,
+  `-1`, `0` with `OVERLAYS_MIXED`, not language aware, or `l10n_mode: exclude`.
+  Records from the core source that `-1` is not a fallback — a translation of a
+  `-1` record is never loaded — and shows how to restore "mixed" for a single
+  table, including relations of models you do not own
+- `changelog-index/notes/88886.md` — the template guard, `-1` on the parent only,
+  and SQL fixes as antipatterns
+- `guidelines/typo3/practices/record-languages.md` — how to check the behaviour
+  in a project: a CLI script that creates records through DataHandler and runs
+  the repository query once per language against the singleton `Context`
+- `guidelines/typo3/versions.md` — row for #88886
+- `guidelines/git.md` — customer data leaks into a public repository at one
+  specific moment: when a rule is promoted out of the project where the mistake
+  happened, because there the project's names and numbers are simply the material
+  the fix was made of. Promotion is therefore its own step — write a sanitised
+  draft in the project, check it while the context is still open, then apply it
+  from the draft rather than from the diff or the transcript
+- `guidelines/testing.md` — multilingual sites: pages that render records are
+  tested in at least one translated language as well, preferably a strict one.
+  Translation state is data, and the default language never runs an overlay, so
+  it cannot show what is missing. Compare structure rather than text, use a copy
+  of production content, and repeat after every core update, patch releases
+  included
+- `guidelines/playwright.md` — one generated test per language, and a count
+  comparison for content that is meant to be identical across languages
+- `guidelines/typo3/developer.md` — every `cropVariants` entry needs a
+  `cropArea`. The image manipulation element fills a missing one in; the
+  `OtherLanguageThumbnails` wizard does not and raises a warning when a
+  translated record with an image is edited
+
+- `guidelines/typo3/developer.md` — TCA system columns come from `ctrl`, not from
+  hand-written `columns` definitions (#104311): the core creates them, adds
+  `transOrigPointerField` on its own when only `languageField` is set, and
+  creates the database columns from TCA (#101553). Removing the `columns`
+  boilerplate does not make a table less language aware — removing
+  `languageField` does
+
+- `guidelines/fluid/typo3.md` — the request in a ViewHelper comes from
+  `getAttribute(ServerRequestInterface::class)`. `RenderingContext->getRequest()`
+  was removed in v14 and the ExtensionScanner deliberately does not look for it,
+  because the method name is too common to scan — so nothing warns before the
+  fatal error (#104684)
+- `guidelines/typo3/developer.md` — a validator attribute belongs on the
+  parameter. `#[Validate(param: …)]` and `#[IgnoreValidation(argumentName: …)]`
+  are deprecated in v14 and stop working in v15; attributes applying to a whole
+  method and `#[Validate]` on a property are unaffected (#108227)
+- `guidelines/typo3/versions.md` — rows for both
+
+### Changed
+
+- `guidelines/README.md` — the lookup path now names the two steps it skipped:
+  establish which TYPO3 version the project runs, and read the installed source
+  in `vendor/`. A changelog says what changed, not how an API is used, and the
+  published documentation defaults to another version
+- `guidelines/README.md` — expiry distinguishes instructions from warnings. The
+  end of a version's support removes a rule about how to do something there; a
+  warning about a removed pattern stays while the pattern is still produced,
+  because support ends on a schedule and training data does not
+- `guidelines/typo3/developer.md` — the `ViewFactoryData` example uses root paths
+  and `render('Mail/OrderConfirmation')` and hands over the request, following
+  the best-practice block in the core class, which names
+  `templatePathAndFilename` as the thing to avoid. Root paths are also what makes
+  a template overridable by a project
+- `guidelines/typo3/developer.md`, `guidelines/typo3/versions.md` — where
+  availability and recommendation differ, both are named: `record-transformation`
+  is available since v13.2 and recommended from v14. A bare "v14" reads as "does
+  not exist before v14"
+- `guidelines/README.md` — setup and tooling moved to `guidelines/setup.md` and
+  `guidelines/tooling.md`, leaving pointers. Both are read once per project, not
+  per task; the mandatory entry file drops from 275 to 171 lines
+- `guidelines/typo3/practices/record-languages.md` — the Extbase identity map
+  keys on the language aspect since v14.2 (#93765), so a second query in another
+  language needs no `clearState()` and returns a distinct object. The migration
+  step said the opposite, which held for v13
+- `guidelines/typo3/versions.md`, `guidelines/typo3/README.md` — exception to
+  "major versions only": a behaviour change shipped in a patch release names that
+  release in full, because the patch update is the moment it breaks
+- `changelog-index/` — regenerated from core 14.3.7, adding the Important entries
+  of the 13.4.x and 14.3.x patch releases; v15 re-harvested from `main`
+- `skills/changelog-audit/SKILL.md`, `changelog-index/reviewed.tsv` — a
+  `not-relevant` reason now names the mechanism that already covers the entry —
+  ExtensionScanner, PHPStan, PHP itself, or a grep in the index — instead of the
+  current project inventory. A verdict decides only whether an entry deserves a
+  rule; the index stays complete, and "we do not use it" is wrong the day a
+  project from another developer arrives
+
 ## [2.7.0] — 2026-09-01
 
 ### Added

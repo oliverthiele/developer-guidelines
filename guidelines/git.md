@@ -185,6 +185,26 @@ real engagement. **State the mechanism, not the measurement** — why something
 accumulates unnoticed is the transferable part; how much of it one project had
 is not.
 
+### The leak happens when a rule is promoted
+
+A rule is almost never written in this repository. It is written in the project
+where the mistake happened: something breaks, it gets fixed there, and then comes
+the question whether the fix should become a rule. At that moment the names,
+table names, extension keys and numbers of that project are simply the material
+the fix was made of — nothing marks them as private.
+
+So treat the promotion as its own step, not as a copy:
+
+1. Write the rule **in the project** as a draft that is already sanitised —
+   placeholders, the mechanism instead of the measurement, no counts.
+2. Check the draft against the list above, while the project context is still
+   open and it is still obvious which term came from where.
+3. Apply it in the guidelines repository from the draft — not from the diff, the
+   ticket or the session transcript.
+
+The order matters: sanitising afterwards means searching for names in a text that
+no longer shows where they came from.
+
 Check before every commit to a public repository. This applies to examples and
 commit messages in particular — they are the easiest place to leak without
 noticing, and a pushed commit keeps the text in its diff even after a later
