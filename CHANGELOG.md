@@ -31,6 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   in a project: a CLI script that creates records through DataHandler and runs
   the repository query once per language against the singleton `Context`
 - `guidelines/typo3/versions.md` — row for #88886
+- `guidelines/git.md` — customer data leaks into a public repository at one
+  specific moment: when a rule is promoted out of the project where the mistake
+  happened, because there the project's names and numbers are simply the material
+  the fix was made of. Promotion is therefore its own step — write a sanitised
+  draft in the project, check it while the context is still open, then apply it
+  from the draft rather than from the diff or the transcript
 - `guidelines/testing.md` — multilingual sites: pages that render records are
   tested in at least one translated language as well, preferably a strict one.
   Translation state is data, and the default language never runs an overlay, so
