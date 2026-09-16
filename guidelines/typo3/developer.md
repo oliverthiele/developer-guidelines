@@ -448,7 +448,9 @@ its own package and also runs standalone.
 
 **Validity:** v14+ — verified in
 `EXT:fluid_styled_content/Configuration/TypoScript/Helper/ContentElement.typoscript`
-(present in v14, absent in v13)
+(present in v14, absent in v13) · TCA values are transformed for record objects
+since v13.3
+([#103581](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Feature-103581-AutomaticallyTransformTCAFieldValuesForRecordObjects.html))
 
 The DataProcessor itself already exists in v13
 ([#103783](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.2/Feature-103783-RecordTransformationDataProcessor.html)),

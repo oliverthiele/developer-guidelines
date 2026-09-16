@@ -38,3 +38,50 @@
 107507	covered	EXT:form AbstractFinisher->getTypoScriptFrontendController() — facet of the TSFE removal, see the $GLOBALS['TSFE'] rule in developer.md
 107578	covered	facet of the TSFE removal — event now carries the request
 109575	covered	ContentObjectRenderer members follow the same request-attribute migration
+104814	not-relevant	System fields added automatically to content types — same mechanism as #104311, which carries the todo
+102632	not-relevant	Strict types in Extbase — PHP itself fails on a diverging signature in the overriding class
+110347	not-relevant	LazyLoadingProxy and LazyObjectStorage — v15 preview, nothing to do in v14; the index carries the migration
+110218	not-relevant	Class LogRecord declared final — PHP fails at the extending class; the index names the processor route
+110219	not-relevant	Log request ID from a processor — the recommended LogManager->getLogger() route stays valid
+101281	not-relevant	Type declarations in ResourceInterface — only own implementations are affected, and PHP fails on them
+101294	not-relevant	Type declarations in FileInterface — only own implementations are affected, and PHP fails on them
+101327	not-relevant	FileInterface::getSize() hardened — only own implementations are affected, and PHP fails on them
+102775	not-relevant	PageRepository native types — PHPStan flags a wrong call against the declared types
+102793	not-relevant	PageRepository->enableFields hook removed — the ExtensionScanner reports the registration, the index names the event
+102806	not-relevant	Hooks in PageRepository removed — the ExtensionScanner reports the registration
+102755	not-relevant	getImageResource hook removed — the ExtensionScanner reports the registration, the index names the event
+107356	not-relevant	Record API in the list module — backend internals; the index carries the before/after
+107003	not-relevant	Event to change record data in the list view — an addition, nothing it makes wrong
+107823	not-relevant	Strict typing in backend template components — PHP fails on a custom button with the wrong return type
+101133	not-relevant	IconFactory->getIcon() signature — PHPStan flags the changed fourth argument against the declared type
+110591	not-relevant	Custom columns in the workspaces module — an addition to an event, nothing it makes wrong
+110625	not-relevant	Record history grouped by operation — backend UI, no API to adapt
+110453	not-relevant	Derive PageRepository for another Context — v15 addition; the index carries it
+107629	not-relevant	Reference index check moved to the Install Tool — a place in the backend, no code change
+102130	not-relevant	T3D import/export internals — no extension API to adapt
+102960	not-relevant	TCA tables on the Default connection — the database analyzer reports a table it cannot resolve
+103915	not-relevant	Database field defaults for check TCA types — the database analyzer proposes the change at schema compare
+110422	not-relevant	Index definitions checked against the table — the schema update reports the invalid definition
+103748	not-relevant	Reference index rebuild after the sys_refindex columns changed — an upgrade step the Install Tool reports
+95714	not-relevant	Null attributes omitted in media rendering — affects custom renderer options; a grep in the index answers it
+107062	not-relevant	CSP nonce sources only when required — core behaviour, no extension API
+107032	not-relevant	AsMessageHandler fromTransport honoured — affects handlers that set the property; the index carries it
+109672	not-relevant	Translation domain syntax in resourceOverrides — an addition, file-based keys keep working
+105007	not-relevant	Final search query in EXT:indexed_search — extension-specific, one grep in the index away
+107654	not-relevant	Random subpage of doktype=shortcut removed — the ExtensionScanner reports the removed constant
+102326	not-relevant	RegularExpressionValidator errorMessage option — the ExtensionScanner reports the removed option
+109523	covered	GeneralUtility::isOnCurrentHost() — same principle as the request rule in developer.md: pass the request, never fetch it globally
+109544	covered	GeneralUtility::sanitizeLocalUrl() — same principle as the request rule in developer.md
+109548	covered	GeneralUtility::locationHeaderUrl() — same principle as the request rule in developer.md
+109286	covered	Explicit request handling in PageRenderer — same principle as the request rule in developer.md
+101559	covered	Extbase uses the core ViewInterface — see the views rule in developer.md
+104764	covered	TemplatePaths->fillDefaultsByPackageName — see the ViewFactoryInterface rule in developer.md
+93765	todo	Extbase identity map is language-aware since 14.2 — objects from different language contexts are distinct instances; add to record-languages.md and re-check the clearState() advice there
+104311	todo	TCA system columns are created from the ctrl entries since 13.3 — affects the "remove language awareness" path in record-languages.md and the TCA section in developer.md
+108227	todo	#[Validate] and #[IgnoreValidation] at method level deprecated in v14 — one line at the validator rule in developer.md
+104684	todo	Fluid RenderingContext->getRequest() deprecated — one line in fluid/typo3.md for ViewHelpers
+110414	todo	Global access time variables removed in v15 — still work in v14, the Context date aspect is writable today; add to the $GLOBALS rule when v15 approaches
+110578	todo	SingletonInterface removed from core services in v15 — makeInstance() still works in v14, injection is already correct today
+105549	todo	ISO8601 date handling in DataHandler since v14 — check whether the manual timezone conversion can go when an importer with date fields is next touched
+101793	not-relevant	DataHandler checkStoredRecords properties deprecated — the ExtensionScanner reports the property access
+106118	not-relevant	DataHandler->storeLogMessages removed — the ExtensionScanner reports the property access; log() always writes now
