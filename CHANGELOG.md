@@ -25,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   table, including relations of models you do not own
 - `changelog-index/notes/88886.md` — the template guard, `-1` on the parent only,
   and SQL fixes as antipatterns
+- `guidelines/typo3/practices/record-languages.md` — how to check the behaviour
+  in a project: a CLI script that creates records through DataHandler and runs
+  the repository query once per language against the singleton `Context`
 - `guidelines/typo3/versions.md` — row for #88886
 - `guidelines/testing.md` — multilingual sites: pages that render records are
   tested in at least one translated language as well, preferably a strict one.

@@ -19,9 +19,9 @@ rule itself is in [`../developer.md`](../developer.md) → *Extbase and
 
 Status markers on statements that are not plain facts:
 
-- *(verified)* — reproduced in a project
-- *(core source)* — read in the core source of 14.3.7, not yet exercised in a
-  project
+- *(verified)* — reproduced on a TYPO3 14.3.6 installation with a language using
+  `fallbackType: strict`, against an Extbase model with a 1:1 relation
+- *(core source)* — read in the core source of 14.3.7, not exercised
 - *(untested)* — plausible, neither read nor reproduced
 
 ## Decision
@@ -54,24 +54,28 @@ Decide per table what its records **are**, not what the TCA template generated:
 - **The behaviour changed in a patch release.** From 14.3.6 Extbase honours
   `fallbackType`; untranslated language-0 records vanish from translated pages
   without an error. See `developer.md`.
-- **`-1` is not a fallback.** *(core source)*
-  - The Extbase query only fetches translations whose parent is in language `0`
-    (`Typo3DbQueryParser::getLanguageStatement()`), so a translation of a `-1`
-    record is never loaded.
-  - `PageRepository::getRecordOverlay()` returns `-1` records untouched without
-    looking for a translation.
-  - The list module offers no localization for `-1` records
-    (`DatabaseRecordList`).
-  - `DataHandler::localize()` does not refuse a `-1` record, but sets no
-    translation parent. The result would be a floating record, which `strict`
-    fetches **in addition** to the `-1` record — a duplicate. *(untested)*
+- **`-1` is not a fallback.** *(verified)* A translation row pointing at a `-1`
+  record is ignored: the strict language shows the `-1` record, never the
+  translation. The Extbase query only fetches translations whose parent is in
+  language `0` (`Typo3DbQueryParser::getLanguageStatement()`), and
+  `PageRepository::getRecordOverlay()` returns `-1` records untouched without
+  looking for one. The backend never creates that shape either — the list module
+  offers no localization for `-1` records (`DatabaseRecordList`), and
+  `DataHandler::localize()` does not refuse such a record but writes **no**
+  translation parent.
+
+  What comes out of a forced localization is a floating record, and a strict
+  language then returns it **next to** the `-1` record — the same entry twice.
+  *(verified)*
 
   Translating later therefore means switching the records back to `0` and
   translating all of them in every strict language at once, or switching to `0`
   with `OVERLAYS_MIXED`.
-- **A `-1` parent does not protect its children.** `DataMapper` passes no
-  language on from a `-1` parent, so its children are overlaid to the requested
-  language, and file references in language `0` are dropped. *(core source)*
+- **A `-1` parent does not protect its children.** *(verified)* The `-1` record
+  itself is returned in every language, but its relations are still overlaid to
+  the requested language: a child record or file reference in language `0` is
+  dropped, and the relation is `null` on the translated page. Set the children to
+  `-1` as well.
 - **Imports undo data fixes.** An importer that inserts records without
   `sys_language_uid` creates language `0`. For imported tables, set the language
   in the importer or make the table not language aware.
@@ -91,9 +95,8 @@ the output of an older core and keep working afterwards. Audit before updating t
 
 ## Restoring "mixed" for one table
 
-*(untested in a project; the mechanism is core source)*
-
-On a query the table's own repository builds:
+On a query the table's own repository builds *(verified — the fallback applies to
+the records and to their relations)*:
 
 ```php
 use TYPO3\CMS\Core\Context\LanguageAspect;
@@ -112,7 +115,7 @@ $querySettings->setLanguageAspect(new LanguageAspect(
 relations, so this also covers relations loaded through that query.
 
 When the table is reached as a relation of models you do not own, use
-`ModifyQueryBeforeFetchingObjectDataEvent`. It is dispatched in
+`ModifyQueryBeforeFetchingObjectDataEvent` *(untested)*. It is dispatched in
 `Backend::getObjectDataByQuery()` for every Extbase query, relation queries
 included, after `DataMapper` has set their language aspect:
 
@@ -166,6 +169,15 @@ through the separate `ModifyQueryBeforeFetchingObjectCountEvent`.
    DataHandler copies the assignment to all translations. Before saving, add
    assignments that existed only in a translation and are correct, or they are
    lost. *(verified)*
-5. **Removing language awareness from the TCA** leaves the database columns; the
+5. **Checking the behaviour in your own project.** A CLI script is enough and
+   answers in seconds what a click-through cannot answer reliably: bootstrap
+   TYPO3 (`SystemEnvironmentBuilder::run()` plus `Bootstrap::init()`), set an
+   admin backend user so DataHandler works, create the records through
+   DataHandler, then set the language aspect on the singleton `Context` from
+   `LanguageAspectFactory::createFromSiteLanguage()` and run the repository query
+   once per language. `PersistenceManager::clearState()` between the runs, or the
+   identity map answers the second query from the first one's objects. Overriding
+   the overlay type on the aspect shows the "mixed" result in the same run.
+6. **Removing language awareness from the TCA** leaves the database columns; the
    schema compare then only proposes dropping the language index. Decide the
    column drop separately. *(verified)*
