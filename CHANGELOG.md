@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.1] — 2026-09-16
+
 ### Changed
 
 - `guidelines/typo3/versions.md`, `guidelines/typo3/README.md` — the
