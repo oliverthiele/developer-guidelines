@@ -36,6 +36,12 @@ a guideline nor the project's own `Guidelines/` folder covers:
    Read it from `composer.lock` or `vendor/typo3/cms-core/`, never from memory
    and never from the version a neighbouring project uses. Every answer below
    depends on it, and a right answer for the wrong version is still wrong.
+
+   For a **reusable extension**, the installed version is only half the answer:
+   `composer.json` says which range it has to support. An API confirmed in the
+   installed v14 core proves nothing about the v13 the extension also declares —
+   check the lower bound in the changelog index, and either stay on what both
+   carry or branch on `Typo3Version`.
 2. **Grep the changelog index.** For version questions — does this class still
    exist, what replaced it, when was it removed —
    [typo3/changelog-index/](typo3/changelog-index/) answers it. Grep it, never

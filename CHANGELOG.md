@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `guidelines/typo3/versions.md`, `guidelines/typo3/README.md` — the
+  `record-transformation` row and the version model now say the same as the rule
+  itself: available since v13.2 and registrable by hand there, applied by default
+  and recommended from v14. The row read "usable in practice: no" for v13, so the
+  answer depended on which file was opened
+- `guidelines/README.md`, `AGENTS.md`, `guidelines/setup.md` — for a reusable
+  extension, the installed core is only half the answer: `composer.json` says
+  which range it must support, and an API confirmed in the installed v14 proves
+  nothing about the v13 the extension also declares
+
 ## [2.8.0] — 2026-09-16
 
 ### Added

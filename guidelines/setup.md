@@ -88,7 +88,8 @@ looks small or the rule seems obvious.
 @Guidelines/README.md
 
 When no rule covers the case: establish which TYPO3 version this project runs
-(`composer.lock`, `vendor/typo3/cms-core/`), grep
+(`composer.lock`, `vendor/typo3/cms-core/`; for an extension, also the range
+`composer.json` supports), grep
 `guidelines/typo3/changelog-index/` for version questions (never read it whole),
 read the installed source in `vendor/` for how an API is used, then the
 surrounding project code. Ask if that does not settle it, and never invent a

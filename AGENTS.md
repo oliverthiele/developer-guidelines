@@ -37,7 +37,8 @@ whether a guide covers it.
 
 Look it up, ask, and do not invent a fallback — the full rule is in
 [`guidelines/README.md` → When a rule is missing](guidelines/README.md#when-a-rule-is-missing).
-In short: establish which TYPO3 version the project runs, grep
+In short: establish which TYPO3 version the project runs — for a reusable
+extension, also the range its `composer.json` supports — grep
 [`guidelines/typo3/changelog-index/`](guidelines/typo3/changelog-index/) for
 version questions, and read the installed source in the project's `vendor/` for
 how an API is meant to be used — a changelog says what changed, the code says
