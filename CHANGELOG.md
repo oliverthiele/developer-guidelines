@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.0] — 2026-09-16
+
 ### Added
 
 - `guidelines/typo3/developer.md` — Extbase honours `fallbackType` from TYPO3
