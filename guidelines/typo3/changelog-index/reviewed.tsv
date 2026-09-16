@@ -83,3 +83,4 @@
 106118	not-relevant	DataHandler->storeLogMessages removed — the ExtensionScanner reports the property access; log() always writes now
 104477	not-relevant	Hyphen prefix removed from the sys_log data field — log rendering, no extension API to adapt
 107791	not-relevant	Report interfaces removed — PHP fails on the class implementing the removed interface; the index carries the submodule registration
+106584	not-relevant	f:image, f:asset.css and f:asset.script register href/src/alt in v15 — templates keep working; only the attribute order in the rendered img tag moves, which nothing but a string-comparing test notices
