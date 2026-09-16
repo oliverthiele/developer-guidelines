@@ -429,19 +429,37 @@ removed in v14
 Inject `ViewFactoryInterface` and call `create()`:
 
 ```php
-use TYPO3\CMS\Core\View\ViewFactoryInterface;
 use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
 
 public function __construct(
     private readonly ViewFactoryInterface $viewFactory,
 ) {}
 
 $view = $this->viewFactory->create(new ViewFactoryData(
-    templatePathAndFilename: 'EXT:my_ext/Resources/Private/Templates/Mail.html',
+    templateRootPaths: ['EXT:my_ext/Resources/Private/Templates/'],
+    partialRootPaths: ['EXT:my_ext/Resources/Private/Partials/'],
+    layoutRootPaths: ['EXT:my_ext/Resources/Private/Layouts/'],
+    request: $request,
 ));
+$view->assign('order', $order);
+$html = $view->render('Mail/OrderConfirmation');
 ```
 
-Template paths belong in `ViewFactoryData`, not in setter calls afterwards.
+Rules, taken from the best-practice block in `ViewFactoryData` itself (read in
+core 14.3.7):
+
+- **Root paths, not `templatePathAndFilename`.** The core names it as the thing
+  to avoid. Root paths keep partials and layouts resolvable and let a project
+  override the template by adding its own path to the array — a single file name
+  cannot be overridden. Reserve `templatePathAndFilename` for a template that
+  genuinely lives outside any root path structure.
+- **`render()` takes the template name without extension**, relative to
+  `templateRootPaths` — `'Mail/OrderConfirmation'`, not a path with `.html`.
+- **Hand over the request** whenever the code has one. Core lists that first;
+  ViewHelpers that need it read it from the rendering context. Code without a
+  request — a CLI command, a scheduler task — passes none.
+- Template paths belong in `ViewFactoryData`, not in setter calls afterwards.
 
 For a custom view class, implement `TYPO3\CMS\Core\View\ViewInterface`
 (namespace `Core\View`, **not** Extbase):
@@ -496,18 +514,20 @@ its own package and also runs standalone.
 
 ## `record-transformation` — applied by default in v14
 
-**Validity:** v14+ — verified in
+**Validity:** available since v13.2
+([#103783](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.2/Feature-103783-RecordTransformationDataProcessor.html)),
+**recommended from v14**, where `lib.contentElement` applies it by default —
+verified in
 `EXT:fluid_styled_content/Configuration/TypoScript/Helper/ContentElement.typoscript`
 (present in v14, absent in v13) · TCA values are transformed for record objects
 since v13.3
 ([#103581](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Feature-103581-AutomaticallyTransformTCAFieldValuesForRecordObjects.html))
 
-The DataProcessor itself already exists in v13
-([#103783](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.2/Feature-103783-RecordTransformationDataProcessor.html)),
-but registering it manually there does not give the v13 project what v14
-provides: the automatic application plus the surrounding record handling
-(`f:render.contentArea` and friends) is what makes it practical. Treat this as a
-v14 feature.
+The DataProcessor exists in v13 and can be registered manually there — the
+recommendation is about practice, not availability. What v13 lacks is the
+automatic application plus the surrounding record handling
+(`f:render.contentArea` and friends), which is what makes it worth using. So:
+usable in v13 if a project wants it, the default from v14 on.
 
 ```typoscript
 # v14 — part of lib.contentElement out of the box

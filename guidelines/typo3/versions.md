@@ -68,13 +68,19 @@ everywhere carry no `**Validity:**` line in their guideline file either.
 
 ---
 
-## Date it by usability, not by first appearance
+## Date it by usability — but say so when that differs from availability
 
 A row says when something became usable **in practice**, not when the API first
 landed in the core. `record-transformation` is the example: the DataProcessor
 exists in v13, but only v14 applies it automatically and ships the surrounding
 record handling that makes it worth using. Listing it as a v13 feature would be
 technically accurate and practically misleading.
+
+**Where the two differ, name both** — "available since v13.2, recommended from
+v14". A bare "v14" is read as "does not exist before v14", and a rule that
+produces a false version assumption is worse than no rule: it is the kind of
+statement an assistant repeats as fact. Where availability and recommendation
+coincide, which is the normal case, one version is enough.
 
 ## Keeping this table honest
 

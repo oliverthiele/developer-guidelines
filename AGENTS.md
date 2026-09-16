@@ -37,9 +37,11 @@ whether a guide covers it.
 
 Look it up, ask, and do not invent a fallback — the full rule is in
 [`guidelines/README.md` → When a rule is missing](guidelines/README.md#when-a-rule-is-missing).
-For TYPO3 version questions, grep
-[`guidelines/typo3/changelog-index/`](guidelines/typo3/changelog-index/) instead
-of answering from memory.
+In short: establish which TYPO3 version the project runs, grep
+[`guidelines/typo3/changelog-index/`](guidelines/typo3/changelog-index/) for
+version questions, and read the installed source in the project's `vendor/` for
+how an API is meant to be used — a changelog says what changed, the code says
+what it is. Only then ask, and never answer from memory.
 
 **Grep those files, never read one whole.** They hold every core changelog entry
 since v13 — over 800 lines and 320 KB across three files, most of it symbol

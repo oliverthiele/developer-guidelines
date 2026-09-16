@@ -62,6 +62,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `guidelines/README.md` — the lookup path now names the two steps it skipped:
+  establish which TYPO3 version the project runs, and read the installed source
+  in `vendor/`. A changelog says what changed, not how an API is used, and the
+  published documentation defaults to another version
+- `guidelines/README.md` — expiry distinguishes instructions from warnings. The
+  end of a version's support removes a rule about how to do something there; a
+  warning about a removed pattern stays while the pattern is still produced,
+  because support ends on a schedule and training data does not
+- `guidelines/typo3/developer.md` — the `ViewFactoryData` example uses root paths
+  and `render('Mail/OrderConfirmation')` and hands over the request, following
+  the best-practice block in the core class, which names
+  `templatePathAndFilename` as the thing to avoid. Root paths are also what makes
+  a template overridable by a project
+- `guidelines/typo3/developer.md`, `guidelines/typo3/versions.md` — where
+  availability and recommendation differ, both are named: `record-transformation`
+  is available since v13.2 and recommended from v14. A bare "v14" reads as "does
+  not exist before v14"
+- `guidelines/README.md` — setup and tooling moved to `guidelines/setup.md` and
+  `guidelines/tooling.md`, leaving pointers. Both are read once per project, not
+  per task; the mandatory entry file drops from 275 to 171 lines
 - `guidelines/typo3/practices/record-languages.md` — the Extbase identity map
   keys on the language aspect since v14.2 (#93765), so a second query in another
   language needs no `clearState()` and returns a distinct object. The migration
