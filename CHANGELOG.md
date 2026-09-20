@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   arrives as the string `"false"`, and `!{argument}` is therefore always false.
   `{argument}` alone is right because `convertToBoolean()` special-cases that
   string, so the defect only shows on the negation. Holds in Fluid 4 and 5 alike
+- `guidelines/fluid/typo3.md`, `guidelines/xliff/typo3.md` — `f:translate`
+  arguments must be a list. From v14.2 `array_is_list()` decides between
+  `vsprintf` and ICU; an array starting at 1 takes the ICU branch and leaves
+  `%1$s` standing in the page. v13 ignored the keys, so this breaks silently on
+  upgrade — no exception, no deprecation
 
 ## [2.8.1] — 2026-09-16
 

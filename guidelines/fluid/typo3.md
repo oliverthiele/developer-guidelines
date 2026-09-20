@@ -55,6 +55,58 @@ fields and must not be overridden with an empty string.
 
 ---
 
+## `f:translate` arguments must be a list — keys start at 0
+
+**Validity:** v14+ (14.2) ·
+[#104546](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Feature-104546-SupportICUMessageFormatForPluralForms.html)
+· changed behaviour against v13
+
+Since 14.2 a label can be an ICU message, and `LanguageService::translate()`
+decides which of the two ways to fill it by looking at the argument array:
+
+```php
+if ($arguments !== []) {
+    if (!array_is_list($arguments)) {
+        return $this->formatIcuMessage($result, $arguments);   // ICU, named arguments
+    }
+    return vsprintf($result, $arguments);                      // sprintf, positional
+}
+```
+
+`array_is_list()` is true only for keys `0, 1, 2, …` without gaps. An array that
+starts at 1 is not a list, so it takes the ICU branch — and ICU has no `%1$s`, so
+the placeholder is left standing and reaches the page:
+
+```html
+<!-- Wrong — renders "Type %1$s is also available" -->
+<f:translate key="type.also_available" arguments="{1: '{product.type}'}"/>
+
+<!-- Correct -->
+<f:translate key="type.also_available" arguments="{0: '{product.type}'}"/>
+```
+
+**This is silent, and it is a change.** v13 called
+`sprintf($value, ...array_values($arguments))`, which ignores the keys entirely —
+so `{1: …}` worked there and reads as if it pairs up with the `%1$s` in the label.
+Nothing warns on upgrade: no exception, no deprecation, no log entry. The only
+symptom is the raw placeholder in the rendered page.
+
+The same applies to `LocalizationUtility::translate()` in PHP, which passes its
+argument array straight through.
+
+When auditing a code base for this, grep the **rendered output**, not the
+templates — a multi-line `arguments="…"` attribute is easy to miss:
+
+```bash
+curl -s https://example.com/some-page | grep -o '%[0-9]*\$\?[sd]'
+```
+
+Named arguments (`arguments="{count: items.count}"`) are the ICU case and are
+correct by construction — but then the label must be an ICU message, not a
+`%d` string.
+
+---
+
 ## Backend module templates need the `Module` layout
 
 A template rendered through `ModuleTemplate::renderResponse()` must declare the
