@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `guidelines/fluid/README.md` — a component's `default` is not cast to the
+  declared type. A passed value is, an omitted one is not: `default="false"`
+  arrives as the string `"false"`, and `!{argument}` is therefore always false.
+  `{argument}` alone is right because `convertToBoolean()` special-cases that
+  string, so the defect only shows on the negation. Holds in Fluid 4 and 5 alike
+
 ## [2.8.1] — 2026-09-16
 
 ### Changed

@@ -134,6 +134,66 @@ as a last resort.
 
 ---
 
+## A component's `default` is not cast to the declared type
+
+**Validity:** Fluid 4 and 5 · TYPO3 v13.3+ and v14+ · verified against 4.6.1 and
+5.3.2 · **not** a v14 change
+
+A value **passed** to a component argument is cast to the declared type. The
+`default` of an argument that the caller omits is **not** — it arrives as the
+literal string from the attribute:
+
+```html
+<f:argument name="plain" type="boolean" optional="true" default="false"/>
+```
+
+The last three columns are what the condition evaluates to, and ✓ / ✗ marks
+whether that is the answer the template author meant:
+
+| Call | `{plain}` holds | `condition="{plain}"` | `condition="!{plain}"` | `condition="{plain} === {false}"` |
+|---|---|---|---|---|
+| `<my:card/>` | string `"false"` | false ✓ | **false ✗** | false ✗ |
+| `<my:card plain="0"/>` | boolean `false` | false ✓ | true ✓ | true ✓ |
+| `<my:card plain="1"/>` | boolean `true` | true ✓ | false ✓ | false ✓ |
+| `<my:card plain="{false}"/>` | boolean `false` | false ✓ | true ✓ | true ✓ |
+
+`{plain}` alone is right in every row because `BooleanNode::convertToBoolean()`
+special-cases the string `"false"`. The negation does not go through it:
+`BooleanParser::evaluateNot()` applies PHP's `!` to the value it got, and `!"false"`
+is `false` — a non-empty string is truthy.
+
+**So `!{someBooleanArgument}` is wrong exactly when the caller omits the
+argument** — the simplest, most common way to use the component. It fails
+silently: no error, no log entry, just a branch that never runs.
+
+```html
+<!-- Wrong — the second block never runs when the argument is omitted -->
+<f:if condition="{plain}">      … A … </f:if>
+<f:if condition="!{plain}">     … B … </f:if>
+
+<!-- Correct — one condition, both branches -->
+<f:if condition="{plain}">
+    <f:then> … A … </f:then>
+    <f:else> … B … </f:else>
+</f:if>
+```
+
+Two rules follow, and the first one is the one that holds everywhere:
+
+- **Write the two cases as `f:then`/`f:else` of one condition**, not as two
+  mirrored `f:if`s. That is correct regardless of what the argument holds, and it
+  states once what is being decided.
+- Where a negation or a strict comparison is unavoidable, declare the default as
+  `default="{false}"` / `default="{true}"` — the braces make Fluid evaluate it,
+  and a real boolean arrives. `default="0"` also happens to negate correctly, but
+  `{plain} === {false}` still fails on it.
+
+`default="true"` is accidentally safe on both counts (`!"true"` is `false`, which
+is the wanted answer), which is why the defect shows up asymmetrically and looks
+like an isolated glitch rather than a pattern.
+
+---
+
 ## Template file resolution — `.fluid.html`
 
 **Validity:** Fluid 5 · TYPO3 v14+ ·
