@@ -198,9 +198,10 @@ await expectNoError(page);
 await expect(page.locator('.myextension-list')).toBeVisible();
 ```
 
-The frame class TYPO3 generates for the content type
-(`.frame-type-myextension_list`) is an alternative only where the site's layout
-renders frames at all — many sitepackages do not.
+Not the frame TYPO3 wraps around the content element
+(`.frame-type-myextension_list`): the content element layout renders it, along
+with the header and the spacing, whatever the plugin outputs. An empty plugin
+still leaves a visible frame, and the assertion stays green.
 
 ### 404 and error status tests
 

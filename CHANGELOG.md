@@ -35,7 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   EXT:content_defender except `maxitems`; an escaped `\/` in a TypoScript
   `matches` pattern makes the condition throw on every evaluation
 - `guidelines/playwright.md` — a plugin spec needs a positive assertion besides
-  `expectNoError()`
+  `expectNoError()`, on an element the plugin itself renders — not on the
+  content element frame, which the layout renders regardless
 - `guidelines/typo3/versions.md` — rows for all of the above
 - `guidelines/fluid/README.md` — a component's `default` is not cast to the
   declared type. A passed value is, an omitted one is not: `default="false"`
