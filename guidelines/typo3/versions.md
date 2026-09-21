@@ -49,9 +49,9 @@ everywhere carry no `**Validity:**` line in their guideline file either.
 | `record-transformation` ([#103783](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.2/Feature-103783-RecordTransformationDataProcessor.html)) | available since 13.2, register it manually | **applied by default** — recommended | `developer.md` |
 | Union types in `f:argument` ([#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108148-UnionTypesForViewHelpers.html)) | no | **yes** | `../fluid/README.md` |
 | Fluid `.fluid.html` resolution ([#108166](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108166-FluidFileExtensionAndTemplateResolving.html)) | no | **yes** | `../fluid/README.md` |
-| `showitem` shortform label references ([#107789](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107789-CoreTCAAndUserSettingsShowitemStringsUseShortFormReferences.html)) | no | **yes** | `developer.md` |
+| `showitem` shortform label references ([#107789](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107789-CoreTCATabLabelsUseShortFormReferences.html)) | no | **yes** | `developer.md` |
 | FlexForm DS via `columnsOverrides` | no — pointer key | **yes — required** | `developer.md` |
-| `ExtensionManagementUtility::addPiFlexFormValue()` ([#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107047-ExtensionManagementUtilityaddPiFlexFormValue.html)) | yes | deprecated, removal announced for v15 | `developer.md` |
+| `ExtensionManagementUtility::addPiFlexFormValue()` ([#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107047-ExtensionManagementUtilityAddPiFlexFormValue.html)) | yes | deprecated, removal announced for v15 | `developer.md` |
 | Extension title from `composer.json` ([#108304](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108304-PopulateExtensionTitleFromComposerJson.html)) | no | **yes** | `developer.md` |
 | `#[Validate(param: …)]`, `#[IgnoreValidation(argumentName: …)]` ([#108227](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-108227-UsageOfIgnoreValidationAndValidateAttributesForParametersAtMethodLevel.html)) | yes | deprecated, removal announced for v15 — put the attribute on the parameter | `developer.md` |
 | `RenderingContext->getRequest()` in ViewHelpers ([#104684](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104684-FluidRenderingContext-getRequest.html)) | deprecated | **removed** — `getAttribute(ServerRequestInterface::class)` | `../fluid/typo3.md` |
@@ -60,7 +60,7 @@ everywhere carry no `**Validity:**` line in their guideline file either.
 
 | Topic | v13 | v14 | Rule in |
 |---|---|---|---|
-| XLIFF 2.0 support ([#107710](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107710-SupportForXLIFF2xTranslationFiles.html)) | no — use 1.2 | **yes** | `../xliff/README.md` |
+| XLIFF 2.0 support ([#107710](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107710-SupportForXLIFF20TranslationFiles.html)) | no — use 1.2 | **yes** | `../xliff/README.md` |
 | ICU MessageFormat for plurals ([#104546](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Feature-104546-SupportICUMessageFormatForPluralForms.html)) | no | **yes** | `../xliff/README.md` |
 | XLIFF whitespace follows `xml:space` ([#70867](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Important-70867-XLIFFWhitespaceHandlingNowRespectsXmlSpaceAttribute.html)) | no — raw whitespace kept | **yes — collapsed** | `../xliff/README.md` |
 | SiteSet `labels.xlf` automatic key resolution | yes | yes | `../xliff/typo3.md` |

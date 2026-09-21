@@ -113,7 +113,7 @@ Do not copy the entire field `config` array just to change a label.
 ### showitem — shortform label references
 
 **Validity:** v14+ ·
-[#107789](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107789-CoreTCAAndUserSettingsShowitemStringsUseShortFormReferences.html)
+[#107789](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107789-CoreTCATabLabelsUseShortFormReferences.html)
 · longform still valid in v14, required in v13
 
 ```php
@@ -153,7 +153,7 @@ field wizard does not: editing a **translated** record with an image raises
 
 **Validity:** `columnsOverrides` required in v14 · pointer-key approach required
 in v13 · `ExtensionManagementUtility::addPiFlexFormValue()` deprecated in v14
-([#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107047-ExtensionManagementUtilityaddPiFlexFormValue.html)),
+([#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107047-ExtensionManagementUtilityAddPiFlexFormValue.html)),
 removal announced for v15
 
 ```php

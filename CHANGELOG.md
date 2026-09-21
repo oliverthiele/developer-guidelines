@@ -20,6 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `%1$s` standing in the page. v13 ignored the keys, so this breaks silently on
   upgrade — no exception, no deprecation
 
+### Fixed
+
+- `guidelines/typo3/versions.md`, `guidelines/typo3/developer.md`,
+  `guidelines/xliff/README.md`, `guidelines/typo3/practices/record-languages.md`
+  — four changelog links pointed at file names that do not exist on
+  docs.typo3.org (#107047, #107789, #107710, #106510)
+
 ## [2.8.1] — 2026-09-16
 
 ### Changed

@@ -25,7 +25,7 @@ XLIFF file format conventions: versions, structure, attributes, ICU.
 | v14+ only              | **2.0**              |
 
 **Validity:** XLIFF 2.0 support in v14+
-([#107710](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107710-SupportForXLIFF2xTranslationFiles.html))
+([#107710](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107710-SupportForXLIFF20TranslationFiles.html))
 · ICU message format in v14+
 
 Do not mix versions within one extension.
