@@ -613,6 +613,118 @@ Rules:
 
 ---
 
+## Upgrading to v14 — changes that fail silently
+
+Most v14 breaks stop the boot with a message that names the cause. These do
+not: they fail silently, fail far away from their cause, or are the lines a
+Rector run leaves behind — and neither Rector nor the ExtensionScanner reports
+all of them. Validity per row in `versions.md`.
+
+### Base TCA files must return their array
+
+**Validity:** v14 ·
+[#107328](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Important-107328-GLOBALSTCAInBaseTCAFiles.html)
+
+`TcaFactory` requires every file in `Configuration/TCA/` and keeps its **return
+value**; the **file name becomes the table name**. A base file that only writes
+to `$GLOBALS['TCA']` is loaded and discarded. The table then has no TCA at all,
+and the error surfaces wherever the table is first used —
+`No TCA schema exists for the name "…"` from a data processor, for instance.
+
+```php
+// Configuration/TCA/tx_myextension_domain_model_item.php — correct
+return [
+    'ctrl' => [ /* … */ ],
+    'columns' => [ /* … */ ],
+];
+
+// Wrong — silently discarded in v14
+$GLOBALS['TCA']['tx_myextension_domain_model_item'] = [ /* … */ ];
+```
+
+A file named after something other than the table has to be renamed. Changes to
+another table's TCA belong in `Configuration/TCA/Overrides/`.
+
+### `addPlugin()` takes two arguments
+
+**Validity:** v14 ·
+[#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107047-FlexFormEnhancements.html)
+
+`ExtensionManagementUtility::addPlugin($itemArray, $flexForm)` — the core
+utility, not Extbase's `ExtensionUtility`. A call still passing the v13
+arguments `'CType', 'my_extension'` does not fail: PHP drops the surplus argument,
+and the string `'CType'` is written to
+`columnsOverrides.pi_flexform.config.ds` as the plugin's FlexForm data structure.
+The ExtensionScanner only flags the value `'list_type'` in that position, not
+`'CType'`; PHPStan reports the surplus argument. Extbase's `ExtensionUtility::registerPlugin()` is
+unaffected — its new `$flexForm` argument is appended at the end.
+
+`ExtensionUtility::configurePlugin()`, fifth argument `$pluginType`:
+
+- **v13.4:** pass `ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT`. Omitted, it
+  falls back to the deprecated list-type plugin.
+- **v14:** unused
+  ([#105538](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Important-105538-ListTypeAndSubTypes.html)).
+  Omitted, it defaults to `CType`; any other value throws an
+  `InvalidArgumentException`.
+
+An extension that supports v13 and v14 therefore keeps passing it.
+
+### `IconRegistry` in `ext_localconf.php`
+
+**Validity:** removed in v14 ·
+[#104778](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104778-InstantiationOfIconRegistryInExtLocalconf.html)
+
+Icons belong in `Configuration/Icons.php`. Instantiating the `IconRegistry` in
+`ext_localconf.php` is no longer allowed in v14 (listed in
+[#105377](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-105377-DeprecatedFunctionalityRemoved.html)),
+and a leftover `GeneralUtility::makeInstance(IconRegistry::class)` there stops
+the boot.
+
+*Observed, not verified against the source:* Rector moves the icon to
+`Icons.php` and leaves that line behind.
+
+### Public resource paths and `f:image`
+
+**Validity:** v14 ·
+[#107537](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107537-getPublicResourcesWebPath.html)
+
+`PathUtility::getPublicResourceWebPath()` gives way to the System Resource API.
+Migrated with `absoluteUri: true`, the result is a full URL — and a value that
+ends up in `<f:image src="…">` cannot be one: `ResourceFactory` resolves
+`EXT:` paths, storage identifiers and file UIDs, not URLs, and the ViewHelper
+fails with `Supplied … could not be resolved to a File or FileReference`.
+Return the `EXT:` path instead; `f:image` resolves it itself.
+
+### EXT:form and Extbase validator options
+
+**Validity:** `errorMessage` removed in v14 ·
+[#102326](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.2/Deprecation-102326-RegularExpressionValidatorValidatorOptionErrorMessage.html)
+
+`RegularExpressionValidator` takes `message`, not `errorMessage` (removal listed
+in #105377). `AbstractValidator` rejects every option it does not know, so the
+old name now throws
+`Unsupported validation option(s) found: errorMessage` — in an EXT:form
+definition and on an Extbase `#[Validate]` attribute alike.
+
+### Rector — narrow sets, and what to undo
+
+- **Level set only:** `Typo3LevelSetList::UP_TO_TYPO3_14`. Not
+  `Typo3SetList::CODE_QUALITY` or `Typo3SetList::GENERAL`, and no code-quality or
+  PHP-level sets from Rector itself — they bury the migration in style changes
+  that nobody can review.
+- **`GeneralUtilityMakeInstanceToConstructorPropertyRector` stays out.** It is
+  part of `Typo3SetList::CODE_QUALITY`; if that set is used anyway, skip this
+  rule. Moving to constructor injection is a behavioural refactor with its own
+  risk, not a migration step.
+- **Replace the CType migration wizards it generates** — empty stubs with a
+  `TODO: Add this mapping yourself!`. Where hand-written list-type wizards
+  exist, the stubs are duplicates and go; where none exist, fill in the mapping.
+- **Check what it left behind.** The failures that stop the boot after a Rector
+  run are the lines it did not touch — see `IconRegistry` above.
+
+---
+
 ## ExtensionScanner false positives — property/method naming
 
 The TYPO3 ExtensionScanner matches property and method names lexically,
@@ -630,6 +742,11 @@ with a removed/deprecated core pattern:
 | `$config`                           | `TypoScriptFrontendController::$config`         | specific name, e.g. `$apiConfiguration`           |
 | `$data`                             | `TypoScriptFrontendController::$data`           | specific name, e.g. `$articleData`                |
 | `error()` (custom method we define) | any core class with a same-named removed method | specific name, e.g. `logError()`, `reportError()` |
+
+One weak match to ignore outright: **"Fetch of property data"** comes from the
+`GifBuilder->data` rule (property made protected), but on a
+`ContentObjectRenderer` it is the still valid `->data['pi_flexform']` and
+friends.
 
 This only applies to properties/methods **we name ourselves**. It does not apply
 to calls on external interfaces we don't control — e.g.

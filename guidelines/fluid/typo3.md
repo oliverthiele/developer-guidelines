@@ -107,6 +107,38 @@ correct by construction — but then the label must be an ICU message, not a
 
 ---
 
+## Global ViewHelper namespaces — `Configuration/Fluid/Namespaces.php`
+
+**Validity:** v14 ·
+[#108524](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.1/Feature-108524-ConfigurationFileToRegisterGlobalFluidNamespaces.html) ·
+merging into `$GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']`
+deprecated
+([#108524](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.1/Deprecation-108524-FluidNamespacesInTYPO3_CONF_VARS.html)),
+removal announced for v15
+
+An extension registers its global namespaces in its own configuration file, one
+array per prefix — the same shape the global array had:
+
+```php
+// EXT:my_extension/Configuration/Fluid/Namespaces.php
+return [
+    'my' => ['MyVendor\\MyExtension\\ViewHelpers'],
+];
+```
+
+A template that relies on a global prefix then needs no `xmlns` line. Check what
+is actually registered with `typo3 fluid:namespaces`
+(v14.2, [#108846](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Feature-108846-ConsoleCommandToInspectGlobalViewHelperNamespaces.html)).
+
+Where an `xmlns` line is written, Fluid 5 accepts exactly one form:
+`http://typo3.org/ns/MyVendor/MyExtension/ViewHelpers`. The parser throws on the
+two near misses:
+
+- PHP backslashes — `xmlns:my="MyVendor\MyExtension\ViewHelpers"` (1754999599)
+- `https` — `xmlns:my="https://typo3.org/ns/…"` (1721467847)
+
+---
+
 ## Backend module templates need the `Module` layout
 
 A template rendered through `ModuleTemplate::renderResponse()` must declare the

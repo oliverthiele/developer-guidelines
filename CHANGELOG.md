@@ -9,6 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `guidelines/typo3/developer.md` — "Upgrading to v14 — changes that fail
+  silently": base TCA files must `return` their array (the file name becomes the
+  table name, `$GLOBALS['TCA']` writes are discarded);
+  `ExtensionManagementUtility::addPlugin()` takes two arguments and a stale
+  `'CType'` becomes the FlexForm data structure; the fifth argument of
+  `configurePlugin()` is required in v13.4 and unused in v14; a leftover
+  `IconRegistry` in `ext_localconf.php` stops the boot; `absoluteUri: true`
+  breaks `f:image`; `errorMessage` → `message` on `RegularExpressionValidator`;
+  which Rector sets to use and what to undo after the run. Plus the "Fetch of
+  property data" ExtensionScanner false positive
+- `guidelines/fluid/README.md` — `renderStatic()` → `render()`: without
+  `getContentArgumentName()` a value passed as argument is lost silently, while
+  the inline chain keeps working
+- `guidelines/fluid/typo3.md` — global ViewHelper namespaces in
+  `Configuration/Fluid/Namespaces.php`, `typo3 fluid:namespaces`; an `xmlns` with
+  backslashes or `https` throws in Fluid 5
+- `guidelines/typo3/integrator.md` — `allowedContentTypes` /
+  `disallowedContentTypes` per backend layout column replace
+  EXT:content_defender except `maxitems`; an escaped `\/` in a TypoScript
+  `matches` pattern makes the condition throw on every evaluation
+- `guidelines/playwright.md` — a plugin spec needs a positive assertion besides
+  `expectNoError()`
+- `guidelines/typo3/versions.md` — rows for all of the above
 - `guidelines/fluid/README.md` — a component's `default` is not cast to the
   declared type. A passed value is, an omitted one is not: `default="false"`
   arrives as the string `"false"`, and `!{argument}` is therefore always false.

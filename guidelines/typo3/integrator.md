@@ -301,6 +301,67 @@ degradation, not an error.
 
 ---
 
+## Allowed content types per column — the core, not EXT:content_defender
+
+**Validity:** v14 ·
+[#108623](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.1/Feature-108623-AllowContentElementRestrictionsPerColPos.html)
+
+Backend layout columns carry an allow or deny list of content types in the core,
+as `allowedContentTypes` / `disallowedContentTypes`. Write new layouts with these
+keys:
+
+```typoscript
+mod.web_layout.BackendLayouts.my_layout.config.backend_layout.rows.1.columns.1 {
+    name = Hero
+    colPos = 3
+    allowedContentTypes = html, my_heroimage
+}
+```
+
+The core also reads content_defender's syntax — `allowed { CType = … }` and
+`disallowed { CType = … }` are mapped to the core keys — so an existing page
+TSconfig backend layout keeps working after the extension is removed. When both
+forms are set, the content_defender form is ignored.
+
+What the core does **not** cover:
+
+- **`maxitems`.** A limit on the number of elements per column is not part of
+  the core feature. *Observed, not verified against the source:* inside
+  containers, EXT:container from 4.1 on handles `allowed`/`disallowed` **and**
+  `maxitems` itself, so `maxitems` on a *page* backend layout column is the one
+  thing left that needs content_defender.
+- **Backend layouts stored in the database** cannot carry the restriction yet —
+  check before removing content_defender from a project that uses them.
+
+*Observed, not verified against the source:* an allow list ignores types that
+are not installed, so a stale entry is harmless — but it is dead configuration.
+
+---
+
+## TypoScript conditions — regular expressions in `matches`
+
+Symfony ExpressionLanguage unescapes string literals before the pattern reaches
+`preg_match`. An escaped delimiter inside the pattern is therefore wrong:
+
+```typoscript
+# Wrong — "\/" arrives as "/", PCRE reads "/^Development/" plus ".*/" as
+# modifiers, and the condition throws on every evaluation
+[applicationContext matches "/^Development\/.*/"]
+
+# Correct — covers "Development" and every "Development/…"
+[applicationContext matches "/^Development/"]
+
+# Correct — a delimiter that does not occur in the pattern needs no escaping
+[applicationContext matches "#^Development/.+#"]
+```
+
+A condition that throws does not stop the page: the core catches the
+`SyntaxError`, treats the condition as false, and logs
+`TypoScript condition [...] could not be parsed` on every evaluation — which a crawl or a search index
+run turns into a very large log.
+
+---
+
 ## TYPO3 translation usage
 
 Always reference labels via `LLL:EXT:`:

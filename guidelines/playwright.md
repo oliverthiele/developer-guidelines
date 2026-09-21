@@ -188,6 +188,21 @@ test.describe('Product detail', () => {
 });
 ```
 
+**`expectNoError()` alone does not prove a plugin works.** *Observed, not
+verified against the source:* a plugin that lost its registration renders
+nothing at all — no exception, no error page, and the test stays green. Every
+spec that covers a plugin therefore needs a **positive** assertion as well — an
+element the plugin itself renders:
+
+```typescript
+await expectNoError(page);
+await expect(page.locator('.myextension-list')).toBeVisible();
+```
+
+The frame class TYPO3 generates for the content type
+(`.frame-type-myextension_list`) is an alternative only where the site's layout
+renders frames at all — many sitepackages do not.
+
 ### 404 and error status tests
 
 Test error responses explicitly via the return value of `page.goto()`:

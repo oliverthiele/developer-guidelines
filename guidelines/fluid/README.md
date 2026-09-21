@@ -134,6 +134,52 @@ as a last resort.
 
 ---
 
+## ViewHelpers — `render()`, and the content argument
+
+**Validity:** `renderStatic()` deprecated in Fluid 4 / TYPO3 v13.3
+([#104789](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104789-RenderStaticForFluidViewHelpers.html)),
+removed in Fluid 5 / TYPO3 v14
+([#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108148-Fluid50.html)) ·
+`getContentArgumentName()` available from Fluid 4 / TYPO3 v13.3
+([#104789](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Feature-104789-SupportForContentArgumentNameInAbstractViewHelper.html))
+
+The mechanical part of the migration is easy: drop the
+`CompileWithRenderStatic` / `CompileWithContentArgumentAndRenderStatic` trait,
+turn the static `renderStatic()` into an instance method `render()`, and use
+`$this->arguments` and `$this->renderChildren()`.
+
+The part that breaks silently: `CompileWithContentArgumentAndRenderStatic`
+used the **first optional argument** as the content argument — `renderChildren()`
+returned that argument when it was passed, and the child content otherwise.
+`AbstractViewHelper::getContentArgumentName()` returns `null`, so without an
+override `renderChildren()` only ever returns the child content:
+
+- `{value -> my:format()}` and `<my:format>{value}</my:format>` still work — the
+  value *is* the child content.
+- `<my:format value="{value}" />` and `{my:format(value: value)}` receive an
+  empty string. No error, just empty output.
+
+```php
+public function initializeArguments(): void
+{
+    $this->registerArgument('value', 'string', 'The value to format');
+}
+
+public function getContentArgumentName(): ?string
+{
+    return 'value';
+}
+
+public function render(): string
+{
+    return $this->format((string)$this->renderChildren());
+}
+```
+
+`render()` is untyped in the parent, so a narrower return type is allowed.
+
+---
+
 ## A component's `default` is not cast to the declared type
 
 **Validity:** Fluid 4 and 5 · TYPO3 v13.3+ and v14+ · verified against 4.6.1 and
