@@ -61,6 +61,15 @@ Examples:
 | `[BUGFIX]`  | Bug fix                                             |
 | `[DOCS]`    | Documentation only                                  |
 | `[!!!]`     | Breaking changes                                    |
+| `[SECURITY]`| Change fixes a security issue                       |
+
+`[!!!]` and `[SECURITY]` are flags in the TYPO3 Core rules, not types of their
+own. `[!!!]` always goes first: `[!!!][FEATURE] …`.
+`[SECURITY]` is used on its own. It marks a commit that closes a known
+vulnerability, e.g. a dependency update that fixes a published security
+advisory (TYPO3-CORE-SA, TYPO3-EXT-SA, CVE). Name the advisory in the body.
+
+Source: [TYPO3 Contribution Guide — Commit Message Rules](https://docs.typo3.org/m/typo3/guide-contributionworkflow/main/en-us/Appendix/CommitMessage.html)
 
 ### Rules:
 
@@ -328,7 +337,7 @@ TYPO3 format:
 
 Body: List changes, one per line.
 
-Types: [BUGFIX], [FEATURE], [TASK], [DOCS], [!!!]
+Types: [BUGFIX], [FEATURE], [TASK], [DOCS], [!!!], [SECURITY]
 
 Example:
 [FEATURE] Add FAL support for user avatars
