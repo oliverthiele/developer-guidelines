@@ -142,6 +142,7 @@ removed in Fluid 5 / TYPO3 v14
 ([#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108148-Fluid50.html)) ·
 `getContentArgumentName()` available from Fluid 4 / TYPO3 v13.3
 ([#104789](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Feature-104789-SupportForContentArgumentNameInAbstractViewHelper.html))
+**Basis:** verified against Fluid 4.6.1 and 5.3.2
 
 The mechanical part of the migration is easy: drop the
 `CompileWithRenderStatic` / `CompileWithContentArgumentAndRenderStatic` trait,

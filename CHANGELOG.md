@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `guidelines/README.md` — "How a rule is backed": a `**Basis:**` line per
+  section says whether its statements are verified against a named package
+  version, documented in a changelog, or only observed in a project. Observed
+  rules yield to contradicting code; new sections carry the line, existing ones
+  get it when next changed. The v14 upgrade sections carry it already
 - `guidelines/typo3/developer.md` — "Upgrading to v14 — changes that fail
   silently": base TCA files must `return` their array (the file name becomes the
   table name, `$GLOBALS['TCA']` writes are discarded);

@@ -624,6 +624,7 @@ all of them. Validity per row in `versions.md`.
 
 **Validity:** v14 ·
 [#107328](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Important-107328-GLOBALSTCAInBaseTCAFiles.html)
+**Basis:** verified against TYPO3 14.3.7
 
 `TcaFactory` requires every file in `Configuration/TCA/` and keeps its **return
 value**; the **file name becomes the table name**. A base file that only writes
@@ -649,6 +650,7 @@ another table's TCA belong in `Configuration/TCA/Overrides/`.
 
 **Validity:** v14 ·
 [#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107047-FlexFormEnhancements.html)
+**Basis:** verified against TYPO3 14.3.7
 
 `ExtensionManagementUtility::addPlugin($itemArray, $flexForm)` — the core
 utility, not Extbase's `ExtensionUtility`. A call still passing the v13
@@ -674,6 +676,7 @@ An extension that supports v13 and v14 therefore keeps passing it.
 
 **Validity:** removed in v14 ·
 [#104778](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104778-InstantiationOfIconRegistryInExtLocalconf.html)
+**Basis:** documented
 
 Icons belong in `Configuration/Icons.php`. Instantiating the `IconRegistry` in
 `ext_localconf.php` is no longer allowed in v14 (listed in
@@ -681,13 +684,14 @@ Icons belong in `Configuration/Icons.php`. Instantiating the `IconRegistry` in
 and a leftover `GeneralUtility::makeInstance(IconRegistry::class)` there stops
 the boot.
 
-*Observed, not verified against the source:* Rector moves the icon to
+**Basis: observed** — Rector moves the icon to
 `Icons.php` and leaves that line behind.
 
 ### Public resource paths and `f:image`
 
 **Validity:** v14 ·
 [#107537](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107537-getPublicResourcesWebPath.html)
+**Basis:** verified against TYPO3 14.3.7
 
 `PathUtility::getPublicResourceWebPath()` gives way to the System Resource API.
 Migrated with `absoluteUri: true`, the result is a full URL — and a value that
@@ -700,6 +704,7 @@ Return the `EXT:` path instead; `f:image` resolves it itself.
 
 **Validity:** `errorMessage` removed in v14 ·
 [#102326](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.2/Deprecation-102326-RegularExpressionValidatorValidatorOptionErrorMessage.html)
+**Basis:** verified against TYPO3 14.3.7
 
 `RegularExpressionValidator` takes `message`, not `errorMessage` (removal listed
 in #105377). `AbstractValidator` rejects every option it does not know, so the
@@ -708,6 +713,8 @@ old name now throws
 definition and on an Extbase `#[Validate]` attribute alike.
 
 ### Rector — narrow sets, and what to undo
+
+**Basis:** verified against ssch/typo3-rector 3.14.3
 
 - **Level set only:** `Typo3LevelSetList::UP_TO_TYPO3_14`. Not
   `Typo3SetList::CODE_QUALITY` or `Typo3SetList::GENERAL`, and no code-quality or
@@ -720,8 +727,9 @@ definition and on an Extbase `#[Validate]` attribute alike.
 - **Replace the CType migration wizards it generates** — empty stubs with a
   `TODO: Add this mapping yourself!`. Where hand-written list-type wizards
   exist, the stubs are duplicates and go; where none exist, fill in the mapping.
-- **Check what it left behind.** The failures that stop the boot after a Rector
-  run are the lines it did not touch — see `IconRegistry` above.
+- **Check what it left behind.** **Basis: observed** — the failures that stop
+  the boot after a Rector run are the lines it did not touch; see `IconRegistry`
+  above.
 
 ---
 

@@ -115,6 +115,7 @@ merging into `$GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']`
 deprecated
 ([#108524](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.1/Deprecation-108524-FluidNamespacesInTYPO3_CONF_VARS.html)),
 removal announced for v15
+**Basis:** documented
 
 An extension registers its global namespaces in its own configuration file, one
 array per prefix — the same shape the global array had:

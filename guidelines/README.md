@@ -134,6 +134,60 @@ that was removed stays as long as the wrong pattern is still being produced:
 support ends on a schedule, training data does not. `StandaloneView` is the
 example — gone since v14, and still the first thing a model reaches for.
 
+## How a rule is backed — the `**Basis:**` line
+
+A rule traced through the core source and a rule taken from one project's
+upgrade read the same on the page, and a reader applies both with the same
+confidence. The `**Basis:**` line tells them apart. It sits directly under a
+section's heading, next to `**Validity:**` and `**Tooling:**`:
+
+```markdown
+### `addPlugin()` takes two arguments
+
+**Validity:** v14 · [#107047](…)
+**Basis:** verified against TYPO3 14.3.7
+```
+
+Three levels, strongest first:
+
+| Level | Meaning | Written as |
+|---|---|---|
+| **verified** | traced in the source, or reproduced | `verified against TYPO3 14.3.7` — always with the package and the exact version checked |
+| **documented** | backed by a changelog entry or official documentation, not traced further | `documented` — the entry is linked in the section |
+| **observed** | seen in a project, neither traced nor documented | `observed` |
+
+There is no level for an assumption. What is only assumed does not go in — see
+[When a rule is missing](#when-a-rule-is-missing).
+
+**One level per section, the weakest that applies.** A statement that is weaker
+than the rest of its section carries the level inline, at its start, so that a
+single `grep` finds both forms:
+
+```markdown
+**Basis: observed** — Rector moves the icon to `Icons.php` and leaves that line
+behind.
+```
+
+**What the level changes for the reader.** Verified and documented rules are
+applied as written. An observed rule is applied too — it describes a mistake
+that did happen — but where the code at hand contradicts it, the code wins, and
+the contradiction is reported so the rule can be corrected.
+
+**What it covers.** Statements of fact: what an API does, what breaks, what an
+error says. A decision — use this set, prefer that approach — is not verified or
+observed; it is a decision, and its section states the reason instead.
+
+**Adoption.** Every new section carries the line. An existing section gets it
+when it is next changed; until then it is *unclassified*, which says nothing
+about its quality. `verified against` with a version is what makes a later
+re-check possible: after a core update, the sections verified against an older
+release are the list to go through.
+
+```bash
+grep -rnE 'Basis:(\*\*)? observed' guidelines/                # to verify
+grep -rn 'Basis:\*\* verified against TYPO3 13' guidelines/     # to re-check
+```
+
 ## General rules (apply everywhere)
 
 - Code comments and documentation: **English only**

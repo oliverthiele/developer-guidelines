@@ -188,11 +188,10 @@ test.describe('Product detail', () => {
 });
 ```
 
-**`expectNoError()` alone does not prove a plugin works.** *Observed, not
-verified against the source:* a plugin that lost its registration renders
-nothing at all — no exception, no error page, and the test stays green. Every
-spec that covers a plugin therefore needs a **positive** assertion as well — an
-element the plugin itself renders:
+**`expectNoError()` alone does not prove a plugin works.** **Basis: observed** —
+a plugin that lost its registration renders nothing at all: no exception, no
+error page, and the test stays green. Every spec that covers a plugin therefore
+needs a **positive** assertion as well — an element the plugin itself renders:
 
 ```typescript
 await expectNoError(page);

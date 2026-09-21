@@ -305,6 +305,7 @@ degradation, not an error.
 
 **Validity:** v14 ·
 [#108623](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.1/Feature-108623-AllowContentElementRestrictionsPerColPos.html)
+**Basis:** documented
 
 Backend layout columns carry an allow or deny list of content types in the core,
 as `allowedContentTypes` / `disallowedContentTypes`. Write new layouts with these
@@ -326,19 +327,21 @@ forms are set, the content_defender form is ignored.
 What the core does **not** cover:
 
 - **`maxitems`.** A limit on the number of elements per column is not part of
-  the core feature. *Observed, not verified against the source:* inside
+  the core feature. **Basis: observed** — inside
   containers, EXT:container from 4.1 on handles `allowed`/`disallowed` **and**
   `maxitems` itself, so `maxitems` on a *page* backend layout column is the one
   thing left that needs content_defender.
 - **Backend layouts stored in the database** cannot carry the restriction yet —
   check before removing content_defender from a project that uses them.
 
-*Observed, not verified against the source:* an allow list ignores types that
+**Basis: observed** — an allow list ignores types that
 are not installed, so a stale entry is harmless — but it is dead configuration.
 
 ---
 
 ## TypoScript conditions — regular expressions in `matches`
+
+**Basis:** verified against TYPO3 14.3.7 and symfony/expression-language 7.4.18
 
 Symfony ExpressionLanguage unescapes string literals before the pattern reaches
 `preg_match`. An escaped delimiter inside the pattern is therefore wrong:
