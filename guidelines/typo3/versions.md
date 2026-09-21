@@ -34,6 +34,7 @@ everywhere carry no `**Validity:**` line in their guideline file either.
 | `settings.definitions.yaml` flat dot-notation | yes | yes | `integrator.md` |
 | New CE Wizard via TCA ([#102834](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Feature-102834-Auto-registrationOfNewContentElementWizardViaTCA.html)) | yes | yes | `integrator.md` |
 | `<INCLUDE_TYPOSCRIPT:` ([#105171](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.4/Deprecation-105171-INCLUDE_TYPOSCRIPTTypoScriptSyntax.html)) | deprecated | **removed** | `integrator.md` |
+| Allowed content types per backend layout column ([#108623](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.1/Feature-108623-AllowContentElementRestrictionsPerColPos.html)) — replaces EXT:content_defender except `maxitems` | no | **yes** | `integrator.md` |
 
 ## Developer
 
@@ -49,18 +50,26 @@ everywhere carry no `**Validity:**` line in their guideline file either.
 | `record-transformation` ([#103783](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.2/Feature-103783-RecordTransformationDataProcessor.html)) | available since 13.2, register it manually | **applied by default** — recommended | `developer.md` |
 | Union types in `f:argument` ([#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108148-UnionTypesForViewHelpers.html)) | no | **yes** | `../fluid/README.md` |
 | Fluid `.fluid.html` resolution ([#108166](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108166-FluidFileExtensionAndTemplateResolving.html)) | no | **yes** | `../fluid/README.md` |
-| `showitem` shortform label references ([#107789](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107789-CoreTCAAndUserSettingsShowitemStringsUseShortFormReferences.html)) | no | **yes** | `developer.md` |
+| `showitem` shortform label references ([#107789](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107789-CoreTCATabLabelsUseShortFormReferences.html)) | no | **yes** | `developer.md` |
 | FlexForm DS via `columnsOverrides` | no — pointer key | **yes — required** | `developer.md` |
-| `ExtensionManagementUtility::addPiFlexFormValue()` ([#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107047-ExtensionManagementUtilityaddPiFlexFormValue.html)) | yes | deprecated, removal announced for v15 | `developer.md` |
+| `ExtensionManagementUtility::addPiFlexFormValue()` ([#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107047-ExtensionManagementUtilityAddPiFlexFormValue.html)) | yes | deprecated, removal announced for v15 | `developer.md` |
 | Extension title from `composer.json` ([#108304](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108304-PopulateExtensionTitleFromComposerJson.html)) | no | **yes** | `developer.md` |
 | `#[Validate(param: …)]`, `#[IgnoreValidation(argumentName: …)]` ([#108227](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-108227-UsageOfIgnoreValidationAndValidateAttributesForParametersAtMethodLevel.html)) | yes | deprecated, removal announced for v15 — put the attribute on the parameter | `developer.md` |
+| `renderStatic()`, `CompileWithContentArgumentAndRenderStatic` ([#104789](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104789-RenderStaticForFluidViewHelpers.html) → Fluid 5, [#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108148-Fluid50.html)) | deprecated | **removed** — `render()`, and `getContentArgumentName()` where a content argument is used | `../fluid/README.md` |
+| Global Fluid namespaces in `Configuration/Fluid/Namespaces.php` ([#108524](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.1/Feature-108524-ConfigurationFileToRegisterGlobalFluidNamespaces.html)) | no — `TYPO3_CONF_VARS` | **yes** — merging `TYPO3_CONF_VARS` deprecated | `../fluid/typo3.md` |
+| `$GLOBALS['TCA']` written in a base TCA file ([#107328](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Important-107328-GLOBALSTCAInBaseTCAFiles.html)) | tolerated | **discarded** — base files must `return` the array | `developer.md` |
+| `configurePlugin()` 5th argument ([#105076](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.4/Deprecation-105076-PluginContentElementAndPluginSubTypes.html), [#105538](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Important-105538-ListTypeAndSubTypes.html)) | pass `PLUGIN_TYPE_CONTENT_ELEMENT` — omitted means the deprecated list type | unused — omit it or pass `CType`, anything else throws | `developer.md` |
+| `ExtensionManagementUtility::addPlugin()` arguments ([#105377](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-105377-DeprecatedFunctionalityRemoved.html), [#107047](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107047-FlexFormEnhancements.html)) | three | **two** — `($itemArray, $flexForm)`; a stale `'CType'` becomes the FlexForm data structure, silently | `developer.md` |
+| `IconRegistry` instantiated in `ext_localconf.php` ([#104778](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104778-InstantiationOfIconRegistryInExtLocalconf.html) → #105377) | deprecated | **removed** — exception at boot | `developer.md` |
+| `PathUtility::getPublicResourceWebPath()` ([#107537](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Deprecation-107537-getPublicResourcesWebPath.html)) | yes | deprecated — System Resource API | `developer.md` |
+| `RegularExpressionValidator` option `errorMessage` ([#102326](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.2/Deprecation-102326-RegularExpressionValidatorValidatorOptionErrorMessage.html) → #105377) | deprecated | **removed** — `message` | `developer.md` |
 | `RenderingContext->getRequest()` in ViewHelpers ([#104684](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-104684-FluidRenderingContext-getRequest.html)) | deprecated | **removed** — `getAttribute(ServerRequestInterface::class)` | `../fluid/typo3.md` |
 
 ## XLIFF
 
 | Topic | v13 | v14 | Rule in |
 |---|---|---|---|
-| XLIFF 2.0 support ([#107710](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107710-SupportForXLIFF2xTranslationFiles.html)) | no — use 1.2 | **yes** | `../xliff/README.md` |
+| XLIFF 2.0 support ([#107710](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107710-SupportForXLIFF20TranslationFiles.html)) | no — use 1.2 | **yes** | `../xliff/README.md` |
 | ICU MessageFormat for plurals ([#104546](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Feature-104546-SupportICUMessageFormatForPluralForms.html)) | no | **yes** | `../xliff/README.md` |
 | XLIFF whitespace follows `xml:space` ([#70867](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Important-70867-XLIFFWhitespaceHandlingNowRespectsXmlSpaceAttribute.html)) | no — raw whitespace kept | **yes — collapsed** | `../xliff/README.md` |
 | SiteSet `labels.xlf` automatic key resolution | yes | yes | `../xliff/typo3.md` |

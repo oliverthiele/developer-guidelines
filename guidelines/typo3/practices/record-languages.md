@@ -174,7 +174,7 @@ Three gaps:
 - `findByUid()` returns an object already held by the persistence session without
   running a query, so no event is dispatched for it.
 - `count()` runs through the separate `ModifyQueryBeforeFetchingObjectCountEvent`
-  ([#106510](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-106510-AddPSR-14EventsToExtbaseBackendgetObjectCountByQueryMethod.html)).
+  ([#106510](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-106510-AddedPSR-14EventsToExtbaseBackendgetObjectCountByQueryMethod.html)).
 
 ## Migration
 

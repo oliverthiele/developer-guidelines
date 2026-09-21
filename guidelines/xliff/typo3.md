@@ -32,6 +32,12 @@ How TYPO3 loads and resolves XLIFF files. For the file format see
 
 For `<f:translate>`'s `extensionName` argument, see `../typo3/integrator.md`.
 
+A label that carries `%s`, `%d` or `%1$s` placeholders is filled from an argument
+array whose keys must start at 0 — from v14.2 on, an array starting at 1 silently
+leaves the placeholder in the page. See
+[`../fluid/typo3.md`](../fluid/typo3.md) → *`f:translate` arguments must be a
+list*.
+
 ---
 
 ## SiteSet labels.xlf
