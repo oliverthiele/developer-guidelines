@@ -50,6 +50,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `guidelines/typo3/developer.md` — ExtensionScanner false positives, checked
+  against the 14.3.7 scanner: the `$data` row named
+  `TypoScriptFrontendController::$data`, for which no rule exists; the match
+  comes from `GifBuilder->data` and skips `$this->data`. The `error()` row names
+  its rule, `TypoScriptParser->error()` from v10, instead of "a removed v14
+  method". The section claimed a reviewed finding cannot be silenced;
+  `@extensionScannerIgnoreLine` and `@extensionScannerIgnoreFile` do that
 - `guidelines/typo3/versions.md`, `guidelines/typo3/developer.md`,
   `guidelines/xliff/README.md`, `guidelines/typo3/practices/record-languages.md`
   — four changelog links pointed at file names that do not exist on

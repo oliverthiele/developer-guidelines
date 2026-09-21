@@ -735,32 +735,43 @@ definition and on an Extbase `#[Validate]` attribute alike.
 
 ## ExtensionScanner false positives — property/method naming
 
-The TYPO3 ExtensionScanner matches property and method names lexically,
-regardless of the actual class. A property or method we define ourselves can
-accidentally collide with a name used by a since-removed/deprecated core API,
-producing a "weak" match. Unlike PHPStan baselines, the ExtensionScanner has no
-way to mark a finding as reviewed/dismissed — it resurfaces every time the scan
-runs.
+**Basis:** verified against TYPO3 14.3.7
+
+The TYPO3 ExtensionScanner matches property and method **accesses** by name
+alone, regardless of the class they belong to. A property or method we name
+ourselves can therefore collide with the name of a removed or restricted core
+API, producing a "weak" match. What is matched is the access (`->config`,
+`->error()`), not the declaration.
 
 Avoid generic names for properties/methods we define ourselves when they collide
-with a removed/deprecated core pattern:
+with a scanner rule:
 
-| Avoid                               | Collides with (removed TYPO3 v14)               | Prefer instead                                    |
-|-------------------------------------|-------------------------------------------------|---------------------------------------------------|
-| `$config`                           | `TypoScriptFrontendController::$config`         | specific name, e.g. `$apiConfiguration`           |
-| `$data`                             | `TypoScriptFrontendController::$data`           | specific name, e.g. `$articleData`                |
-| `error()` (custom method we define) | any core class with a same-named removed method | specific name, e.g. `logError()`, `reportError()` |
+| Avoid | Scanner rule it hits | What triggers it | Prefer instead |
+|---|---|---|---|
+| `$config` | `TypoScriptFrontendController->config` — class removed in v14 ([#107831](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-107831-RemovedTypoScriptFrontendController.html)) | every `->config` fetch, `$this->config` included | specific name, e.g. `$apiConfiguration` |
+| `$data` | `GifBuilder->data` — made protected in v13 ([#101955](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-101955-RemovedPublicMethodsRelatedToImageGeneration.html)) | every `->data` fetch **except** on `$this` — `$article->data`, `$this->cObj->data` | specific name, e.g. `$articleData`, for a property read from outside its class |
+| `error()` | `TypoScriptParser->error()` — removed in v10 | every `->error()` call with one or two arguments, `$this->error()` included | specific name, e.g. `logError()`, `reportError()` |
 
-One weak match to ignore outright: **"Fetch of property data"** comes from the
-`GifBuilder->data` rule (property made protected), but on a
-`ContentObjectRenderer` it is the still valid `->data['pi_flexform']` and
-friends.
+One weak match to ignore outright: **"Fetch of property data"** on a
+`ContentObjectRenderer` is the still valid `->data['pi_flexform']` and friends —
+the `$data` row above, on a core class we cannot rename.
 
 This only applies to properties/methods **we name ourselves**. It does not apply
 to calls on external interfaces we don't control — e.g.
 `LoggerInterface::error()` (PSR-3) is the prescribed method name and must be
-called as-is. The resulting scanner false positive there is unavoidable and not
-worth working around.
+called as-is; `$this->logger->error('…', $context)` hits the `error()` row
+regardless.
+
+A finding that has been reviewed can be silenced where it occurs:
+
+```php
+// @extensionScannerIgnoreLine
+$this->logger->error('Import failed', ['exception' => $exception]);
+```
+
+The comment goes on the line directly above the statement. For a whole file,
+`@extensionScannerIgnoreFile` goes into the class docblock. Use it for accesses
+we cannot rename — never instead of renaming a property of our own.
 
 When a scanner finding names a changelog number, look it up in the changelog
 index instead of guessing the migration — see
