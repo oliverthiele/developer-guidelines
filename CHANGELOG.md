@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `guidelines/xliff/README.md` — "Version selection": the version is chosen per
+  set of label files loaded together (an extension's `Resources/Private/Language/`,
+  a Site Set, a Content Block's `language/` folder), not per extension. A new set
+  in a v14-only package starts on XLIFF 2.0 even when the rest of the package is
+  still on 1.2; the rule against mixing guards consumers against breaking
+  changes, which a new folder cannot cause
+
 ## [2.9.0] — 2026-09-21
 
 ### Added

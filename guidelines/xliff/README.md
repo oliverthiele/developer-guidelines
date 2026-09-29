@@ -27,8 +27,25 @@ XLIFF file format conventions: versions, structure, attributes, ICU.
 **Validity:** XLIFF 2.0 support in v14+
 ([#107710](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-107710-SupportForXLIFF20TranslationFiles.html))
 · ICU message format in v14+
+**Basis:** documented
 
-Do not mix versions within one extension.
+The version is chosen per **set of label files loaded together**: an extension's
+`Resources/Private/Language/`, one Site Set, one Content Block's `language/`
+folder. Within a set, do not mix versions.
+
+A **new** set in a v14-only package starts on 2.0, even when the rest of the
+package is still on 1.2 — a new Content Block in a sitepackage whose other label
+files have not been migrated yet. The rule against mixing exists to avoid
+breaking changes for consumers: v13 support, and existing `LLL:` references to
+keys that a format change could disturb. A new folder has neither, so it takes
+the current format instead of extending the legacy one.
+
+**Basis: verified against friendsoftypo3/content-blocks 2.4.9** — Content Blocks
+reads a block's `language/labels.xlf` through the core `XliffLoader`, so 2.0 works
+there as in `Resources/Private/Language/`.
+
+Migrating an existing set to 2.0 is its own commit: unit ids stay the same, so no
+label reference needs adjusting.
 
 ---
 
