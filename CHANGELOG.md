@@ -7,14 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `guidelines/shell.md` — "Remote commands run in the remote login shell": a
+  command passed to `ssh host "…"` runs in the target user's login shell, which
+  may be zsh (unmatched globs abort, no word splitting, `$name:x` is a
+  modifier). Pass SQL and scripts on stdin, quote arguments with `printf '%q '`,
+  or run the remote part in `bash -s`. Deployer's `run()` is not affected
+
 ### Changed
 
-- `guidelines/xliff/README.md` — "Version selection": the version is chosen per
-  set of label files loaded together (an extension's `Resources/Private/Language/`,
-  a Site Set, a Content Block's `language/` folder), not per extension. A new set
-  in a v14-only package starts on XLIFF 2.0 even when the rest of the package is
-  still on 1.2; the rule against mixing guards consumers against breaking
-  changes, which a new folder cannot cause
+- `guidelines/xliff/README.md` — "Version selection" split by who uses the
+  package. A public extension never mixes XLIFF 1.2 and 2.0; it switches once v13
+  is gone from its requirements — in a minor release only if file names, paths,
+  unit ids and placeholders stay the same, `approved="no"` is carried over as
+  `state`, and no file is moved for a translation domain; otherwise in a major
+  release. A private package chooses the version per set of label files, and a
+  new set in a v14-only project starts on 2.0. Every switch converts all files of
+  a folder in one commit
 
 ## [2.9.0] — 2026-09-21
 

@@ -29,23 +29,50 @@ XLIFF file format conventions: versions, structure, attributes, ICU.
 · ICU message format in v14+
 **Basis:** documented
 
-The version is chosen per **set of label files loaded together**: an extension's
-`Resources/Private/Language/`, one Site Set, one Content Block's `language/`
-folder. Within a set, do not mix versions.
+Switching a set means switching every file in that folder — the source file and
+all its translations — in one commit that contains nothing else.
 
-A **new** set in a v14-only package starts on 2.0, even when the rest of the
-package is still on 1.2 — a new Content Block in a sitepackage whose other label
-files have not been migrated yet. The rule against mixing exists to avoid
-breaking changes for consumers: v13 support, and existing `LLL:` references to
-keys that a format change could disturb. A new folder has neither, so it takes
-the current format instead of extending the legacy one.
+### Public extensions — one version per extension
+
+An extension published on Packagist or TER uses one XLIFF version for all of its
+label files, and never mixes 1.2 and 2.0.
+
+It moves to 2.0 only once v13 is gone from its requirements. That is either the
+major release that drops v13, or — for an extension that is already v14-only — a
+minor release, provided the switch changes the format and nothing else:
+
+- file names, paths and unit ids stay the same
+- `approved="no"` becomes `state="initial"` or `state="translated"` on the
+  `<segment>`, so the same translations stay hidden under
+  `requireApprovedLocalizations`
+- existing keys keep their placeholders — no `%1$s` becomes ICU
+- no file is renamed or moved to fit a translation domain
+  ([#93334](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-93334-TranslationDomainMapping.html))
+
+Anything on that list is a breaking change for consumers, who reference your keys
+by file path and id, override them, and pass arguments in the form the label
+expects. It goes into a major release. New keys added later may use ICU.
+
+**Basis: verified against typo3/cms-core 14.3.0** — `XliffLoader` detects the
+version per file, so a consumer's override files and translation-server files in
+1.2 keep loading next to a 2.0 source.
+
+### Private packages — one version per set of label files
+
+A package used only inside its own project — a sitepackage, a project extension —
+chooses the version per **set of label files loaded together**: its
+`Resources/Private/Language/`, one Site Set, one Content Block's `language/`
+folder. Within a set, versions are not mixed.
+
+Once the project runs v14 only, a **new** set starts on 2.0, even when the
+existing sets are still on 1.2 — a new Content Block in a sitepackage that has
+already been upgraded. A new set has no existing `LLL:` references and no v13
+installation to serve, so nothing can conflict with it; starting it on 1.2 would
+only create files that need migrating later.
 
 **Basis: verified against friendsoftypo3/content-blocks 2.4.9** — Content Blocks
 reads a block's `language/labels.xlf` through the core `XliffLoader`, so 2.0 works
 there as in `Resources/Private/Language/`.
-
-Migrating an existing set to 2.0 is its own commit: unit ids stay the same, so no
-label reference needs adjusting.
 
 ---
 
@@ -134,7 +161,8 @@ v13.
 
 ## XLIFF 1.2
 
-Use for extensions that support TYPO3 v13.
+Use for label files of packages that support TYPO3 v13, and for existing sets
+not yet migrated — see [Version selection](#version-selection).
 
 ### Source file
 
@@ -201,7 +229,8 @@ Use for extensions that support TYPO3 v13.
 
 ## XLIFF 2.0
 
-**Validity:** v14+ — use for extensions that target TYPO3 v14 and above only
+**Validity:** v14+ — use for label files of packages that support TYPO3 v14 and
+above only, following [Version selection](#version-selection)
 
 ### Source file
 
