@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.10.0] — 2026-09-30
+
+### Added
+
+- `guidelines/shell.md` — "Remote commands run in the remote login shell": a
+  command passed to `ssh host "…"` runs in the target user's login shell, which
+  may be zsh (unmatched globs abort, no word splitting, `$name:x` is a
+  modifier). Pass SQL and scripts on stdin, quote arguments with `printf '%q '`,
+  or run the remote part in `bash -s`. Deployer's `run()` is not affected
+
+### Changed
+
+- `guidelines/xliff/README.md` — "Version selection" split by who uses the
+  package. A public extension never mixes XLIFF 1.2 and 2.0; it switches once v13
+  is gone from its requirements — in a minor release only if file names, paths,
+  unit ids and placeholders stay the same, `approved="no"` is carried over as
+  `state`, and no file is moved for a translation domain; otherwise in a major
+  release. A private package chooses the version per set of label files, and a
+  new set in a v14-only project starts on 2.0. Every switch converts all files of
+  a folder in one commit
+
 ## [2.9.0] — 2026-09-21
 
 ### Added

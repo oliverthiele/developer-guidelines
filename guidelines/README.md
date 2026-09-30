@@ -93,7 +93,7 @@ ones that fill a gap with a plausible-looking guess instead of leaving it open.
 | [php.md](php.md)                                   | Naming conventions, PHPStan, PHP CS Fixer, type safety                     |
 | [testing.md](testing.md)                           | Quality checks, execution order, PHPUnit, Playwright                       |
 | [git.md](git.md)                                   | Branching workflow, commit messages, release process                       |
-| [shell.md](shell.md)                               | Bash 3.2 vs 5.x, set -u array guards, running scripts via ddev exec        |
+| [shell.md](shell.md)                               | Bash 3.2 vs 5.x, set -u array guards, ddev exec, remote login shell        |
 | [scss.md](scss.md)                                 | Bootstrap-first, CUBE CSS, prefix system, custom properties, state classes |
 | [javascript.md](javascript.md)                     | data-js hooks, Bootstrap JS, ID conventions, framework choice              |
 | [vue.md](vue.md)                                   | Component syntax, script setup, state management, when to use Vue          |
