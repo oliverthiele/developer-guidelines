@@ -56,3 +56,24 @@ same way, so this is easy to miss in manual testing.
   exception) should execute under the same bash version as DDEV and
   Live/Staging, which sidesteps the 3.2-vs-5.x gap entirely rather than
   requiring every script to be written defensively enough to work on both.
+
+## Remote commands run in the remote login shell — never assume bash
+
+A command passed to `ssh host "…"` is interpreted by the target user's login
+shell, not by the shell the script runs in. On servers set up with zsh as login
+shell, zsh behaves differently from bash in exactly the places scripts rely on:
+
+- an unmatched glob aborts the command (`no matches found`) instead of being
+  passed on literally — an argument like `'*.add,*.change'` for a CLI tool breaks
+- an unquoted `$VARIABLE` is not split on whitespace
+- `$name:x` is read as a history modifier, not as `$name` followed by `:x`
+
+A script that orchestrates servers over ssh therefore does one of these:
+
+- pass SQL and scripts on stdin instead of on the command line:
+  `printf '%s\n' "$sql" | ssh host "mysql database"`
+- quote every argument for the remote side: `printf '%q ' "$@"`
+- run the remote part explicitly in bash: `ssh host bash -s <<'EOF' … EOF`
+
+Deployer is not affected: `run()` executes through its `shell` setting, which is
+`bash -ls` by default, whatever the login shell of the deploy user is.
