@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `guidelines/git.md` — "Release Workflow": merge `develop` into `main` locally
+  with `--no-ff` instead of through a pull request; a pull request is for
+  repositories with other contributors, protected branches or CI gates. No
+  GitHub Release — the pushed tag and CHANGELOG.md are the release record
+
 ## [2.10.0] — 2026-09-30
 
 ### Added
