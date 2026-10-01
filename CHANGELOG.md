@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.12.0] — 2026-10-01
+
 ### Added
 
 - `guidelines/fluid/README.md` — wrap the body of `<f:comment>` in an HTML
