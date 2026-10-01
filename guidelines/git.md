@@ -243,7 +243,10 @@ Rules:
 ## Release Workflow
 
 1. Finish work on develop
-2. Update extension version in ext_emconf.php
+2. Update the extension version: `extra.typo3/cms.version` in `composer.json`,
+   and `ext_emconf.php` while the package still ships one (see
+   `typo3/developer.md` → *`ext_emconf.php` — remove it once the minimum is
+   TYPO3 14.2*)
 3. Merge develop into main locally: `git merge --no-ff develop`
 4. Create tag on the merge commit in `main`
 5. Push `main`, the tag, and `develop`
