@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `guidelines/fluid/README.md` — wrap the body of `<f:comment>` in an HTML
+  comment, prose notes included. `<f:comment>` keeps the block out of Fluid's
+  output; the HTML comment makes the IDE highlight it as a comment. Without it,
+  the PhpStorm Fluid plugin treats the body as live markup and marks the tag
+
+### Changed
+
+- `guidelines/fluid/README.md` — the CDATA example keeps its HTML comment.
+  Dropping CDATA removes one of three layers: `<f:comment>` for the output,
+  CDATA against parsing (no longer needed since v13.3), the HTML comment for
+  the editor
+
 ## [2.11.0] — 2026-10-01
 
 ### Added

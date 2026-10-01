@@ -262,6 +262,48 @@ being found.
 
 ---
 
+## `<f:comment>` — wrap the body in an HTML comment
+
+**Validity:** all versions
+**Basis:** observed
+
+Always wrap the body of `<f:comment>` in an HTML comment. This includes notes
+in plain prose, not only commented-out code:
+
+```html
+<!-- Correct -->
+<f:comment><!-- The wrapper sets its own background --></f:comment>
+
+<f:comment>
+    <!--
+    <f:render partial="Old" arguments="{item: item}" />
+    -->
+</f:comment>
+
+<!-- Wrong — no HTML comment inside -->
+<f:comment>
+    The wrapper sets its own background.
+</f:comment>
+```
+
+The two layers do different jobs:
+
+| Layer | Job |
+|---|---|
+| `<f:comment>` | Fluid drops the block from the output |
+| `<!-- … -->` | the IDE highlights the body as a comment and greys it out |
+
+Fluid's output is the same either way. Without the HTML comment, the Fluid
+plugin for PhpStorm treats the body as live markup and marks the tag. It offers
+the fix itself as a quick fix: *Add a HTML comment within the content of the
+Fluid comment*.
+
+HTML comments do not nest. If the commented-out markup has its own
+`<!-- … -->`, the inner `-->` ends the outer comment early, and the rest of the
+body is highlighted as markup again. Remove or shorten the inner comment first.
+
+---
+
 ## CDATA no longer comments code out
 
 **Validity:** Fluid 5 · TYPO3 v14+ ·
@@ -284,20 +326,22 @@ fills its deprecation log with them.
 
 ```html
 <!-- Wrong from v14 on — no longer a comment -->
-<f:comment><![CDATA[
+<f:comment><![CDATA[<!--
     <f:render partial="Old" />
-]]></f:comment>
+-->]]></f:comment>
 
 <!-- Correct -->
-<f:comment>
+<f:comment><!--
     <f:render partial="Old" />
-</f:comment>
+--></f:comment>
 ```
 
-The plain `<f:comment>` is enough on its own: since v13.3 it ignores Fluid
+`<f:comment>` is enough for Fluid on its own: since v13.3 it ignores Fluid
 syntax errors in its body
 ([#104904](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Feature-104904-IgnoreFluidSyntaxErrorInFComment.html)),
-which is exactly what the CDATA used to provide.
+which is exactly what the CDATA used to provide. Only the CDATA layer goes. The
+HTML comment stays; it was never there for Fluid, but for the editor (see
+[the section above](#fcomment--wrap-the-body-in-an-html-comment)).
 
 ### CDATA is not gone — it means something else now
 
