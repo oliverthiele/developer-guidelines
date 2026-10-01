@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.0] — 2026-10-01
+
+### Added
+
+- `guidelines/typo3/developer.md` — "`ext_emconf.php` — remove it once the
+  minimum is TYPO3 14.2": from 14.2 on, TYPO3 reads the extension metadata from
+  `composer.json` in classic mode too (#108345). Remove the file when 14.2 is the
+  lowest supported version; otherwise keep it and add `version` and
+  `providesPackages` to `composer.json`. Includes where each field goes and why
+  a functional test suite with `failOnDeprecation` fails on the deprecation
+- `guidelines/typo3/versions.md` — row for #108345
+
+### Changed
+
+- `guidelines/typo3/developer.md` — "Extension title comes from
+  `composer.json`": keeping `ext_emconf.php` consistent applies only while a
+  package still ships one; `ext_emconf.php` added to `applies_to`, and
+  "extension metadata" to its topics in `guidelines/README.md`
+- `guidelines/git.md` — "Release Workflow": the version goes into
+  `extra.typo3/cms.version` in `composer.json`, and into `ext_emconf.php` only
+  while the package still has one
+
+- `guidelines/git.md` — "Release Workflow": merge `develop` into `main` locally
+  with `--no-ff` instead of through a pull request; a pull request is for
+  repositories with other contributors, protected branches or CI gates. No
+  GitHub Release — the pushed tag and CHANGELOG.md are the release record
+
 ## [2.10.0] — 2026-09-30
 
 ### Added

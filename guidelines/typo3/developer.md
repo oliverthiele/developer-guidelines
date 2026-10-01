@@ -6,6 +6,7 @@ applies_to:
     - "**/Configuration/TCA/**/*.php"
     - "**/ext_localconf.php"
     - "**/ext_tables.php"
+    - "**/ext_emconf.php"
 typo3: [ "13", "14" ]
 see_also: [ "typo3/integrator.md", "typo3/versions.md", "fluid/typo3.md", "php.md" ]
 ---
@@ -607,9 +608,81 @@ Rules:
 - Only the first occurrence is evaluated, so ` - ` may still appear later inside
   the description text.
 - Avoid ` - ` inside the title itself — it would be split at the wrong place.
-- Keep `ext_emconf.php` consistent anyway: it is still evaluated in non-Composer
-  installations, and its `description` must stay **without** the title prefix,
-  otherwise the title appears twice there.
+- While a package still ships `ext_emconf.php` — it supports a TYPO3 version
+  below 14.2, see the next section — keep it consistent: it is still evaluated
+  in non-Composer installations, and its `description` must stay **without**
+  the title prefix, otherwise the title appears twice there.
+
+## `ext_emconf.php` — remove it once the minimum is TYPO3 14.2
+
+**Validity:** v14.2+ ·
+[#108345 deprecation](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Deprecation-108345-Deprecation-of-ext-emconf-php.html) ·
+[#108345 feature](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.2/Feature-108345-No-ext-em-conf-in-classic-mode.html) · no longer evaluated in v15
+**Basis:** verified against TYPO3 14.3.7
+
+From 14.2 on, TYPO3 reads all extension metadata from `composer.json`, in
+non-Composer (classic) mode as well. An `ext_emconf.php` next to a
+`composer.json` without a `version` or without `providesPackages` triggers a
+deprecation during cache warm-up:
+
+```
+Extension "my_extension" is having an ext_emconf.php file, which is deprecated.
+Additionally the composer.json is missing "version" and "providesPackages" declaration.
+```
+
+That message is not only noise: a functional test suite with
+`failOnDeprecation="true"` fails on it for every test case that loads the
+extension.
+
+**Decide by the lowest TYPO3 version the package supports:**
+
+| Lowest supported version | `ext_emconf.php` | `composer.json` |
+|---|---|---|
+| 14.2 or later | **remove** | carries everything, see below |
+| v13, 14.0, 14.1 | keep — classic mode on those versions reads only this file | add `version` and `providesPackages` as well, which silences the deprecation and prepares v15 |
+
+**Where each field goes:**
+
+| `ext_emconf.php` | `composer.json` |
+|---|---|
+| `title`, `description` | `description` as `"Title - Description"`, see the previous section |
+| `version` | `extra.typo3/cms.version` — Packagist advises against a top-level `version` |
+| `state` | a suffix on the version (`1.2.3-beta1`); `excludeFromUpdates` becomes `extra.typo3/cms.exclude-from-updates: true` |
+| `constraints.depends` | `require`, by Composer package name |
+| PHP constraint | `require.php` |
+| `author`, `author_email` | `authors` |
+| `category` | no equivalent — dropped |
+
+```json
+"extra": {
+    "typo3/cms": {
+        "extension-key": "my_extension",
+        "version": "1.2.3",
+        "Package": {
+            "providesPackages": {}
+        }
+    }
+}
+```
+
+`providesPackages` stays an empty object unless the extension ships Composer
+packages of its own for classic mode. Packages that TYPO3 itself ships — Guzzle,
+PSR interfaces, Symfony components — are not listed.
+
+**The version must match the Git tag.** It now lives in `composer.json`, so the
+release commit updates `extra.typo3/cms.version` — see the release workflow in
+`../git.md`.
+
+**A suffix makes the release a pre-release.** `1.2.3-alpha` is only installed
+with a matching `minimum-stability` or an explicit `@alpha`. A 0.x version
+already says that the API may change; leave the suffix out there unless the
+release is meant to stay hidden from a plain `composer require`.
+
+**Basis: documented** — that classic mode works without the file is taken from
+the changelog; the verification above covers Composer mode: the deprecation, and
+title, description and version read from `composer.json` once the file is gone.
+
+---
 
 ---
 
