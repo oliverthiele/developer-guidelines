@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `guidelines/third-party-code.md` — carry third-party licenses through copying,
+  building and minifying, with any build tool: every notice must arrive in the
+  built file or a license file it names, checked in the output, not the
+  configuration. `/*!` as the license-comment convention, the settings that keep
+  or extract license comments in Terser, cssnano and esbuild, Terser dropping a
+  notice together with code it inlines, the header and license file for vendored
+  code, the Composer `license` field versus a README table, and no relative
+  `url()` paths in SCSS that an extension ships for `@use`
+- Pointers to it from `javascript.md`, `scss.md` and `documentation.md`, and a
+  row in the routing tables of `README.md` and `guidelines/README.md`
+
+### Changed
+
+- `guidelines/documentation.md` — the rule against a copyright name in the
+  License section covers the package's own copyright; the third-party table
+  names the upstream holder
+
 ## [2.12.0] — 2026-10-01
 
 ### Added

@@ -45,6 +45,7 @@ automatically).
 | [vue.md](guidelines/vue.md)                                       | Component syntax, script setup, state management, when to use Vue          |
 | [playwright.md](guidelines/playwright.md)                         | Playwright test patterns, visual regression, functional tests, helpers     |
 | [documentation.md](guidelines/documentation.md)                   | README.md and CHANGELOG.md structure for Packagist extensions              |
+| [third-party-code.md](guidelines/third-party-code.md)             | Vendored libraries, license comments, minifier settings, shipped SCSS      |
 
 See [guidelines/README.md](guidelines/README.md) for shared rules that cut
 across

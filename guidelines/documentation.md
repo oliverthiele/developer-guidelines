@@ -4,7 +4,7 @@ scope: documentation
 applies_to:
   - "**/README.md"
   - "**/CHANGELOG.md"
-see_also: ["git.md"]
+see_also: ["git.md", "third-party-code.md"]
 ---
 # Documentation Guidelines
 
@@ -171,7 +171,14 @@ ddev typo3 extension:setup -e ot_gallery
 GPL-2.0-or-later — see [LICENSE](LICENSE)
 ```
 
-Never inline the copyright year or author name in the License section.
+Never inline the copyright year or author name of the package in the License
+section.
+
+Third-party parts go in a table below the package license, never into the
+`license` field of `composer.json`. That table names the upstream copyright
+holder — the attribution is what the third-party license asks for, so the rule
+above does not apply to it. See
+[third-party-code.md](third-party-code.md) → *Composer `license` and the README*.
 
 ### Author section
 

@@ -99,6 +99,7 @@ ones that fill a gap with a plausible-looking guess instead of leaving it open.
 | [vue.md](vue.md)                                   | Component syntax, script setup, state management, when to use Vue          |
 | [playwright.md](playwright.md)                     | Playwright test patterns, visual regression, functional tests, helpers     |
 | [documentation.md](documentation.md)               | README.md and CHANGELOG.md structure for Packagist extensions              |
+| [third-party-code.md](third-party-code.md)         | Vendored libraries, license comments, minifier settings, shipped SCSS      |
 
 Each file starts with YAML frontmatter (`applies_to`, `typo3`, `see_also`). The
 `applies_to` globs say which files a guideline governs; the table above is

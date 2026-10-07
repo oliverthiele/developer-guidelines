@@ -4,7 +4,7 @@ scope: frontend
 applies_to:
   - "**/*.scss"
   - "**/*.css"
-see_also: ["javascript.md", "typo3/content-blocks.md"]
+see_also: ["javascript.md", "typo3/content-blocks.md", "third-party-code.md"]
 ---
 # SCSS / CSS Guidelines
 
@@ -82,6 +82,16 @@ await build({
 Do not rename a `.css` file to `.scss` without also wiring up a real Sass
 compile step — esbuild alone does not understand Sass-specific syntax
 (`@use`, nesting, variables), only plain CSS.
+
+---
+
+## Third-party styles and shipped SCSS
+
+Styles taken from a library keep their license notice as a `/*! */` header;
+`//` comments do not survive compilation. Whatever the build tool, check that
+the notice arrives in the built CSS. SCSS that an extension ships for projects
+to `@use` must not use relative `url()` paths. See
+[third-party-code.md](third-party-code.md).
 
 ---
 
