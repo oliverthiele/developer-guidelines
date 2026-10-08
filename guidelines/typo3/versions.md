@@ -108,4 +108,5 @@ See `skills/typo3-changelog-harvest/SKILL.md` for the index and how to query it.
 `changelog-index/v15.tsv` holds the next major's entries, harvested from the
 core's `main` branch and marked `provisional`. Use it to choose between two
 approaches that both work today — not to write code for a version no project
-runs yet.
+runs yet. How far ahead new code looks, and how binding each index is, is set
+in [`README.md` → New code looks one major ahead](../README.md#new-code-looks-one-major-ahead).

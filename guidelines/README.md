@@ -52,6 +52,28 @@ a guideline nor the project's own `Guidelines/` folder covers:
    core's own usages of a class settle most API questions in a minute. Prefer it
    over the published documentation, which defaults to another version, and over
    memory, which has no version at all.
+
+   When the code cannot answer it — what a TypoScript property or a TCA option
+   does, how a concept is meant to work — read the official documentation on
+   docs.typo3.org, and read it the way that site publishes it for tools:
+   - **The project's version in the address** — `14.3`, `13.4` — for how
+     something works. The next major's documentation answers a different
+     question, whether it is still the way to do it — see
+     [New code looks one major ahead](#new-code-looks-one-major-ahead). `main`
+     documents an unreleased major and is a provisional preview only
+   - **Markdown, not HTML** — the same address with `.md` instead of `.html`:
+     the complete page without navigation, at a fraction of the size. A manual
+     not rendered since the change answers 404; only then fall back to the HTML
+   - **Find the page through the manual's indexes** instead of guessing a path:
+     its `llms.txt` lists every page and index, `toc.json` is the table of
+     contents, `confvals.json` lists every documented option with type and
+     default. When the manual itself is unknown, start at
+     [`docs.typo3.org/llms.txt`](https://docs.typo3.org/llms.txt)
+   - **Never the reStructuredText sources** (`_sources/`). They miss whatever is
+     pulled in while the manual is built: an included file, or the argument
+     list of a ViewHelper, which is generated from data that lives elsewhere.
+     An incomplete source does not look incomplete — the rendered Markdown is
+     the finished page.
 4. **Read the surrounding project code.** The binding pattern for anything
    project-specific. It can be outdated — check it against steps 2 and 3 before
    copying it.
@@ -73,36 +95,41 @@ is deliberately small. If the gap keeps recurring, propose a rule for it.
 This holds for humans too, but it is written for AI assistants, which are the
 ones that fill a gap with a plausible-looking guess instead of leaving it open.
 
+## New code looks one major ahead
+
+The installed source says what works today. It does not say whether the code
+written today survives the next upgrade. For **new** code, among the approaches
+that work on the installed version, pick the one the next major does not break:
+
+- **Grep the next released major** — `v14.tsv` for a v13 project — for
+  `Deprecation` and `Breaking` entries on every API the new code uses. That
+  release is final, so a hit is binding: code that uses a deprecated API today
+  has to be touched again at the upgrade.
+- **Grep the unreleased major as well** — `v15.tsv`, marked `provisional`. It
+  breaks a tie between options that are otherwise equal; it is never a reason
+  to rewrite working code, and never a `**Validity:**` line without that caveat.
+- **A practice guide decides the recommended approach**, where one exists —
+  [typo3/practices/](typo3/practices/README.md). Which way is *better* is not
+  in the changelog; a deprecation only says which way is ending.
+- **Read the next major's documentation for the direction** — `14.3` for a
+  v13 project, as Markdown like any other page. It shows how the core expects
+  the thing to be done once the project is upgraded.
+- **The code must still run on the installed version.** Never write against an
+  API that the project's `vendor/` does not have. When the forward-safe API only
+  exists in the next major, use the installed one and leave a comment that names
+  the changelog entry, with its title, so the upgrade finds it.
+
+Existing code is not rewritten for this. It is updated when it is touched for
+another reason, or at the upgrade itself.
+
 ## Guidelines
 
-| File                                               | Topics                                                                     |
-|----------------------------------------------------|----------------------------------------------------------------------------|
-| [typo3/](typo3/README.md)                          | TYPO3 topic root — index and version model                                 |
-| [typo3/integrator.md](typo3/integrator.md)         | TypoScript, SiteSets, CE wizard, backend configuration                     |
-| [typo3/developer.md](typo3/developer.md)           | PHP, TCA, Doctrine DBAL, views, extension metadata                         |
-| [typo3/content-blocks.md](typo3/content-blocks.md) | Content Block structure, portable assets, two-layer CSS, config.yaml       |
-| [typo3/sitekit.md](typo3/sitekit.md)               | SiteKit layer model, template path abstraction (SiteKit projects only)     |
-| [typo3/practices/](typo3/practices/README.md)      | decision guides: which approach, and when deliberately not                 |
-| [typo3/versions.md](typo3/versions.md)             | which rule applies to which TYPO3 version                                  |
-| [typo3/changelog-index/](typo3/changelog-index/)   | every core changelog entry — grep only, never read whole                   |
-| [fluid/](fluid/README.md)                          | Fluid engine: syntax, ViewHelper arguments, template resolution            |
-| [fluid/typo3.md](fluid/typo3.md)                   | Fluid in TYPO3: core ViewHelpers, backend modules, RTE output              |
-| [xliff/](xliff/README.md)                          | XLIFF 1.2 / 2.0 file format, attributes, ICU message format                |
-| [xliff/keys.md](xliff/keys.md)                     | Key naming conventions, key lifecycle                                      |
-| [xliff/typo3.md](xliff/typo3.md)                   | LLL references, SiteSet labels.xlf, enum label localization                |
-| [php.md](php.md)                                   | Naming conventions, PHPStan, PHP CS Fixer, type safety                     |
-| [testing.md](testing.md)                           | Quality checks, execution order, PHPUnit, Playwright                       |
-| [git.md](git.md)                                   | Branching workflow, commit messages, release process                       |
-| [shell.md](shell.md)                               | Bash 3.2 vs 5.x, set -u array guards, ddev exec, remote login shell        |
-| [scss.md](scss.md)                                 | Bootstrap-first, CUBE CSS, prefix system, custom properties, state classes |
-| [javascript.md](javascript.md)                     | data-js hooks, Bootstrap JS, ID conventions, framework choice              |
-| [vue.md](vue.md)                                   | Component syntax, script setup, state management, when to use Vue          |
-| [playwright.md](playwright.md)                     | Playwright test patterns, visual regression, functional tests, helpers     |
-| [documentation.md](documentation.md)               | README.md and CHANGELOG.md structure for Packagist extensions              |
+Which file covers which work area is listed once, in the
+[routing table in `AGENTS.md`](../AGENTS.md#routing). It is not repeated here,
+so that a new file cannot be added to one list and missed in another.
 
 Each file starts with YAML frontmatter (`applies_to`, `typo3`, `see_also`). The
-`applies_to` globs say which files a guideline governs; the table above is
-derived from that metadata.
+`applies_to` globs say which files a guideline governs.
 
 ## Own tooling
 

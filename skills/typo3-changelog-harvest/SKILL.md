@@ -42,20 +42,34 @@ Use this when choosing between two working approaches in a v13/v14 project. Do
 **not** use it to write code that only works on v15 — those entries are
 `provisional` and the project still has to run on its installed version.
 
+For a v13 project the next major is `v14.tsv`, which is released and therefore
+binding, not a tie-breaker. The full rule, including how far each index counts:
+`guidelines/README.md` → *New code looks one major ahead*.
+
 Columns, tab-separated:
 
 | # | Column | Notes |
 |---|---|---|
-| 1 | number | changelog issue number |
+| 1 | number | changelog issue number, as in the file name |
 | 2 | type | `Breaking`, `Deprecation`, `Feature`, `Important` |
 | 3 | version | e.g. `13.4` |
 | 4 | title | from the entry heading |
 | 5 | tags | from the entry's `.. index::` directive (`TCA`, `TypoScript`, `NotScanned`, `ext:core`, …) |
-| 6 | symbols | short class/method names, capped at 30 (`+N-more-see-rst` marks the cut) |
+| 6 | symbols | short class/method names, capped at 30 (`+N-more-see-rst` marks the cut). The entry text's own roles first, then classes and `Class->member()` names from the docs JSON |
 | 7 | migration-gist | one-line summary of the `Migration` section |
 | 8 | note | `note` = a curated note exists, see below |
-| 9 | source | `local:14.3.x` or `provisional` |
+| 9 | source | `docs:main`, `local:14.3.x`, or `provisional` for an unreleased major |
 | 10 | path | relative to the core's `Documentation/Changelog/` |
+| 11 | migration-symbols | classes and members the `Migration` section names — usually the replacement. `-` when none, always `-` from a local harvest |
+
+Column 11 answers *what replaces this?* without opening the entry:
+
+```bash
+grep -h 'StandaloneView' .../changelog-index/v1*.tsv | cut -f1,4,11
+```
+
+It lists what the Migration section *mentions*, which is usually but not always
+the replacement — for a `Breaking` entry the `.rst` still decides.
 
 ### How far to trust each column
 
@@ -109,8 +123,33 @@ shows up repeatedly — see the inclusion criterion in `guidelines/README.md`.
 
 ## Regenerating the index
 
-Needed after a core update, or when a version should be indexed for the first
-time.
+Needed after a core release, or when a version should be indexed for the first
+time. The default source is the changelog JSON that docs.typo3.org publishes
+for every major — one file per major, rendered from the core's `main` branch,
+which carries the changelogs of the released majors too:
+
+```bash
+python3 skills/typo3-changelog-harvest/harvest.py --docs \
+  --major 13 --major 14 --major 15 --provisional 15
+```
+
+- **`--provisional MAJOR`** marks a major that is not released yet. Its entries
+  can still be reclassified or dropped, so they must **not** become a
+  `Validity:` line in a guideline without that caveat. Drop the flag for that
+  major once it is released.
+- **The JSON gives** the list of entries, the tags, and the PHP classes each
+  entry names, per section — that is where column 11 comes from.
+- **The entry text is still needed** for the migration gist; the JSON does not
+  carry it. It is read from `changelog-index/cache/`, and fetched from the core
+  repository only for entries not cached yet. A regeneration therefore costs one
+  request per major plus one per new entry.
+- **Type, number and version come from the file name**, not from the JSON's own
+  fields. Those disagree with the file name for a few entries; the
+  ExtensionScanner and the cache both go by the file name.
+
+Without network access, harvest from an installed core instead. The changelog
+folder only contains versions up to that core, so pick a project whose core is
+at least as new as the highest version to index; column 11 stays empty:
 
 ```bash
 python3 skills/typo3-changelog-harvest/harvest.py \
@@ -119,15 +158,12 @@ python3 skills/typo3-changelog-harvest/harvest.py \
 ```
 
 `--cache-local` copies the source `.rst` files into `changelog-index/cache/`.
-Always pass it: released changelogs never change, so this is a one-time cost,
-and it is what makes a v14 entry readable from inside a v13 project. The files
-compress well — several hundred entries add well under a megabyte to the
-repository.
+Released changelogs rarely change, so the cache is what makes a v14 entry
+readable from inside a v13 project. The files compress well — several hundred
+entries add well under a megabyte to the repository.
 
-Pick a project whose installed core is **at least** as new as the highest
-version to index — the changelog folder only contains versions up to the
-installed core. All four entry types are indexed: `Breaking`, `Deprecation`,
-`Feature` and `Important`. Versions below 13.0 are out of scope.
+All four entry types are indexed: `Breaking`, `Deprecation`, `Feature` and
+`Important`. Versions below 13.0 are out of scope.
 
 `Important` is included on purpose. Entries such as
 `#70867 — XLIFF whitespace handling now respects xml:space` change how existing
@@ -147,23 +183,9 @@ clone; that produces `git pull` conflicts for every collaborator.
 `.maintainer` is gitignored and exists only in the maintainer's checkout.
 Collaborators grep the committed index but never regenerate it.
 
-### Unreleased versions
+### Cached entry texts
 
-For a version that is not installed anywhere yet (preparing for v15 while the
-core is still v14), harvest from the TYPO3 core repository instead of `vendor/`.
-The file name already carries type, number and title, so a directory listing
-produces most columns without downloading a single file; the symbol column is
-filled lazily for entries that are actually consulted, and those `.rst` files
-are cached under `changelog-index/cache/main/`.
-
-```bash
-python3 skills/typo3-changelog-harvest/harvest.py --remote main --major 15
-```
-
-`--remote` implies `--provisional`. Entries from an unreleased branch can still
-be reclassified or dropped, so they must **not** become a `Validity:` line in a
-guideline without that caveat.
-
-The cached `.rst` files are a snapshot of a moving branch. Re-run the command
-every few months to pick up new entries, and re-harvest from `vendor/` once the
-version is released — a local core is authoritative, a branch is not.
+A cached `.rst` is not fetched again. For a released major that is right; for
+the provisional one it is a snapshot of a moving branch — an entry rewritten
+upstream keeps its old text and gist here until its cache file is deleted. Re-run
+the harvest every few months to pick up new entries.

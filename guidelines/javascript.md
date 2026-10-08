@@ -4,7 +4,7 @@ scope: frontend
 applies_to:
   - "**/*.js"
   - "**/*.ts"
-see_also: ["scss.md", "vue.md"]
+see_also: ["scss.md", "vue.md", "third-party-code.md"]
 ---
 # JavaScript Guidelines
 
@@ -383,6 +383,15 @@ Register assets explicitly in Fluid — load only where needed:
 - Provide data via `data-*` attributes
 - Avoid global variables
 - Prefer JSON-encoded data for complex structures
+
+---
+
+## Third-party code
+
+A vendored library keeps its license notice as a `/*! */` header, and the build
+must not strip it — with any bundler or minifier, including the esbuild setup
+above. Check the built file, not the configuration: a minifier can drop a notice
+even when configured correctly. See [third-party-code.md](third-party-code.md).
 
 ---
 

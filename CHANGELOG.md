@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.13.0] — 2026-10-08
+
+### Added
+
+- `guidelines/third-party-code.md` — carry third-party licenses through copying,
+  building and minifying, with any build tool: every notice must arrive in the
+  built file or a license file it names, checked in the output, not the
+  configuration. `/*!` as the license-comment convention, the settings that keep
+  or extract license comments in Terser, cssnano and esbuild, Terser dropping a
+  notice together with code it inlines, the header and license file for vendored
+  code, the Composer `license` field versus a README table, and no relative
+  `url()` paths in SCSS that an extension ships for `@use`
+- Pointers to it from `javascript.md`, `scss.md` and `documentation.md`, and a
+  row in the routing table
+- `guidelines/README.md` → *When a rule is missing* — where the installed source
+  cannot answer, read docs.typo3.org at the project's version, as Markdown, and
+  find the page through the manual's `llms.txt`, `toc.json` or `confvals.json`;
+  never the reStructuredText sources, which miss included and generated content.
+  Summarised in `AGENTS.md`
+- `guidelines/README.md` → *New code looks one major ahead* — new code checks
+  the next released major's index for deprecations of the APIs it uses
+  (binding) and the unreleased major's index as a tie-breaker, a practice guide
+  decides the recommended approach, and the code still runs on the installed
+  version. Summarised in `AGENTS.md`, linked from `typo3/versions.md`
+- `CLAUDE.md` — imports `AGENTS.md`, so that Claude Code loads it when working
+  inside this repository
+
+### Changed
+
+- `AGENTS.md` — holds the routing table (work area → file), the one list of
+  guideline files. `README.md` and `guidelines/README.md` point at it instead
+  of keeping their own tables, which had already drifted apart. All paths in
+  `AGENTS.md` are relative to the repository root, so that a file importing it
+  from elsewhere — a project's or a personal `CLAUDE.md` — resolves them
+- `guidelines/setup.md` — the project `CLAUDE.md` template imports
+  `../developer-guidelines/AGENTS.md` instead of carrying a copied summary of
+  *When a rule is missing*, which had missed the two newest rules. Explains the
+  one-time import approval and the fallback sentence. **Projects set up with the
+  old template keep the copy until their block is replaced.**
+- `skills/guidelines-upgrade` — fourth check: does the project `CLAUDE.md`
+  import `AGENTS.md`? `--apply --add-import` adds the line for a sibling clone;
+  lines that look copied from the shared rules are reported, never removed
+- `guidelines/typo3/changelog-index/v15.tsv` — regenerated from core `main`,
+  52 → 78 provisional entries
+- `skills/typo3-changelog-harvest` — harvests from the changelog JSON on
+  docs.typo3.org (`--docs`) instead of the GitHub directory listing
+  (`--remote`, removed). The symbol column gains the classes and members the
+  JSON lists, without losing any symbol the entry text names; new column 11
+  `migration-symbols` lists what the Migration section names, usually the
+  replacement. `--provisional` now takes the major it applies to. The local mode
+  stays for working offline
+- `guidelines/typo3/changelog-index/` — v13, v14 and v15 regenerated with
+  `--docs`; v14 gains the `Important` entries of the latest 14.3 patch releases
+- `guidelines/documentation.md` — the rule against a copyright name in the
+  License section covers the package's own copyright; the third-party table
+  names the upstream holder
+
 ## [2.12.0] — 2026-10-01
 
 ### Added

@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
 """Bring a project's references to the shared developer guidelines up to date.
 
-Checks three things in the current project:
+Checks four things in the current project:
 
 1. the shared guidelines can be found at all
 2. reading them is pre-granted in .claude/settings.json
 3. every guideline path referenced in the project still exists — stale paths are
    rewritten using path-map.tsv
+4. the project CLAUDE.md imports the shared AGENTS.md instead of copying its
+   rules — a missing import can be added, a copy is only reported
 
 Reports by default; only --apply writes. Nothing is ever committed.
 """
 
 import argparse
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -36,6 +39,20 @@ READ_PERMISSION = "Read(../developer-guidelines/**)"
 REFERENCE_PATTERN = re.compile(r"[\w./~-]*(?:developer-guidelines|guidelines)/[\w./-]+\.md")
 
 REPOSITORY_MARKER = "developer-guidelines/"
+
+# "@../developer-guidelines/AGENTS.md" on a line of its own, as setup.md
+# prescribes. An import inside a code fence is not an import.
+AGENTS_IMPORT_PATTERN = re.compile(r"^@\S*developer-guidelines/AGENTS\.md\s*$")
+
+# Wording from summaries of the shared rules that older project templates
+# copied in. Found means "probably a copy", not "certainly" — reported only,
+# since each project's block grew differently and removing text is a decision.
+COPIED_RULE_MARKERS = [
+    "When no rule covers the case",
+    "never invent a",
+    "Silence in the guidelines is not permission",
+    "never read it whole",
+]
 
 
 def load_path_map(skill_dir):
@@ -211,6 +228,76 @@ def find_dangling(text, guidelines_dir, moves):
     return dangling
 
 
+def lines_outside_fences(text):
+    """(index, line) for every line that is not inside a ``` code fence."""
+    in_fence = False
+    for index, line in enumerate(text.splitlines()):
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if not in_fence:
+            yield index, line
+
+
+def agents_import_line(project_dir, guidelines_dir):
+    """The import line, or None when the clone is not a sibling of the project.
+
+    setup.md makes the sibling relationship binding. A clone found elsewhere
+    would give a path that only works on this machine, committed into a file
+    every collaborator reads.
+    """
+    if guidelines_dir.parent.resolve() != (project_dir.parent / "developer-guidelines").resolve():
+        return None
+    return "@" + os.path.relpath(guidelines_dir.parent / "AGENTS.md", project_dir)
+
+
+def check_agents_import(text):
+    """(is imported, copied-rule lines) for a project CLAUDE.md."""
+    imported = False
+    copied = []
+    for index, line in lines_outside_fences(text):
+        if AGENTS_IMPORT_PATTERN.match(line.strip()):
+            imported = True
+        if any(marker.lower() in line.lower() for marker in COPIED_RULE_MARKERS):
+            copied.append(index + 1)
+    return imported, copied
+
+
+def add_agents_import(text, import_line):
+    """Insert the import after the paragraph that names the guidelines.
+
+    A paragraph naming AGENTS.md is the pointer sentence setup.md prescribes,
+    so the import lands where the template puts it. Failing that, it goes after
+    the first paragraph that names the guidelines at all, with the sentence that
+    explains it; failing that too, at the end of the file.
+    """
+    explanation = [
+        "The shared guidelines' entry point, `../developer-guidelines/AGENTS.md`, is",
+        "imported below. Its paths are relative to `../developer-guidelines/`.",
+        "",
+    ]
+    lines = text.splitlines()
+    mention = None
+    insert = ["", import_line]
+    for needle, block in (
+        ("developer-guidelines/AGENTS.md", ["", import_line]),
+        ("developer-guidelines", [""] + explanation + [import_line]),
+    ):
+        for index, line in lines_outside_fences(text):
+            if needle in line:
+                mention, insert = index, block
+                break
+        if mention is not None:
+            break
+    if mention is None:
+        return text.rstrip("\n") + "\n\n" + "\n".join(explanation + [import_line]) + "\n"
+    end = mention
+    while end + 1 < len(lines) and lines[end + 1].strip():
+        end += 1
+    lines[end + 1:end + 1] = insert
+    return "\n".join(lines) + ("\n" if text.endswith("\n") else "")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project", default=".", help="project root (default: current directory)")
@@ -219,6 +306,11 @@ def main():
         "--grant-read",
         action="store_true",
         help="add the guidelines read permission to .claude/settings.json (needs --apply)",
+    )
+    parser.add_argument(
+        "--add-import",
+        action="store_true",
+        help="add the AGENTS.md import to the project CLAUDE.md (needs --apply)",
     )
     arguments = parser.parse_args()
 
@@ -254,6 +346,38 @@ def main():
             print(
                 f'  read permission: MISSING — add "{READ_PERMISSION}" to '
                 ".claude/settings.json, or re-run with --apply --grant-read"
+            )
+
+    claude_file = project_dir / "CLAUDE.md"
+    if not claude_file.is_file():
+        print("  AGENTS.md import: no CLAUDE.md — set one up as guidelines/setup.md describes")
+    else:
+        claude_text = claude_file.read_text(encoding="utf-8", errors="replace")
+        imported, copied = check_agents_import(claude_text)
+        import_line = agents_import_line(project_dir, guidelines_dir)
+        if imported:
+            print("  AGENTS.md import: present in CLAUDE.md")
+        elif import_line is None:
+            print(
+                "  AGENTS.md import: MISSING, and not added — the guidelines are not "
+                "cloned next to this project, see guidelines/setup.md"
+            )
+        elif arguments.apply and arguments.add_import:
+            claude_file.write_text(add_agents_import(claude_text, import_line), encoding="utf-8")
+            print(f"  AGENTS.md import: added to CLAUDE.md ({import_line})")
+        else:
+            print(
+                f"  AGENTS.md import: MISSING — add {import_line} to CLAUDE.md, "
+                "or re-run with --apply --add-import"
+            )
+        if copied:
+            print(
+                "  CLAUDE.md lines that look copied from the shared rules: "
+                + ", ".join(str(number) for number in copied)
+            )
+            print(
+                "      With the import in place they are duplicates that drift — "
+                "check each and remove what AGENTS.md already says."
             )
 
     changed_files = 0
