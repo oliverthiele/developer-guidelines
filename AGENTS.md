@@ -53,10 +53,10 @@ the code still runs on the installed version. Full rule:
 [`guidelines/README.md` → New code looks one major ahead](guidelines/README.md#new-code-looks-one-major-ahead).
 
 **Grep those files, never read one whole.** They hold every core changelog entry
-since v13 — over 800 lines and 320 KB across three files, most of it symbol
-lists, and growing with every core release. `v14.tsv` alone is 170 KB: reading
-it loads about as much text as every guideline file in this repository combined,
-to answer a question a single `grep` answers exactly.
+since v13 — about 900 lines and 390 KB across three files, most of it symbol
+lists, and growing with every core release. `v14.tsv` alone is 195 KB: reading
+it loads about two thirds of the text of every guideline file in this repository
+combined, to answer a question a single `grep` answers exactly.
 
 ## Editing
 

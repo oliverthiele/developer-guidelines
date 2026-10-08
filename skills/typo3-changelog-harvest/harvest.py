@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 """Build a grep-optimised index of TYPO3 changelog entries.
 
-Reads the reStructuredText changelog files shipped with the TYPO3 core
-(``vendor/typo3/cms-core/Documentation/Changelog/``) and writes one TSV line
-per entry. The index is meant to be searched with ``grep``, never read as a
-whole.
+Two sources:
+
+- ``--docs``: the ``Changelog-<major>.json`` files published on docs.typo3.org,
+  plus the reStructuredText of each entry for the migration hint. Covers every
+  major, released or not, without a local core.
+- ``--changelog-dir``: the reStructuredText files shipped with an installed core
+  (``vendor/typo3/cms-core/Documentation/Changelog/``), for working offline.
+
+Either way it writes one TSV line per entry. The index is meant to be searched
+with ``grep``, never read as a whole.
 
 See SKILL.md for the workflow and the column contract.
 """
@@ -14,14 +20,16 @@ import json
 import os
 import re
 import sys
+import urllib.error
 import urllib.request
 from pathlib import Path
 
 CORE_REPOSITORY = "TYPO3/typo3"
 CORE_CHANGELOG_PATH = "typo3/sysext/core/Documentation/Changelog"
-# Fetching bodies costs one request per entry. Above this count the index is
-# built from file names alone and bodies are filled in on demand instead.
-REMOTE_BODY_LIMIT = 150
+# One JSON file per major: every entry with its path, tags and the PHP classes
+# it names, per section. Rendered from the core's main branch, which carries
+# the changelogs of all released majors too.
+DOCS_CHANGELOG_URL = "https://docs.typo3.org/c/typo3/cms-core/{branch}/en-us/Changelog-{major}.json"
 
 # Important is included deliberately: entries like #70867 (XLIFF whitespace and
 # xml:space) change how existing code behaves without being classified breaking.
@@ -88,7 +96,7 @@ def short_name(fully_qualified):
     return name.strip()
 
 
-def collect_symbols(text):
+def collect_symbols(text, capped=True):
     """Short class/method names mentioned in the entry.
 
     The ExtensionScanner and PHPStan report short names, so those are what a
@@ -99,9 +107,7 @@ def collect_symbols(text):
         name = short_name(match.group(1))
         if name and name not in symbols:
             symbols.append(name)
-    if len(symbols) > MAX_SYMBOLS:
-        return symbols[:MAX_SYMBOLS] + [f"+{len(symbols) - MAX_SYMBOLS}-more-see-rst"]
-    return symbols
+    return cap_symbols(symbols) if capped else symbols
 
 
 def strip_markup(text):
@@ -251,61 +257,105 @@ def parse_entry_text(text, file_name, version):
     }
 
 
-def harvest_remote(major, branch, cache_dir):
-    """Index a version that is not installed locally (e.g. v15 while on v14).
+def class_symbols(classes, section=None):
+    """Short class names and Class->member() names from the JSON class list.
 
-    The file name already carries type, number and title, so the directory
-    listing alone yields a usable index. Bodies are only fetched while the
-    entry count stays small; beyond that they are filled in on demand.
+    Returned apart, so that class names can go before members: the symbol
+    column is capped, and a catch-all entry names more members than fit.
+
+    With section set, only classes mentioned in that section — "migration"
+    is where the replacement for a removed API is usually named.
     """
-    listing_url = (
-        f"https://api.github.com/repos/{CORE_REPOSITORY}/contents/"
-        f"{CORE_CHANGELOG_PATH}?ref={branch}"
-    )
-    version_dirs = []
-    for item in fetch_json(listing_url):
-        if item.get("type") != "dir":
-            continue
-        version_match = VERSION_DIR_PATTERN.match(item["name"])
-        if version_match and version_match.group(1) == str(major):
-            version_dirs.append(item["name"])
+    class_names = []
+    members = []
+    for fully_qualified, occurrences in (classes or {}).items():
+        class_name = short_name(fully_qualified)
+        for occurrence in occurrences:
+            if section is not None and occurrence.get("section") != section:
+                continue
+            if class_name not in class_names:
+                class_names.append(class_name)
+            for member in occurrence.get("members") or []:
+                if class_name + member not in members:
+                    members.append(class_name + member)
+    return class_names, members
 
-    file_names = []
-    for version in sorted(version_dirs):
-        directory_url = (
-            f"https://api.github.com/repos/{CORE_REPOSITORY}/contents/"
-            f"{CORE_CHANGELOG_PATH}/{version}?ref={branch}"
-        )
-        for item in fetch_json(directory_url):
-            if item.get("type") == "file" and item["name"].endswith(".rst"):
-                file_names.append((version, item["name"]))
 
-    fetch_bodies = len(file_names) <= REMOTE_BODY_LIMIT
-    if not fetch_bodies:
-        print(
-            f"v{major}: {len(file_names)} entries — indexing from file names only, "
-            "bodies stay unfetched (grep still finds number, type, version, title).",
-            file=sys.stderr,
-        )
+def merge_symbols(*groups):
+    merged = []
+    for group in groups:
+        for symbol in group:
+            if symbol not in merged:
+                merged.append(symbol)
+    return merged
+
+
+def cap_symbols(symbols):
+    if len(symbols) > MAX_SYMBOLS:
+        return symbols[:MAX_SYMBOLS] + [f"+{len(symbols) - MAX_SYMBOLS}-more-see-rst"]
+    return symbols
+
+
+def harvest_docs(major, branch, cache_dir):
+    """Index one major from the docs changelog JSON.
+
+    Type, number and version come from the entry's file name, not from the
+    JSON's own fields: those disagree with the file name for a few entries,
+    and the ExtensionScanner names the file. The migration hint still needs the
+    entry text, which the JSON does not carry; it is read from the cache and
+    fetched only for entries not cached yet.
+    """
+    url = DOCS_CHANGELOG_URL.format(branch=branch, major=major)
+    try:
+        document = fetch_json(url)
+    except urllib.error.HTTPError as error:
+        print(f"v{major}: {url} answered {error.code}, skipped", file=sys.stderr)
+        return []
 
     entries = []
-    for version, file_name in file_names:
-        text = ""
-        if fetch_bodies and FILE_PATTERN.match(file_name):
-            cached = cache_dir / version / file_name
-            if cached.exists():
-                text = cached.read_text(encoding="utf-8", errors="replace")
-            else:
-                raw_url = (
-                    f"https://raw.githubusercontent.com/{CORE_REPOSITORY}/{branch}/"
-                    f"{CORE_CHANGELOG_PATH}/{version}/{file_name}"
-                )
-                text = fetch_text(raw_url)
-                cached.parent.mkdir(parents=True, exist_ok=True)
-                cached.write_text(text, encoding="utf-8")
+    fetched = 0
+    for item in document.get("entries", []):
+        # "Changelog/15.0/Feature-110815-AfterRecordIsRenderedEvent"
+        parts = item.get("path", "").split("/")
+        if len(parts) != 3:
+            continue
+        version, file_name = parts[1], parts[2] + ".rst"
+        if not FILE_PATTERN.match(file_name):
+            continue
+
+        cached = cache_dir / version / file_name
+        if cached.exists():
+            text = cached.read_text(encoding="utf-8", errors="replace")
+        else:
+            raw_url = (
+                f"https://raw.githubusercontent.com/{CORE_REPOSITORY}/{branch}/"
+                f"{CORE_CHANGELOG_PATH}/{version}/{file_name}"
+            )
+            text = fetch_text(raw_url)
+            cached.parent.mkdir(parents=True, exist_ok=True)
+            cached.write_text(text, encoding="utf-8")
+            fetched += 1
+
         entry = parse_entry_text(text, file_name, version)
-        if entry:
-            entries.append(entry)
+        if not entry:
+            continue
+        # What the rst roles name comes first, in the order the text names it —
+        # the same list the rst-only index had, so a capped catch-all entry
+        # keeps the symbols it always had. The JSON adds the classes the roles
+        # missed, then their members, while there is room.
+        class_names, members = class_symbols(item.get("classes"))
+        entry["symbols"] = cap_symbols(
+            merge_symbols(collect_symbols(text, capped=False), class_names, members)
+        )
+        entry["migration_symbols"] = cap_symbols(
+            merge_symbols(*class_symbols(item.get("classes"), "migration"))
+        )
+        if not entry["tags"]:
+            entry["tags"] = item.get("tags") or []
+        entries.append(entry)
+
+    if fetched:
+        print(f"v{major}: fetched {fetched} entry texts not cached yet", file=sys.stderr)
     return entries
 
 
@@ -341,7 +391,7 @@ def write_index(entries, out_file, source, notes_dir, provisional=False):
         "# TYPO3 changelog index — GENERATED, do not edit by hand.",
         "# grep-only: never read this file as a whole.",
         f"# source: {source}",
-        "# columns: number\ttype\tversion\ttitle\ttags\tsymbols\tmigration-gist\tnote\tsource\tpath",
+        "# columns: number\ttype\tversion\ttitle\ttags\tsymbols\tmigration-gist\tnote\tsource\tpath\tmigration-symbols",
         "# note column: 'note' means notes/{number}.md exists and takes precedence.",
     ]
     if provisional:
@@ -365,6 +415,7 @@ def write_index(entries, out_file, source, notes_dir, provisional=False):
                     "note" if has_note else "-",
                     "provisional" if provisional else source,
                     entry["path"],
+                    " ".join(entry.get("migration_symbols", [])) or "-",
                 )
             )
         )
@@ -409,10 +460,13 @@ def main():
         help="path to vendor/typo3/cms-core/Documentation/Changelog (local mode)",
     )
     parser.add_argument(
-        "--remote",
+        "--docs",
         metavar="BRANCH",
-        help="harvest from the TYPO3 core repository instead, e.g. --remote main. "
-        "Use for versions not installed anywhere yet; implies --provisional.",
+        nargs="?",
+        const="main",
+        help="harvest from the changelog JSON on docs.typo3.org (default branch: "
+        "main). Covers released and unreleased majors alike; mark the unreleased "
+        "one with --provisional.",
     )
     parser.add_argument(
         "--major",
@@ -431,13 +485,16 @@ def main():
     )
     parser.add_argument(
         "--provisional",
-        action="store_true",
-        help="mark entries as coming from an unreleased branch",
+        action="append",
+        type=int,
+        default=[],
+        metavar="MAJOR",
+        help="major version that is not released yet, repeatable (e.g. --provisional 15)",
     )
     arguments = parser.parse_args()
 
-    if not arguments.changelog_dir and not arguments.remote:
-        sys.exit("either --changelog-dir (local) or --remote BRANCH is required")
+    if bool(arguments.changelog_dir) == bool(arguments.docs):
+        sys.exit("exactly one of --changelog-dir (local) or --docs [BRANCH] is required")
 
     changelog_dir = None
     if arguments.changelog_dir:
@@ -458,16 +515,15 @@ def main():
             file=sys.stderr,
         )
 
-    is_provisional = arguments.provisional or bool(arguments.remote)
-    if arguments.remote:
-        source = arguments.source or f"web:{arguments.remote}"
+    if arguments.docs:
+        source = arguments.source or f"docs:{arguments.docs}"
     else:
         source = arguments.source or detect_source(changelog_dir)
 
     for major in arguments.major:
         cache_dir = out_dir / "cache"
-        if arguments.remote:
-            entries = harvest_remote(major, arguments.remote, cache_dir)
+        if arguments.docs:
+            entries = harvest_docs(major, arguments.docs, cache_dir)
         else:
             entries = harvest_local(
                 changelog_dir, major, cache_dir if arguments.cache_local else None
@@ -480,7 +536,7 @@ def main():
             out_dir / f"v{major}.tsv",
             source,
             notes_dir,
-            provisional=is_provisional,
+            provisional=major in arguments.provisional,
         )
         by_type = {}
         for entry in entries:

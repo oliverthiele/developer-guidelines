@@ -36,6 +36,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `guidelines/typo3/changelog-index/v15.tsv` — regenerated from core `main`,
   52 → 78 provisional entries
+- `skills/typo3-changelog-harvest` — harvests from the changelog JSON on
+  docs.typo3.org (`--docs`) instead of the GitHub directory listing
+  (`--remote`, removed). The symbol column gains the classes and members the
+  JSON lists, without losing any symbol the entry text names; new column 11
+  `migration-symbols` lists what the Migration section names, usually the
+  replacement. `--provisional` now takes the major it applies to. The local mode
+  stays for working offline
+- `guidelines/typo3/changelog-index/` — v13, v14 and v15 regenerated with
+  `--docs`; v14 gains the `Important` entries of the latest 14.3 patch releases
 - `guidelines/documentation.md` — the rule against a copyright name in the
   License section covers the package's own copyright; the third-party table
   names the upstream holder
