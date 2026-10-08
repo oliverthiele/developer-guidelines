@@ -14,8 +14,9 @@ Run it in the project that needs updating:
 python3 ../developer-guidelines/skills/guidelines-upgrade/upgrade.py
 ```
 
-Reports only. Add `--apply` to write, and `--apply --grant-read` to also add the
-missing read permission. Nothing is ever committed — review the diff and commit
+Reports only. Add `--apply` to write, `--apply --grant-read` to also add the
+missing read permission, and `--apply --add-import` to add the missing
+`AGENTS.md` import. Nothing is ever committed — review the diff and commit
 it with the project's own conventions.
 
 ## What it checks
@@ -45,6 +46,22 @@ A reference is resolved against the repository root when it names one
 everything referenced lives under `guidelines/`: `AGENTS.md` is the prescribed
 entry point and `skills/` sits beside it, so resolving those against
 `guidelines/` would report a correctly set up project as broken.
+
+**4. Does `CLAUDE.md` import the shared entry point?** `guidelines/setup.md`
+prescribes `@../developer-guidelines/AGENTS.md` in the project's `CLAUDE.md`, so
+read order, routing and *When a rule is missing* arrive through the import
+instead of a copy. A line inside a code fence does not count.
+
+- `--apply --add-import` inserts the line after the paragraph that names
+  `developer-guidelines/AGENTS.md`; failing that, after the first paragraph that
+  names the guidelines at all, with a sentence explaining the import; failing
+  that, at the end of the file
+- Nothing is added when the clone is not a sibling of the project — the path
+  would only work on this machine
+- Lines that look copied from the shared rules ("When no rule covers the case",
+  "Silence in the guidelines is not permission", …) are **reported, never
+  removed**. Project blocks grew differently, and what is a duplicate and what
+  is a project-specific addition is a decision per project
 
 ## The path map
 

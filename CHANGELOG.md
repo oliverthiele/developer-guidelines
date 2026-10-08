@@ -44,6 +44,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   *When a rule is missing*, which had missed the two newest rules. Explains the
   one-time import approval and the fallback sentence. **Projects set up with the
   old template keep the copy until their block is replaced.**
+- `skills/guidelines-upgrade` — fourth check: does the project `CLAUDE.md`
+  import `AGENTS.md`? `--apply --add-import` adds the line for a sibling clone;
+  lines that look copied from the shared rules are reported, never removed
 - `guidelines/typo3/changelog-index/v15.tsv` — regenerated from core `main`,
   52 → 78 provisional entries
 - `skills/typo3-changelog-harvest` — harvests from the changelog JSON on
