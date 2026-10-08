@@ -124,35 +124,12 @@ another reason, or at the upgrade itself.
 
 ## Guidelines
 
-| File                                               | Topics                                                                     |
-|----------------------------------------------------|----------------------------------------------------------------------------|
-| [typo3/](typo3/README.md)                          | TYPO3 topic root — index and version model                                 |
-| [typo3/integrator.md](typo3/integrator.md)         | TypoScript, SiteSets, CE wizard, backend configuration                     |
-| [typo3/developer.md](typo3/developer.md)           | PHP, TCA, Doctrine DBAL, views, extension metadata                         |
-| [typo3/content-blocks.md](typo3/content-blocks.md) | Content Block structure, portable assets, two-layer CSS, config.yaml       |
-| [typo3/sitekit.md](typo3/sitekit.md)               | SiteKit layer model, template path abstraction (SiteKit projects only)     |
-| [typo3/practices/](typo3/practices/README.md)      | decision guides: which approach, and when deliberately not                 |
-| [typo3/versions.md](typo3/versions.md)             | which rule applies to which TYPO3 version                                  |
-| [typo3/changelog-index/](typo3/changelog-index/)   | every core changelog entry — grep only, never read whole                   |
-| [fluid/](fluid/README.md)                          | Fluid engine: syntax, ViewHelper arguments, template resolution            |
-| [fluid/typo3.md](fluid/typo3.md)                   | Fluid in TYPO3: core ViewHelpers, backend modules, RTE output              |
-| [xliff/](xliff/README.md)                          | XLIFF 1.2 / 2.0 file format, attributes, ICU message format                |
-| [xliff/keys.md](xliff/keys.md)                     | Key naming conventions, key lifecycle                                      |
-| [xliff/typo3.md](xliff/typo3.md)                   | LLL references, SiteSet labels.xlf, enum label localization                |
-| [php.md](php.md)                                   | Naming conventions, PHPStan, PHP CS Fixer, type safety                     |
-| [testing.md](testing.md)                           | Quality checks, execution order, PHPUnit, Playwright                       |
-| [git.md](git.md)                                   | Branching workflow, commit messages, release process                       |
-| [shell.md](shell.md)                               | Bash 3.2 vs 5.x, set -u array guards, ddev exec, remote login shell        |
-| [scss.md](scss.md)                                 | Bootstrap-first, CUBE CSS, prefix system, custom properties, state classes |
-| [javascript.md](javascript.md)                     | data-js hooks, Bootstrap JS, ID conventions, framework choice              |
-| [vue.md](vue.md)                                   | Component syntax, script setup, state management, when to use Vue          |
-| [playwright.md](playwright.md)                     | Playwright test patterns, visual regression, functional tests, helpers     |
-| [documentation.md](documentation.md)               | README.md and CHANGELOG.md structure for Packagist extensions              |
-| [third-party-code.md](third-party-code.md)         | Vendored libraries, license comments, minifier settings, shipped SCSS      |
+Which file covers which work area is listed once, in the
+[routing table in `AGENTS.md`](../AGENTS.md#routing). It is not repeated here,
+so that a new file cannot be added to one list and missed in another.
 
 Each file starts with YAML frontmatter (`applies_to`, `typo3`, `see_also`). The
-`applies_to` globs say which files a guideline governs; the table above is
-derived from that metadata.
+`applies_to` globs say which files a guideline governs.
 
 ## Own tooling
 

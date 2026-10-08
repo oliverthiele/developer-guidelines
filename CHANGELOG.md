@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   code, the Composer `license` field versus a README table, and no relative
   `url()` paths in SCSS that an extension ships for `@use`
 - Pointers to it from `javascript.md`, `scss.md` and `documentation.md`, and a
-  row in the routing tables of `README.md` and `guidelines/README.md`
+  row in the routing table
 - `guidelines/README.md` → *When a rule is missing* — where the installed source
   cannot answer, read docs.typo3.org at the project's version, as Markdown, and
   find the page through the manual's `llms.txt`, `toc.json` or `confvals.json`;
@@ -34,6 +34,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `AGENTS.md` — holds the routing table (work area → file), the one list of
+  guideline files. `README.md` and `guidelines/README.md` point at it instead
+  of keeping their own tables, which had already drifted apart. All paths in
+  `AGENTS.md` are relative to the repository root, so that a file importing it
+  from elsewhere — a project's or a personal `CLAUDE.md` — resolves them
 - `guidelines/typo3/changelog-index/v15.tsv` — regenerated from core `main`,
   52 → 78 provisional entries
 - `skills/typo3-changelog-harvest` — harvests from the changelog JSON on

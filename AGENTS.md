@@ -4,19 +4,62 @@ Entry point for AI coding assistants working in a repository that uses these
 guidelines. Contains no rules of its own — it says which file to read, and in
 what order.
 
+Every path in this file is relative to the root of the `developer-guidelines`
+repository — usually cloned next to the project as `../developer-guidelines/`,
+see [`guidelines/setup.md`](guidelines/setup.md). A file that imports this one
+from elsewhere resolves the paths against that root, not against the project.
+
 ## Read order
 
 1. **The project's `Guidelines/README.md`**, if the project has one. Project
    rules are evaluated first and win on conflict.
-2. **[`guidelines/README.md`](guidelines/README.md)** in this repository — the
-   index. Its table maps a work area to the one file that covers it.
+2. **The [routing table](#routing) below** — it maps a work area to the one
+   file that covers it.
 3. **The file that table names for the current task** — one per work area the
    task actually touches. A task that changes extension PHP and its Playwright
    tests reads those two; it does not read the rest.
 
+[`guidelines/README.md`](guidelines/README.md) holds the rules that cut across
+every file — what to do when a rule is missing, how a rule is backed. Read it
+when its sections are pointed at, not on every task.
+
 Do not load the whole repository. Each guideline file is self-contained and
 names its related files in its `see_also` frontmatter — follow those when the
 file itself points at them, not preemptively.
+
+## Routing
+
+**Read the file for a work area before starting work in it** — also when the
+task looks small or the rule seems obvious, and never from memory.
+
+| Work area | Read this file first |
+|---|---|
+| TYPO3 — where to start, version model | [`guidelines/typo3/README.md`](guidelines/typo3/README.md) |
+| TYPO3 integration: TypoScript, SiteSets, CE wizard, backend configuration | [`guidelines/typo3/integrator.md`](guidelines/typo3/integrator.md) |
+| TYPO3 extension PHP: TCA, Doctrine DBAL, services, commands, views, extension metadata | [`guidelines/typo3/developer.md`](guidelines/typo3/developer.md) |
+| TYPO3 Content Blocks: structure, portable assets, two-layer CSS, `config.yaml` | [`guidelines/typo3/content-blocks.md`](guidelines/typo3/content-blocks.md) |
+| SiteKit-based projects: layer model, template path abstraction | [`guidelines/typo3/sitekit.md`](guidelines/typo3/sitekit.md) |
+| Architecture decision: which approach, and when deliberately not (component or partial, ViewHelper or DataProcessor) | [`guidelines/typo3/practices/README.md`](guidelines/typo3/practices/README.md) |
+| TYPO3 version questions: does this still hold in v13, v14? | [`guidelines/typo3/versions.md`](guidelines/typo3/versions.md) |
+| A changelog number or a removed/deprecated API, from the ExtensionScanner, PHPStan or memory | [`guidelines/typo3/changelog-index/`](guidelines/typo3/changelog-index/) — grep only, see below |
+| Fluid: syntax, ViewHelper arguments, template resolution, Fluid Standalone | [`guidelines/fluid/README.md`](guidelines/fluid/README.md) |
+| Fluid inside TYPO3: core ViewHelpers, backend modules, RTE output | [`guidelines/fluid/typo3.md`](guidelines/fluid/typo3.md) |
+| XLIFF / XLF files: format, attributes, ICU message format | [`guidelines/xliff/README.md`](guidelines/xliff/README.md) |
+| XLIFF key naming and key lifecycle | [`guidelines/xliff/keys.md`](guidelines/xliff/keys.md) |
+| XLIFF in TYPO3: LLL references, SiteSet `labels.xlf`, enum labels | [`guidelines/xliff/typo3.md`](guidelines/xliff/typo3.md) |
+| PHP in general: naming, PHPStan, PHP CS Fixer, type safety | [`guidelines/php.md`](guidelines/php.md) |
+| SCSS / CSS: Bootstrap first, prefix system, custom properties, state classes | [`guidelines/scss.md`](guidelines/scss.md) |
+| JavaScript / TypeScript: `data-js` hooks, Bootstrap JS, framework choice | [`guidelines/javascript.md`](guidelines/javascript.md) |
+| Vue / Vite | [`guidelines/vue.md`](guidelines/vue.md) |
+| Vendored third-party code, license comments, minifier settings, shipped SCSS | [`guidelines/third-party-code.md`](guidelines/third-party-code.md) |
+| Testing: quality checks, execution order, PHPUnit | [`guidelines/testing.md`](guidelines/testing.md) |
+| Playwright E2E tests: patterns, visual regression, helpers | [`guidelines/playwright.md`](guidelines/playwright.md) |
+| Git: branching, commit messages, pull requests, releases | [`guidelines/git.md`](guidelines/git.md) |
+| Shell and bash scripts: Bash 3.2 vs 5.x, `ddev exec`, remote login shell | [`guidelines/shell.md`](guidelines/shell.md) |
+| Documentation: README and CHANGELOG | [`guidelines/documentation.md`](guidelines/documentation.md) |
+
+A new guideline file gets its row here and nowhere else — every other list of
+the guideline files points at this table instead of copying it.
 
 ## Document types
 
@@ -57,6 +100,13 @@ since v13 — about 900 lines and 390 KB across three files, most of it symbol
 lists, and growing with every core release. `v14.tsv` alone is 195 KB: reading
 it loads about two thirds of the text of every guideline file in this repository
 combined, to answer a question a single `grep` answers exactly.
+
+```bash
+grep -h 'StandaloneView' guidelines/typo3/changelog-index/v1*.tsv
+```
+
+Columns, how far to trust each one, and how to open the full entry:
+[`skills/typo3-changelog-harvest/SKILL.md`](skills/typo3-changelog-harvest/SKILL.md).
 
 ## Editing
 

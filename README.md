@@ -23,30 +23,8 @@ Two files sit next to them and are read once, not per task:
 and [tooling.md](guidelines/tooling.md) (the packages that check rules
 automatically).
 
-| File                                                              | Topics                                                                     |
-|-------------------------------------------------------------------|----------------------------------------------------------------------------|
-| [typo3/](guidelines/typo3/README.md)                              | TYPO3 topic root — index and version model                                 |
-| [typo3/integrator.md](guidelines/typo3/integrator.md)             | TypoScript, SiteSets, CE wizard, backend configuration                     |
-| [typo3/developer.md](guidelines/typo3/developer.md)               | PHP, TCA, Doctrine DBAL, views                                              |
-| [typo3/content-blocks.md](guidelines/typo3/content-blocks.md)     | Content Block structure, portable assets, two-layer CSS, config.yaml       |
-| [typo3/sitekit.md](guidelines/typo3/sitekit.md)                   | SiteKit layer model, template path abstraction (SiteKit projects only)     |
-| [typo3/practices/](guidelines/typo3/practices/README.md)          | decision guides: which approach, and when deliberately not                 |
-| [typo3/versions.md](guidelines/typo3/versions.md)                 | which rule applies to which TYPO3 version                                  |
-| [typo3/changelog-index/](guidelines/typo3/changelog-index/)       | every core changelog entry — grep only, never read whole                   |
-| [fluid/](guidelines/fluid/README.md)                              | Fluid engine: syntax, ViewHelper arguments, template resolution            |
-| [fluid/typo3.md](guidelines/fluid/typo3.md)                       | Fluid in TYPO3: core ViewHelpers, backend modules, RTE output              |
-| [xliff/](guidelines/xliff/README.md)                              | XLIFF 1.2 / 2.0 file format, attributes, ICU message format                |
-| [xliff/keys.md](guidelines/xliff/keys.md)                         | Key naming conventions, key lifecycle                                      |
-| [xliff/typo3.md](guidelines/xliff/typo3.md)                       | LLL references, SiteSet labels.xlf, enum label localization                |
-| [php.md](guidelines/php.md)                                       | Naming conventions, PHPStan, PHP CS Fixer, type safety                     |
-| [testing.md](guidelines/testing.md)                               | Quality checks, execution order, PHPUnit, Playwright                       |
-| [git.md](guidelines/git.md)                                       | Branching workflow, commit messages, release process                       |
-| [scss.md](guidelines/scss.md)                                     | Bootstrap-first, CUBE CSS, prefix system, custom properties, state classes |
-| [javascript.md](guidelines/javascript.md)                         | data-js hooks, Bootstrap JS, ID conventions, framework choice              |
-| [vue.md](guidelines/vue.md)                                       | Component syntax, script setup, state management, when to use Vue          |
-| [playwright.md](guidelines/playwright.md)                         | Playwright test patterns, visual regression, functional tests, helpers     |
-| [documentation.md](guidelines/documentation.md)                   | README.md and CHANGELOG.md structure for Packagist extensions              |
-| [third-party-code.md](guidelines/third-party-code.md)             | Vendored libraries, license comments, minifier settings, shipped SCSS      |
+Which file covers which work area: the
+[routing table in AGENTS.md](AGENTS.md#routing), the one list of guideline files.
 
 See [guidelines/README.md](guidelines/README.md) for shared rules that cut
 across
