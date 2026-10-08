@@ -2,8 +2,8 @@
 
 How to place this repository next to a project, and how a project's own
 `Guidelines/` folder relates to it. Read once per project — it is not part of
-the per-task read path. The rules themselves are in
-[README.md](README.md) and the files it lists.
+the per-task read path. Which file holds which rules is listed in the
+[routing table in `AGENTS.md`](../AGENTS.md#routing).
 
 Clone this repository as a sibling directory next to your projects:
 
@@ -71,36 +71,45 @@ Three steps, once per project.
 **1.** Create `Guidelines/README.md` as the index — precedence rule, and a table naming
 which file covers which work area.
 
-**2.** Point the project's `CLAUDE.md` (and `AGENTS.md`, if present) at it. The project
-file must be self-contained — never refer to a personal `~/.claude/CLAUDE.md`, since
-collaborators do not have it:
+**2.** Point the project's `CLAUDE.md` at both — the project rules and the shared entry
+point. The project file must be self-contained — never refer to a personal
+`~/.claude/CLAUDE.md`, since collaborators do not have it:
 
 ```markdown
 ## Guidelines — mandatory read protocol
 
-Project rules live in `Guidelines/`. They extend the shared, project-independent
-guidelines cloned next to this project in `../developer-guidelines/` — start there
-at `../developer-guidelines/AGENTS.md` for the read order and the routing table.
-
-**Read the relevant file before starting work in that area** — also when the task
-looks small or the rule seems obvious.
+Project rules live in `Guidelines/` and are read first; on conflict, the project file
+wins. The shared, project-independent guidelines are cloned next to this project in
+`../developer-guidelines/`. Their entry point,
+`../developer-guidelines/AGENTS.md`, is imported below — read order, routing table,
+what to do when a rule is missing. Its paths are relative to `../developer-guidelines/`.
 
 @Guidelines/README.md
 
-When no rule covers the case: establish which TYPO3 version this project runs
-(`composer.lock`, `vendor/typo3/cms-core/`; for an extension, also the range
-`composer.json` supports), grep
-`guidelines/typo3/changelog-index/` for version questions (never read it whole),
-read the installed source in `vendor/` for how an API is used, then the
-surrounding project code. Ask if that does not settle it, and never invent a
-fallback. Silence in the guidelines is not permission.
+@../developer-guidelines/AGENTS.md
 
-On conflict, the project file wins. Never edit files in `../developer-guidelines/`
-without explicit confirmation.
+Never edit files in `../developer-guidelines/` without explicit confirmation.
 ```
 
 A project without a `Guidelines/` folder uses the same block without the first
 sentence and the `@Guidelines/README.md` line.
+
+**Import, do not copy.** The block holds no shared rule of its own. Read order,
+routing and *When a rule is missing* come in through the import, so a change in this
+repository reaches every project with the next `git pull` — a copied summary would
+stay behind, as the one this template used to carry did.
+
+- **The first session asks once** whether to allow the import, because it points
+  outside the project. Allow it. Declined, it stays off without asking again, and
+  the guidelines are only reached through the sentence above it.
+- **The sentence naming `../developer-guidelines/AGENTS.md` stays** for that case,
+  and for assistants that do not follow `@` imports.
+- **A project `AGENTS.md`**, if the project has one, gets the same block. Tools that
+  read `AGENTS.md` but not `@` imports find the shared entry point through the
+  sentence.
+- **Twice is harmless.** A personal `~/.claude/CLAUDE.md` that imports the same
+  file loads it a second time in that project — a few kilobytes, and both copies
+  are the same text.
 
 **3.** Commit `.claude/settings.json` so reading the shared guidelines does not prompt
 every collaborator:
