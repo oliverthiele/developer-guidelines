@@ -12,7 +12,8 @@ rules here reflect how I structure, name, and maintain code across all my work.
 ### `AGENTS.md`
 
 Entry point for AI coding assistants: read order, and what to do when a rule is
-missing. See [AGENTS.md](AGENTS.md).
+missing. See [AGENTS.md](AGENTS.md). `CLAUDE.md` only imports it, so that
+Claude Code loads it inside this repository.
 
 ### `guidelines/`
 

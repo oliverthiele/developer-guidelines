@@ -29,6 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (binding) and the unreleased major's index as a tie-breaker, a practice guide
   decides the recommended approach, and the code still runs on the installed
   version. Summarised in `AGENTS.md`, linked from `typo3/versions.md`
+- `CLAUDE.md` — imports `AGENTS.md`, so that Claude Code loads it when working
+  inside this repository
 
 ### Changed
 
