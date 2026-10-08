@@ -19,9 +19,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `url()` paths in SCSS that an extension ships for `@use`
 - Pointers to it from `javascript.md`, `scss.md` and `documentation.md`, and a
   row in the routing tables of `README.md` and `guidelines/README.md`
+- `guidelines/README.md` → *When a rule is missing* — where the installed source
+  cannot answer, read docs.typo3.org at the project's version, as Markdown, and
+  find the page through the manual's `llms.txt`, `toc.json` or `confvals.json`;
+  never the reStructuredText sources, which miss included and generated content.
+  Summarised in `AGENTS.md`
+- `guidelines/README.md` → *New code looks one major ahead* — new code checks
+  the next released major's index for deprecations of the APIs it uses
+  (binding) and the unreleased major's index as a tie-breaker, a practice guide
+  decides the recommended approach, and the code still runs on the installed
+  version. Summarised in `AGENTS.md`, linked from `typo3/versions.md`
 
 ### Changed
 
+- `guidelines/typo3/changelog-index/v15.tsv` — regenerated from core `main`,
+  52 → 78 provisional entries
 - `guidelines/documentation.md` — the rule against a copyright name in the
   License section covers the package's own copyright; the third-party table
   names the upstream holder

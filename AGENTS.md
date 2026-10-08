@@ -42,7 +42,15 @@ extension, also the range its `composer.json` supports — grep
 [`guidelines/typo3/changelog-index/`](guidelines/typo3/changelog-index/) for
 version questions, and read the installed source in the project's `vendor/` for
 how an API is meant to be used — a changelog says what changed, the code says
-what it is. Only then ask, and never answer from memory.
+what it is. Where the code cannot answer, read docs.typo3.org at the project's
+version, as Markdown (`.md` instead of `.html`), never the reStructuredText
+sources. Only then ask, and never answer from memory.
+
+New code also looks one major ahead: grep the next released major's index for
+deprecations of every API it uses (binding), the unreleased one as a
+tie-breaker, and let a practice guide decide the recommended approach — while
+the code still runs on the installed version. Full rule:
+[`guidelines/README.md` → New code looks one major ahead](guidelines/README.md#new-code-looks-one-major-ahead).
 
 **Grep those files, never read one whole.** They hold every core changelog entry
 since v13 — over 800 lines and 320 KB across three files, most of it symbol
