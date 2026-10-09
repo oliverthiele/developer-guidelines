@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `guidelines/README.md` → *Comments — where knowledge belongs* — names, types
+  and tests first, the commit message for why a change was made, a comment only
+  for why the code has to stay this way. Every new comment must still be true
+  and useful once the change is merged. No comments in files TYPO3 rewrites —
+  `settings.php`, site `config.yaml` and `settings.yaml` — or in generated files;
+  a value that needs one moves to `additional.php`
+- `guidelines/xliff/typo3.md` → *Texts for editors and visitors* — labels and
+  descriptions are short, written from the editor's side and agreed with the
+  user first; before adding a frontend label, check what the core already
+  provides; every new key is translated into each language of the site
+- `guidelines/typo3/content-blocks.md` — frontend text via
+  `{cb:languagePath()}`, translation files for every site language, and two new
+  common mistakes: hardcoded frontend text, one project's content in a label
+
+### Changed
+
+- `guidelines/README.md` → *Core Principle* — a preserved comment is updated
+  when the code it describes changes
+
 ## [2.13.0] — 2026-10-08
 
 ### Added

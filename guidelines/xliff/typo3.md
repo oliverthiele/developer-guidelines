@@ -6,7 +6,7 @@ applies_to:
   - "**/Configuration/Sets/**/labels.xlf"
   - "**/Configuration/Sets/**/settings.definitions.yaml"
 typo3: ["13", "14"]
-see_also: ["xliff/README.md", "xliff/keys.md", "typo3/integrator.md"]
+see_also: ["xliff/README.md", "xliff/keys.md", "typo3/integrator.md", "typo3/content-blocks.md"]
 ---
 
 # XLIFF in TYPO3
@@ -37,6 +37,62 @@ array whose keys must start at 0 — from v14.2 on, an array starting at 1 silen
 leaves the placeholder in the page. See
 [`../fluid/typo3.md`](../fluid/typo3.md) → *`f:translate` arguments must be a
 list*.
+
+---
+
+## Texts for editors and visitors
+
+### Backend texts — short, and agreed first
+
+Labels, descriptions and the text in the new content element wizard are
+proposed in the conversation before they are written into a file. The same
+holds for text that visitors read as help in a frontend form.
+
+- A description only where the label alone is not enough — at most one
+  sentence, written from the editor's side: what the field is for, not how it
+  is rendered
+- No field identifiers, CSS classes or rendering details
+- No sample values from one project: a label in a shared element reads
+  `Subtitle`, not a piece of one site's content
+
+**Basis:** observed — labels and descriptions written without asking carried
+implementation detail no editor needs, and a project's sample value ended up in
+the label of a shared element. The decision behind the rule: every form shows
+its descriptions on every visit, so a long one costs the editor each time.
+
+### Frontend text — check what the system already provides
+
+**Basis:** verified against TYPO3 14.3.7 and `friendsoftypo3/content-blocks`
+2.4.10
+
+*Never hardcode labels* (see [LLL references](#lll-references)) covers templates
+too: button texts, units, currency signs —
+nothing visible is hardcoded. Two things are easy to miss:
+
+- **Check first whether the system already provides the text or the format.**
+  A price goes through `f:format.currency` with `currencySign`, not `{price} €`.
+  Its `decimalSeparator` and `thousandsSeparator` are arguments, not taken from
+  the site's locale — on a multilingual site they come from a translated label
+  as well. What the core provides for a case is looked up in the project's
+  `vendor/`, see [When a rule is missing](../README.md#when-a-rule-is-missing),
+  never answered from memory.
+- **A Content Block translates frontend text from its own `language/labels.xlf`**:
+
+  ```html
+  <f:translate key="{cb:languagePath()}:frontend.perMonth" />
+  ```
+
+### Translations for every language the project needs
+
+**Basis:** verified against TYPO3 14.3.7 — `LocalizationFactory` falls back to
+`en` and `default` for a missing key
+
+Which languages a project needs is in its site configuration —
+`config/sites/*/config.yaml`, `languages`. Every new key gets its translation
+for each of them, in the same change; a key without one shows the English
+source text. File names per language: see [README.md](README.md#file-naming).
+
+A reusable extension ships English and German at minimum.
 
 ---
 

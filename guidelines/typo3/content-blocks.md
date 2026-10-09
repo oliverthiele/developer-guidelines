@@ -239,7 +239,10 @@ Content Blocks resolve labels automatically from `language/labels.xlf` inside th
 - Field labels: `{fieldIdentifier}.label` and `{fieldIdentifier}.description`
 - Collection child fields: `{collectionIdentifier}.{childFieldIdentifier}.label`
 - Remove all `title:` and `label:` strings from config.yaml after creating the XLIFF files
-- See → `../xliff/README.md` for format rules
+- Frontend text goes into the same file: `<f:translate key="{cb:languagePath()}:frontend.perMonth" />`
+- A translation file for every language of the site, not only `labels.xlf`
+- Labels and descriptions are short and agreed with the user first
+- See → `../xliff/typo3.md` → *Texts for editors and visitors* for the last three points, `../xliff/README.md` for format rules
 
 ---
 
@@ -248,6 +251,8 @@ Content Blocks resolve labels automatically from `language/labels.xlf` inside th
 - Don't hardcode `iconStyle="solid"` — let SiteSet default handle it
 - Don't use `prefixFields: true` when using existing fields
 - Don't create custom fields for things that already exist
+- Don't hardcode frontend text — button texts, units, currency signs
+- Don't put one project's sample content into a label
 - Don't add inline styles — always use CSS/SCSS
 - Don't skip `assets/frontend.css` — every CB needs portable default styles
 - Don't write SCSS in `assets/` — only plain CSS
@@ -271,3 +276,4 @@ Content Blocks resolve labels automatically from `language/labels.xlf` inside th
 | Project override SCSS    | `Build/Default/src/scss/ContentBlocks/_{Name}.scss` | Variable overrides, project styles       |
 | Asset loading            | `f:asset.css` + `cb:assetPath()`                    | `href="{cb:assetPath()}/frontend.css"`   |
 | f:asset.css identifier   | `cb-{kebab-case-name}`                              | `cb-tech-badges`                         |
+| Frontend text            | `f:translate` + `cb:languagePath()`                 | `key="{cb:languagePath()}:frontend.perMonth"` |
