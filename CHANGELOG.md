@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `guidelines/documentation.md` → *Reporting technical debt — classify before
+  you report* — every finding names its category: 1 blocks planned work (with
+  milestone and evidence), 2 costs repeatedly (with a measurement), 3 only
+  untidy (taken along in the next commit, not reported). Before calling
+  something debt, find out what it was for. Debt chosen on purpose belongs in
+  `Decisions.md`. A recommendation, binding for assistants
+
+### Changed
+
+- `AGENTS.md` — the routing row for `documentation.md` names technical debt and
+  the decision log
+
 ## [2.14.0] — 2026-10-09
 
 ### Added

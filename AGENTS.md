@@ -58,7 +58,7 @@ task looks small or the rule seems obvious, and never from memory.
 | Playwright E2E tests: patterns, visual regression, helpers | [`guidelines/playwright.md`](guidelines/playwright.md) |
 | Git: branching, commit messages, pull requests, releases | [`guidelines/git.md`](guidelines/git.md) |
 | Shell and bash scripts: Bash 3.2 vs 5.x, `ddev exec`, host or container, remote login shell, long-running jobs | [`guidelines/shell.md`](guidelines/shell.md) |
-| Documentation: README and CHANGELOG | [`guidelines/documentation.md`](guidelines/documentation.md) |
+| Documentation: README and CHANGELOG, reporting technical debt, decision log | [`guidelines/documentation.md`](guidelines/documentation.md) |
 
 A new guideline file gets its row here and nowhere else — every other list of
 the guideline files points at this table instead of copying it.
