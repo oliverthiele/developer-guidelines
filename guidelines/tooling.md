@@ -11,8 +11,11 @@ next to `**Validity:**` — reach for the tool instead of doing the work by hand
 
 The core ships a Fluid check of its own, `typo3 fluid:analyze` (v14.2+, alias
 `fluid:analyse`). It is AST-based and finds real parse errors, but needs a
-bootable instance and only reads `*.fluid.*` files. Where both are available,
-they answer different questions — run both.
+bootable instance and only reads `*.fluid.*` files. In a project without such
+files a run prints a note and no findings — which looks like a clean result.
+`--stdin` analyses any template piped into it, so a small wrapper can feed it
+the `.html` files one by one. Where both are available, they answer different
+questions — run both.
 
 **The rules never depend on a tool being present.** A project that uses none of
 these still follows them; a `**Tooling:**` line says a check *can* be automated,

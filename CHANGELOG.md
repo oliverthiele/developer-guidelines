@@ -82,6 +82,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   one by one and confirmed with `--confirm`, since an unconfirmed wizard can be
   marked as executed; Composer plugins in `require`; `SYS/setMemoryLimit`
   overriding `php.ini`; scripted data changes. Routing row in `AGENTS.md`
+- `guidelines/fluid/README.md` → *Markup outside `<f:section>`* — what a
+  template with a layout, a template without one and a partial without
+  `section` render outside every section; no `f:debug` in partials
+- `guidelines/fluid/README.md` → *Typographic quotes break attributes* —
+  `type=“button“` falls back to a submit button
+- `guidelines/fluid/README.md` → *`<f:comment>`* — an HTML comment without
+  `<f:comment>` is executed by Fluid and sent to the page
 
 ### Changed
 
@@ -111,6 +118,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `!important`* — the example set `$btn-primary-bg`, which Bootstrap 5 does not
   have, so it changed nothing. It now shows `$primary` for the whole site and
   `--bs-btn-*` for one area
+- `guidelines/fluid/README.md` → *CDATA no longer comments code out* — CDATA
+  inside `<f:comment>` is harmless in v14, because the comment body is emptied
+  before parsing; a CDATA section on its own is what reaches the page. The v13
+  deprecation entry is written when a template is parsed, not on every render.
+  Points at Feature #108148 for what CDATA means in Fluid 5
+- `guidelines/tooling.md` — `fluid:analyze` without `*.fluid.*` files prints no
+  findings, which looks like a clean run; `--stdin` analyses any template
 
 ## [2.13.0] — 2026-10-08
 

@@ -293,6 +293,13 @@ The two layers do different jobs:
 | `<f:comment>` | Fluid drops the block from the output |
 | `<!-- … -->` | the IDE highlights the body as a comment and greys it out |
 
+**An HTML comment on its own is not a Fluid comment.** The parser has no rule
+for `<!-- … -->` — checked in `typo3fluid/fluid` 5.3.2. Variables and
+ViewHelpers inside it are executed, the comment is sent to the page with their
+output in it, and a broken ViewHelper call inside it breaks rendering. Only
+`<f:comment>` keeps something out of the output; the HTML comment inside it is
+for the editor.
+
 Fluid's output is the same either way. Without the HTML comment, the Fluid
 plugin for PhpStorm treats the body as live markup and marks the tag. It offers
 the fix itself as a quick fix: *Add a HTML comment within the content of the
@@ -308,24 +315,50 @@ body is highlighted as markup again. Remove or shorten the inner comment first.
 
 **Validity:** Fluid 5 · TYPO3 v14+ ·
 [#108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108148-CDATASectionsNoLongerRemoved.html)
+**Basis:** verified against `typo3fluid/fluid` 4.6.1 (TYPO3 13.4.34) and 5.3.2
+(TYPO3 14.3.7)
 **Tooling:** `fluid-lint` detects this · auto-fixable with `--fix`
 
-> **Stale-knowledge trap:** `<f:comment><![CDATA[ … ]]></f:comment>` is the
-> idiom a decade of templates and examples use to comment out Fluid safely. It
-> is the first thing to reach for, and from v14 on it does the opposite of what
-> it says.
+> **Stale-knowledge trap:** `<![CDATA[ … ]]>` is the idiom a decade of
+> templates and examples use to hide Fluid from the parser. From v14 on, a CDATA
+> section on its own hides nothing.
 
 Fluid used to **remove** everything wrapped in `<![CDATA[ ]]>` from the template
 before parsing. That is what made it a comment: the parser never saw the block,
 so invalid Fluid or a stray ViewHelper call inside it could not break rendering.
 
-Fluid 5 stops stripping CDATA. The content is no longer removed, so the
-construct comments nothing out — and it writes a deprecation entry on **every
-render** from TYPO3 13.4.21 on. A template set that used the idiom consistently
-fills its deprecation log with them.
+Fluid 5 stops stripping CDATA. What the two versions do with it:
+
+| Where the CDATA sits | v13 (Fluid 4.5+) | v14 (Fluid 5) |
+|---|---|---|
+| On its own, outside `<f:comment>` | removed, plus a deprecation entry | **kept** — its content reaches the page, see below |
+| Inside `<f:comment>` | removed, plus a deprecation entry | removed with the comment body — harmless, but meaningless |
+
+**What a CDATA section is in Fluid 5 instead** —
+[Feature #108148](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Feature-108148-AlternativeFluidSyntaxForCDATASections.html),
+*Alternative Fluid syntax for CDATA sections*: inside it, tag-based ViewHelper
+syntax is disabled and `{…}` is ignored; only `{{{…}}}` reaches variables and
+ViewHelpers. The section is rendered and sent to the page. A
+`<f:render partial="Old" />` "commented out" this way is therefore not executed
+— it arrives in the HTML as text. Details in
+[the section below](#cdata-is-not-gone--it-means-something-else-now).
+
+Inside `<f:comment>` it does no harm in v14: the `RemoveCommentsTemplateProcessor`
+empties every comment body before the parser runs, CDATA included. In v13 it
+still costs a deprecation entry, because the CDATA check runs before the
+comments are removed. The entry is written each time the template is parsed —
+after a cache flush, and on every render for a template that cannot be compiled.
+
+So the CDATA layer goes everywhere — for the deprecation log in v13, and
+because it no longer means "comment" in v14:
 
 ```html
-<!-- Wrong from v14 on — no longer a comment -->
+<!-- Wrong — in v14 this reaches the page instead of being hidden -->
+<![CDATA[
+    <f:render partial="Old" />
+]]>
+
+<!-- Pointless — remove the CDATA layer -->
 <f:comment><![CDATA[<!--
     <f:render partial="Old" />
 -->]]></f:comment>
@@ -367,6 +400,43 @@ CSS and JavaScript in a template remains bad practice — pass values through
 `data-*` attributes or CSS custom properties instead. The point here is that
 CDATA is *reserved for something else now*, which is why it can no longer be a
 comment.
+
+---
+
+## Markup outside `<f:section>` — rendered or not
+
+**Basis:** verified against `typo3fluid/fluid` 5.3.2
+
+Whether the markup outside every `<f:section>` reaches the page depends on the
+file:
+
+| File | Outside every section |
+|---|---|
+| Template with `<f:layout>` | never rendered — the layout renders the sections it names |
+| Template without a layout | rendered |
+| Partial rendered without `section="…"` | rendered — a partial has no layout |
+
+The usual victim is a leftover `<f:debug>`. In a template with a layout it sits
+there harmlessly; moved into a partial, the same line dumps variables into the
+page as soon as one `<f:render partial="…" />` omits the section. Do not leave
+`<f:debug>` in a partial, inside a section or not.
+
+**Tooling:** `fluid-lint` reports every `f:debug` (`debug-viewhelper`).
+
+---
+
+## Typographic quotes break attributes
+
+**Basis:** observed — the fallback for an invalid `type` is documented in the
+HTML standard
+
+A word processor or a chat window turns `"` into `“` and `”`. In an attribute
+that is not a quote character any more: `type=“button“` is an unquoted value
+`“button“`, which is not a valid button type, so the button falls back to
+`submit` and sends its form. A script that calls `preventDefault()` can hide
+that for a long time.
+
+**Tooling:** `fluid-lint` detects this (`typographic-quotes`).
 
 ---
 
