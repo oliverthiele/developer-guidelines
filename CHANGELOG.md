@@ -53,6 +53,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   of a stale local branch, git and composer as separate commands because a
   failing `post-checkout` hook sets the exit status of `git checkout`, and what
   to read before discarding a dirty working tree
+- `guidelines/git.md` → *Stage named paths only* — no `git add -A`, `git add .`,
+  `git add -u` or `git commit -a`; every path is named, because bulk staging
+  takes whatever lies in the working tree. `git rm` without `--cached` deletes
+  the file from disk as well and is only run after asking
 
 ### Changed
 

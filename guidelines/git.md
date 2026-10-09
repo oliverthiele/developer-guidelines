@@ -138,6 +138,39 @@ public and private alike.
 
 ---
 
+## Stage named paths only
+
+**Basis:** observed
+
+Never stage in bulk. Forbidden: `git add -A`, `git add .`, `git add -u`, and
+`git commit -a` / `git commit -am`, which does the same as `git add -u` inside
+the commit. Name every path:
+
+```bash
+git add composer.json packages/my_extension/ext_localconf.php
+```
+
+Bulk staging takes whatever happens to be in the working tree. Two installer
+log files with an admin and a database password reached a remote repository
+that way, and they stay in its history. `.gitignore` is no protection — it
+only covers what someone thought of in advance.
+
+This matters most for an assistant: it knows the files it wrote, not the logs,
+dumps or copies that appeared beside them. Naming each path is the moment of
+deciding that it belongs in the commit.
+
+Before committing, `git status --short` shows what is left over, and
+`git diff --cached --stat` shows what will go in.
+
+### Removing a file from git is not deleting it
+
+`git rm <file>` and `git rm -f <file>` delete the file from disk as well. To
+take a file out of version control and keep it, use `git rm --cached <file>`.
+Removing from the index and removing from disk are two separate decisions — an
+assistant makes the first one when asked, and asks before the second.
+
+---
+
 ## Pre-Staging Checklist
 
 Run these checks **before `git add`** — not just before committing.
