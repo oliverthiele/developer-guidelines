@@ -43,6 +43,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `guidelines/shell.md` → *Remote commands* — a non-interactive ssh command
   lacks what `~/.bashrc` puts on the `PATH` (nvm), and long-running jobs on a
   server are started detached with `setsid nohup`
+- `guidelines/git.md` → *Body* — a list of the changes as the summary, and a
+  short paragraph below it only when the diff cannot explain why; anything
+  longer goes into `Guidelines/`, `Documentation/` or an issue
+- `guidelines/git.md` → *Importing someone else's uncommitted work* —
+  `--author` for the person who wrote it, the reason in the body when the work
+  cannot be attributed, "Import from …" instead of "Backup"
+- `guidelines/git.md` → *Git on servers* — `checkout -B` against origin instead
+  of a stale local branch, git and composer as separate commands because a
+  failing `post-checkout` hook sets the exit status of `git checkout`, and what
+  to read before discarding a dirty working tree
 
 ### Changed
 
@@ -54,6 +64,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   text via `f:translate`
 - `AGENTS.md` — the routing row for `shell.md` names host or container and
   long-running jobs
+- `guidelines/git.md` → *GitKraken / AI Instructions* — the commit message body
+  follows the new *Body* rule
 
 ### Fixed
 
