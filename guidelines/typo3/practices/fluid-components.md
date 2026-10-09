@@ -154,6 +154,46 @@ scope if the parent has it and it was not passed explicitly
 without being declared. Declaring it anyway is fine and makes the dependency
 visible — but never assume the same for any other variable.
 
+**Type an argument for what actually arrives.**
+
+**Basis:** verified against TYPO3 14.3.7 and `typo3fluid/fluid` 4.6.1 / 5.3.2
+
+Since v13.3 the Record API turns field values into objects
+([#103581](https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Feature-103581-AutomaticallyTransformTCAFieldValuesForRecordObjects.html),
+*Automatically transform TCA field values for record objects*), and Content
+Blocks hands its data out that way. `RecordFieldTransformer` delivers:
+
+| TCA type | Arrives as |
+|---|---|
+| `link` | `TYPO3\CMS\Core\LinkHandling\TypolinkParameter` |
+| `file` with `relationship` `oneToOne` or `manyToOne` | one `FileReference` |
+| `file` otherwise | `LazyFileReferenceCollection` — also when it holds a single file |
+| `datetime` | a `DateTime` object |
+
+An argument declared as `string` rejects the `TypolinkParameter`, and one
+declared as `FileReference` gets a collection. Whether a file field is one
+reference or a collection is decided by `relationship`, not by `maxitems`. Pass
+`{record.image.0}` where the component expects one file, or declare the
+collection.
+
+Fluid 5 (v14) accepts union types, so a component that is called with a
+record value and with a plain string declares both:
+
+```html
+<f:argument name="link" type="string|TYPO3\CMS\Core\LinkHandling\TypolinkParameter"
+            optional="{true}" default=""/>
+```
+
+Fluid 4 (v13) has no union types; declare `type="mixed"` there and name the
+expected types in the component's `f:comment`.
+
+**Look for a component before writing markup.** For a heading, a tile, a
+button or anything else a component may already cover, check first — and call
+it rather than copying its markup, also "just once" in an Extbase template. A
+copy looks right on the day it is made and drifts from then on. A project that
+keeps a catalogue of its components adds a new one to it in the same commit;
+an entry that is not there is not found, by a colleague or by an assistant.
+
 ## Variants — SiteKit pattern, not a general one
 
 A component with configurable variants can dispatch on a setting and delegate to

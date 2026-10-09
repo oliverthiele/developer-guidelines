@@ -96,6 +96,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instructions answer the question once
 - `guidelines/documentation.md` → *Decisions.md* — an optional decision log,
   one line per decision with the option not taken and its consequence
+- `guidelines/typo3/practices/fluid-components.md` → *Conventions* — component
+  arguments are typed for what the Record API delivers (`TypolinkParameter`,
+  one `FileReference` or a collection depending on `relationship`, `DateTime`),
+  with union types in Fluid 5 and `mixed` in Fluid 4; look for an existing
+  component before writing markup, and add a new one to the project's catalogue
+  in the same commit where the project keeps one
 
 ### Changed
 
