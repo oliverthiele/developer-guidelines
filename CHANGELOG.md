@@ -57,6 +57,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `git add -u` or `git commit -a`; every path is named, because bulk staging
   takes whatever lies in the working tree. `git rm` without `--cached` deletes
   the file from disk as well and is only run after asking
+- `guidelines/bootstrap.md` — what changes for our rules in Bootstrap 6
+  (6.0.0-alpha.1, provisional) and where to look it up: colour modes with
+  `light-dark()`, `theme-*` variant classes, component variables, type sizes,
+  class names Bootstrap takes over, JavaScript renames, responsive prefixes and
+  browser minimums. Routing row in `AGENTS.md`
+- `guidelines/scss.md` → *Bootstrap components — set their variables, not their
+  properties* — a raw property reaches the resting state only; a site-wide
+  change is a Sass variable, a change for one area a CSS variable
+- `guidelines/scss.md` → *Colour modes* — no literal colours in component rules,
+  Bootstrap's semantic variables first, own tokens declared once with
+  `light-dark()` (plus `color-scheme: light` for light subtrees on 5.3), twice
+  only where browser support rules it out
+- `guidelines/scss.md` → *Type sizes — Bootstrap's scale* — sizes from the scale
+  classes, heading level and size separate, change the step rather than one
+  element; Bootstrap 5 specifics (RFS, `.fs-1`–`.fs-6`) marked as such
+- `guidelines/scss.md` → *Which of two options is the prominent one* — the
+  selected option of a state control is the filled one
+- `guidelines/scss.md` → *Prefix system* — Bootstrap's component names are taken
 
 ### Changed
 
@@ -70,6 +88,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   long-running jobs
 - `guidelines/git.md` → *GitKraken / AI Instructions* — the commit message body
   follows the new *Body* rule
+- `guidelines/scss.md` → *Variants and modifiers* — one mechanism per question:
+  `data-bs-theme` for the mode, `data-variant` for the form of an own
+  component, an additional class for layout, Bootstrap's own classes for the
+  palette colour. `data-variant` names a role, never a colour, and Bootstrap
+  components keep their own variant classes
 
 ### Fixed
 
@@ -77,6 +100,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   listed `icon_identifier` as a standard TYPO3 field. It comes from an
   extension and needs `type` next to `useExistingField`. The skill now also runs
   the schema step before checking the backend
+- `guidelines/scss.md` → *Never override Bootstrap component classes with
+  `!important`* — the example set `$btn-primary-bg`, which Bootstrap 5 does not
+  have, so it changed nothing. It now shows `$primary` for the whole site and
+  `--bs-btn-*` for one area
 
 ## [2.13.0] — 2026-10-08
 

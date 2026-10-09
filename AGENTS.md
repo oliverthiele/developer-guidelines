@@ -51,6 +51,7 @@ task looks small or the rule seems obvious, and never from memory.
 | SCSS / CSS: Bootstrap first, prefix system, custom properties, state classes | [`guidelines/scss.md`](guidelines/scss.md) |
 | JavaScript / TypeScript: `data-js` hooks, Bootstrap JS, framework choice | [`guidelines/javascript.md`](guidelines/javascript.md) |
 | Vue / Vite | [`guidelines/vue.md`](guidelines/vue.md) |
+| Bootstrap 5 → 6: what changes for our rules, where to look it up (v6 provisional) | [`guidelines/bootstrap.md`](guidelines/bootstrap.md) |
 | Vendored third-party code, license comments, minifier settings, shipped SCSS | [`guidelines/third-party-code.md`](guidelines/third-party-code.md) |
 | Testing: quality checks, execution order, PHPUnit | [`guidelines/testing.md`](guidelines/testing.md) |
 | Playwright E2E tests: patterns, visual regression, helpers | [`guidelines/playwright.md`](guidelines/playwright.md) |
