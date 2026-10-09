@@ -631,6 +631,10 @@ everything that carries a literal colour stays light.
   token twice, in the same commit: under `:root` and under
   `[data-bs-theme="dark"]`. A token that exists in only one of them breaks the
   day the switch is built.
+- **A transparent colour is mixed, not built from `-rgb`:**
+  `color-mix(in oklab, var(--bs-primary), transparent 50%)` instead of
+  `rgba(var(--bs-primary-rgb), .5)`. It works with a `light-dark()` token, and
+  Bootstrap 6 removes the `-rgb` variables — see [bootstrap.md](bootstrap.md).
 - **Check both modes before calling it done.** In the browser console:
   `document.documentElement.dataset.bsTheme = 'dark'`.
 

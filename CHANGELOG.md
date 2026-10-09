@@ -102,6 +102,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   with union types in Fluid 5 and `mixed` in Fluid 4; look for an existing
   component before writing markup, and add a new one to the project's catalogue
   in the same commit where the project keeps one
+- `guidelines/bootstrap.md` → *Already usable on 5.3* — the techniques v6 uses
+  that work on 5.3 already: `light-dark()` tokens, `color-mix()` instead of the
+  `-rgb` variables, component variables, role-named `data-variant`, logical
+  properties, `aria-expanded`, imports, prefixed classes
+- `guidelines/bootstrap.md` → *Transparent colours* — `color-mix()` replaces
+  `rgba(var(--bs-*-rgb), …)`; v6 removes the `-rgb` variables
+- `guidelines/scss.md` → *Colour modes* — a transparent colour is mixed with
+  `color-mix()`, not built from `-rgb`
 
 ### Changed
 
@@ -138,6 +146,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Points at Feature #108148 for what CDATA means in Fluid 5
 - `guidelines/tooling.md` — `fluid:analyze` without `*.fluid.*` files prints no
   findings, which looks like a clean run; `--stdin` analyses any template
+- `guidelines/bootstrap.md` — where 5.3 can already do what v6 does, new code
+  does it the v6 way. The custom property prefix is settled: v6 writes tokens
+  unprefixed and only its dist build adds `--bs-`. Cascade layers make a raw
+  property override every state. Bootstrap's v5 → v6 migration skill is listed
+  as a source, to be fetched when a migration starts
 
 ## [2.13.0] — 2026-10-08
 

@@ -15,16 +15,20 @@ files are listed.
 
 ## Status
 
-**Basis:** documented — read on 2026-10-09 from the v6 documentation
+**Basis:** documented — read on 2026-10-09 from the v6 documentation and the
+v5 → v6 migration skill in the Bootstrap repository
 
 Bootstrap 6 is at **6.0.0-alpha.1**. Everything below is **provisional**: an
 alpha can still change names and behaviour, and an entry here is re-checked
 before it is relied on.
 
-Projects run Bootstrap 5.3. Treat v6 the way [README.md → New code looks one
-major ahead](README.md#new-code-looks-one-major-ahead) treats an unreleased
-TYPO3 major: it breaks a tie between two ways that both work on 5.3, it is never
-a reason to rewrite working code, and no v6 syntax goes into a v5 project.
+Projects run Bootstrap 5.3. **Where 5.3 can already do what v6 does, new code
+does it the v6 way** — so that the upgrade is less work, and so that own code
+uses the same techniques as the components Bootstrap will ship. The list is in
+[Already usable on 5.3](#already-usable-on-53). Beyond that, v6 is treated the
+way [README.md → New code looks one major ahead](README.md#new-code-looks-one-major-ahead)
+treats an unreleased TYPO3 major: no v6 syntax goes into a v5 project, and
+working code is not rewritten for it.
 
 ## Where to look it up
 
@@ -32,9 +36,33 @@ a reason to rewrite working code, and no v6 syntax goes into a v5 project.
   every breaking change, old name → new name
 - **Index for tools:** <https://getbootstrap.com/llms.txt> — every page of the
   v6 documentation, one line each
+- **Migration skill:** `skills/bootstrap-v5-v6-migration/SKILL.md` in
+  <https://github.com/twbs/bootstrap> — the guide as step-by-step instructions
+  for an assistant, with before/after markup and a list of v5 patterns to search
+  for. Fetch the current version when a migration starts; do not install it
+  ahead of one — `npx skills add twbs/bootstrap` adds all of Bootstrap's skills,
+  not only this one
 - **The installed version decides.** Read `node_modules/bootstrap/scss/` of the
   project before writing against a variable or a class — as with TYPO3, the
   installed source is the version that actually runs
+
+## Already usable on 5.3
+
+Each of these works on Bootstrap 5.3 and is what v6 does itself. New code uses
+them where the project's browser support allows; details in the sections below.
+
+- **Own colour tokens with `light-dark()`**, declared once —
+  [scss.md → Colour modes](scss.md#colour-modes)
+- **`color-mix()` instead of the `-rgb` variables** for a transparent colour
+- **Component variables, never properties**, to change a Bootstrap component —
+  [scss.md → Bootstrap components](scss.md#bootstrap-components--set-their-variables-not-their-properties)
+- **`data-variant` names a role, never a colour**, so the colour can come from
+  `theme-*` later — [scss.md → Variants](scss.md#variants-and-modifiers--no-bem-double-dash)
+- **Logical properties in own CSS** — `margin-inline-start`, `padding-block` —
+  which v6 uses for every spacing and border utility
+- **`aria-expanded` instead of `.collapsed`**, and **imports instead of
+  `window.bootstrap`** in JavaScript
+- **A prefix on every own class**, so no name collides with a component v6 adds
 
 ## Changes that touch our rules
 
@@ -82,9 +110,39 @@ v6 derives hover, active and disabled from the `--theme-*` tokens. The rule to
 set a component's variables and never its properties holds even more — see
 [scss.md → Bootstrap components](scss.md#bootstrap-components--set-their-variables-not-their-properties).
 
-**Not settled in the alpha:** the custom property prefix is now added by
-PostCSS, and the documentation shows both `--bs-btn-*` and `--btn-*`. Check the
-built CSS before writing an override against a v6 project.
+**The `--bs-` prefix is added by PostCSS.** In v6's Sass every token is written
+without a prefix (`--btn-bg`, `--spacer`); only the dist and CDN builds run
+PostCSS to make it `--bs-btn-bg`. A project that compiles Bootstrap from source
+— as ours do — has unprefixed properties unless it adds that PostCSS step
+itself. Check the built CSS before writing an override against a v6 project.
+
+**Cascade layers make a raw property worse.** v6 puts its styles into `@layer`
+(`colors, theme, config, root, reboot, layout, content, forms, components,
+custom, helpers, utilities`). Own CSS outside any layer wins over all of them,
+whatever the specificity. On 5.3 a raw `background-color` on `.btn-primary`
+reaches the resting state only; on v6 it overrides every state, and the button
+loses its hover. Overrides that relied on specificity or load order need a
+second look at the upgrade.
+
+Customising moves from single Sass variables to token maps: `$root-tokens` for
+the global tokens, a `$*-tokens` map per component, passed with
+`@use "bootstrap/scss/bootstrap" with (…)`.
+
+### Transparent colours — `color-mix()` instead of `-rgb`
+
+v6 removes every `$*-rgb` Sass variable and `--bs-*-rgb` custom property:
+
+```scss
+/* v5 pattern — gone in v6 */
+background-color: rgba(var(--bs-primary-rgb), .5);
+
+/* v6 — and already valid on 5.3 */
+background-color: color-mix(in oklab, var(--bs-primary), transparent 50%);
+```
+
+**What it means now:** new code uses `color-mix()` where the project's browser
+support allows it. It also works with a token that carries `light-dark()`,
+which an `-rgb` triple cannot.
 
 ### Type sizes
 
@@ -127,7 +185,10 @@ than reaching for `window.bootstrap` — both already work on 5.3.
 ### Responsive utilities and browser support
 
 - Responsive and state variants are written as a prefix: `.d-md-none` →
-  `.md:d-none`, `.col-md-6` → `.md:col-6`
+  `.md:d-none`, `.col-md-6` → `.md:col-6`; `xxl` becomes `2xl`
+- Colour text utilities move to `fg-*`: `.text-primary` → `.fg-primary`,
+  `.text-muted` → `.fg-secondary`
+- Spacing and border utilities keep their names but use logical properties
 - Minimum browsers rise to Chrome/Edge 130, Firefox 132, Safari 18
 
 Both are upgrade work, not something to prepare in a 5.3 project. The browser
