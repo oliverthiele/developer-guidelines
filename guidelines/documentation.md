@@ -4,12 +4,14 @@ scope: documentation
 applies_to:
   - "**/README.md"
   - "**/CHANGELOG.md"
+  - "**/Decisions.md"
 see_also: ["git.md", "third-party-code.md"]
 ---
 # Documentation Guidelines
 
 Standards for README.md and CHANGELOG.md in TYPO3 extensions published on
 Packagist.
+A project's decision log, where one is kept, is at the end.
 
 ---
 
@@ -260,3 +262,24 @@ Rules:
 Breaking changes must appear under `### Removed` or `### Changed` with a
 migration
 note.
+
+---
+
+## Decisions.md — a recommendation, not a requirement
+
+Some decisions create debt on purpose: a cheaper path taken with open eyes, a
+recommendation not followed, a cleanup postponed. When the consequence turns
+up later, a recorded decision makes it a scheduling question. Without the
+record it turns into an argument about what was agreed.
+
+A project that wants this keeps a `Decisions.md` in its root. No project has to.
+Where there is one, an entry is one line, and it names the option not taken
+and the consequence it carries:
+
+```markdown
+- 2026-03-12 — Keep the legacy search for now instead of moving to Solr.
+  Consequence: no facets; the migration is planned work, not a fix.
+```
+
+The file records the decision, not the discussion — that stays in the issue or
+the commit message it came from.

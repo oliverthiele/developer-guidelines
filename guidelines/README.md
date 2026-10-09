@@ -289,6 +289,27 @@ stay next to the configuration, the value moves to `config/system/additional.php
 and the comment goes with it — the core includes that file, and nothing in the
 core calls `writeAdditionalConfiguration()`, the method that could overwrite it.
 
+## Publishing generated documents — ask first
+
+A report, a plan or an evaluation written by an assistant can end up as a file
+in the project or on an external service — an artifact, a shared page,
+anything reachable by link. Publishing it there is the step that cannot be
+taken back: a link without login cannot be withdrawn from one person, records
+no access, and leaves the content with a third party. For customer material
+that is the wrong level, see
+[git.md → No customer data in public repositories](git.md#no-customer-data-in-public-repositories).
+
+**Before a generated document is published, ask how the developer wants it:**
+
+- as a file in the project — `Documentation/`, `ToDos/`, or wherever the
+  project keeps such material, or
+- published, if their plan can restrict sharing to named people or to their
+  organisation.
+
+Ask in the conversation and wait for the answer. Until there is one, write the
+file; never publish by default. If the developer's own instructions already
+answer the question, do not ask again.
+
 ## Decision Rules
 
 - Prefer minimal changes over refactoring

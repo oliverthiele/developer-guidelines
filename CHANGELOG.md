@@ -89,6 +89,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `type=“button“` falls back to a submit button
 - `guidelines/fluid/README.md` → *`<f:comment>`* — an HTML comment without
   `<f:comment>` is executed by Fluid and sent to the page
+- `guidelines/README.md` → *Publishing generated documents — ask first* — before
+  an assistant publishes a report or plan to an external service, it asks
+  whether the developer wants a file in the project or a publication their plan
+  can restrict to named people; the file is the default, and standing
+  instructions answer the question once
+- `guidelines/documentation.md` → *Decisions.md* — an optional decision log,
+  one line per decision with the option not taken and its consequence
 
 ### Changed
 
