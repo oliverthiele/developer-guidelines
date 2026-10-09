@@ -186,7 +186,7 @@ Any special requirements, known limitations, or tips for integrators.
 
 ```yaml
 name: {vendor}/{kebab-case-name}    # e.g., oliverthiele/tech-badges
-prefixFields: false                  # Always false — use existing fields
+prefixFields: false                  # Always false — fields can be shared between blocks
 basics:
   - TYPO3/Appearance
   - TYPO3/Links                      # Only if link fields are used
@@ -198,11 +198,54 @@ fields:
 Rules:
 
 - `name:` uses vendor from `composer.json` + kebab-case element name
-- `prefixFields: false` — always, to use existing TYPO3 fields directly
-- Prefer `useExistingField: true` for standard fields (header, bodytext, header_link, subheader, icon_identifier, assets, image)
-- Custom field identifiers: `snake_case`, descriptive, not abbreviated
+- `prefixFields: false` — always, so that a field is generated once and shared
+  by every block that declares it, see *Reusing fields*
+- Custom field identifiers: `snake_case`, descriptive, not abbreviated — and
+  named for what the field means, not for the block: `max_items`, not
+  `teaserlist_count`, so that the next block can take it
 - Collection field identifiers: `cb_{blockname}_{purpose}` (e.g., `cb_techbadges_items`)
 - Never hardcode labels in config.yaml — use XLIFF files instead
+
+### Reusing fields
+
+**Basis:** documented — *Reuse existing fields* in the Content Blocks manual,
+shipped in `vendor/friendsoftypo3/content-blocks/Documentation/` — and verified
+against `friendsoftypo3/content-blocks` 2.4.10
+
+How a block takes a field depends on who creates the column:
+
+| Column created by | How the block declares it |
+|---|---|
+| The TYPO3 core — `header`, `subheader`, `bodytext`, `header_link`, `image`, `assets` | `useExistingField: true` |
+| Another extension, in its TCA | `useExistingField: true` **and** `type` — Content Blocks reads the type only from a table's base TCA, not from `TCA/Overrides`. The extension becomes a dependency of the package |
+| Another Content Block | The same `identifier` and the same `type`, **without** `useExistingField`. With `prefixFields: false` the column is generated once, whichever block comes first |
+
+`useExistingField` on a column that only Content Blocks creates is the trap.
+Content Blocks writes no SQL for a field marked as existing, so once every block
+marks it that way, no block creates the column, and every element that reads it
+fails with `Record property "…" is not available`.
+
+### Palette identifiers are global
+
+**Basis:** verified against `friendsoftypo3/content-blocks` 2.4.10
+
+A palette from `config.yaml` is registered for the whole table, and Content
+Blocks adds its palettes behind the ones that already exist — a palette of the
+same name that is already there wins, without an error. Give a palette the
+block's name: `{blockname}_header`, never `header_palette` or another name the
+core uses.
+
+### A new Collection on deploy
+
+**Basis:** observed
+
+A new `Collection` brings its own table, whose index is built over the parent
+column — and that column comes from the TCA, which `database:updateschema` reads
+from the cache. Before the cache is flushed, the first run can stop with
+`InvalidIndexDefinitionException … is defined over column
+"foreign_table_parent_uid", which the table does not have`. Run
+`database:updateschema`, `cache:flush` and `database:updateschema` again; the
+second run must report nothing left to add.
 
 ---
 
@@ -226,7 +269,7 @@ grid: { minCols: 2, requiresFullWidth: false }
 - Anchor: `<span class="anchor" id="c{data.uid}"></span>` when element has margin
 - Icons: `<i:icon identifier="{data.icon_identifier}" aria-hidden="true" />` — no hardcoded `iconStyle`
 - State classes: `is-*` / `has-*` pattern, set by JS
-- All text content via `{data.fieldname}` — bodytext via `{data.bodytext -> f:format.html()}`
+- Editor content via `{data.fieldname}` — bodytext via `{data.bodytext -> f:format.html()}`; fixed text via `f:translate`, see *XLIFF labels*
 - Header hierarchy: use `f:switch` on `{data.header_layout}` for configurable heading levels
 
 ---
@@ -251,6 +294,8 @@ Content Blocks resolve labels automatically from `language/labels.xlf` inside th
 - Don't hardcode `iconStyle="solid"` — let SiteSet default handle it
 - Don't use `prefixFields: true` when using existing fields
 - Don't create custom fields for things that already exist
+- Don't set `useExistingField` on a column another Content Block creates — repeat `identifier` and `type` instead
+- Don't name a palette `header_palette` or after any other core palette
 - Don't hardcode frontend text — button texts, units, currency signs
 - Don't put one project's sample content into a label
 - Don't add inline styles — always use CSS/SCSS

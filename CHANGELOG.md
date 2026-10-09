@@ -22,11 +22,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `guidelines/typo3/content-blocks.md` — frontend text via
   `{cb:languagePath()}`, translation files for every site language, and two new
   common mistakes: hardcoded frontend text, one project's content in a label
+- `guidelines/typo3/content-blocks.md` → *Reusing fields* — how a block declares
+  a field depends on who creates the column: the core (`useExistingField`),
+  another extension (`useExistingField` plus `type`, since Content Blocks reads
+  the type only from the base TCA) or another Content Block (same `identifier`
+  and `type`, without `useExistingField`, which would leave the column uncreated)
+- `guidelines/typo3/content-blocks.md` → *Palette identifiers are global* — an
+  existing palette of the same name wins without an error, so a palette carries
+  the block's name, never `header_palette`
+- `guidelines/typo3/content-blocks.md` → *A new Collection on deploy* — the
+  first schema run can fail on the Collection's index; flush the caches and run
+  it again
 
 ### Changed
 
 - `guidelines/README.md` → *Core Principle* — a preserved comment is updated
   when the code it describes changes
+- `guidelines/typo3/content-blocks.md` — `prefixFields: false` is there so that
+  fields can be shared between blocks; custom fields are named for their
+  meaning, not for the block; template text from editors via `{data…}`, fixed
+  text via `f:translate`
+
+### Fixed
+
+- `guidelines/typo3/content-blocks.md` and the `create-content-block` skill
+  listed `icon_identifier` as a standard TYPO3 field. It comes from an
+  extension and needs `type` next to `useExistingField`. The skill now also runs
+  the schema step before checking the backend
 
 ## [2.13.0] — 2026-10-08
 
