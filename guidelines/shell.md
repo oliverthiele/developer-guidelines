@@ -57,6 +57,52 @@ same way, so this is easy to miss in manual testing.
   Live/Staging, which sidesteps the 3.2-vs-5.x gap entirely rather than
   requiring every script to be written defensively enough to work on both.
 
+## Scripts that run on the host and inside the DDEV container
+
+**Basis:** documented — `IS_DDEV_PROJECT` is set in the container only,
+[DDEV: Custom commands](https://docs.ddev.com/en/stable/users/extend/custom-commands/)
+
+**Basis: observed** — a `ddev` command run inside the web container does not
+fail. It prints `not available inside container` and exits 0, so `set -e` does
+not notice. A script that called `ddev mysql` there reported success for every
+step and had written nothing.
+
+Looking for the `ddev` binary and `.ddev/config.yaml` does not tell host and
+container apart — the container sees both. Check `IS_DDEV_PROJECT` first:
+
+```bash
+if [[ "${IS_DDEV_PROJECT:-}" == "true" ]]; then
+    typo3=(vendor/bin/typo3)                  # inside the web container
+elif command -v ddev >/dev/null 2>&1 && [[ -f .ddev/config.yaml ]]; then
+    typo3=(ddev exec typo3)                   # on the host
+else
+    typo3=(vendor/bin/typo3)                  # on a server
+fi
+"${typo3[@]}" cache:flush
+```
+
+When an `--execute` run reports success and nothing changed, suspect this first.
+
+## Long-running Composer scripts under DDEV
+
+**Basis:** observed — the opt-out itself is documented in
+[Composer: Managing process timeouts](https://getcomposer.org/doc/articles/scripts.md#managing-process-timeouts)
+
+DDEV sets `COMPOSER_PROCESS_TIMEOUT` in the web container (2000 seconds where
+it was observed — `ddev exec printenv COMPOSER_PROCESS_TIMEOUT` shows the value).
+Composer stops a script after that time with `exceeded the timeout of … seconds`,
+halfway through. A script that can run longer — a crawl, a full index, a link
+check — starts with the opt-out:
+
+```json
+"scripts": {
+    "check:links": [
+        "Composer\\Config::disableProcessTimeout",
+        "@php vendor/bin/typo3 my:long-command"
+    ]
+}
+```
+
 ## Remote commands run in the remote login shell — never assume bash
 
 **Basis:** observed
@@ -80,3 +126,31 @@ A script that orchestrates servers over ssh therefore does one of these:
 Deployer is not affected: `run()` executes through its `shell` setting, which is
 `bash -ls` by default, whatever the login shell of the deploy user is — checked
 in deployer/deployer 7.5.12.
+
+### A non-interactive command lacks what `~/.bashrc` sets up
+
+**Basis:** observed
+
+Tools put on the `PATH` in `~/.bashrc` — nvm is the usual one — are missing in
+`ssh host 'command'`, and `bash -lc` does not bring them back. The usual cause
+is a guard at the top of `~/.bashrc` that returns for non-interactive shells and
+so skips every line below it. Load the tool in the command itself:
+
+```bash
+ssh deploy@example.com 'export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"; \
+    cd /var/www/project/Build && npm run build'
+```
+
+### Long-running jobs are started detached
+
+**Basis:** observed
+
+A job started in a plain ssh session dies when the connection drops — at its
+next write to the closed terminal. Anything that runs longer than a few
+minutes — a full index, a reference index rebuild — is started detached, with
+its output in a log file:
+
+```bash
+ssh deploy@example.com 'cd /var/www/project && setsid nohup vendor/bin/typo3 my:long-command \
+    > var/log/long-command-$(date +%Y%m%d-%H%M%S).log 2>&1 < /dev/null &'
+```

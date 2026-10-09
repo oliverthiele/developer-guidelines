@@ -33,6 +33,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `guidelines/typo3/content-blocks.md` → *A new Collection on deploy* — the
   first schema run can fail on the Collection's index; flush the caches and run
   it again
+- `guidelines/shell.md` → *Scripts that run on the host and inside the DDEV
+  container* — a `ddev` command inside the container exits 0 without doing
+  anything, so a script checks `IS_DDEV_PROJECT` before looking for the `ddev`
+  binary
+- `guidelines/shell.md` → *Long-running Composer scripts under DDEV* — DDEV sets
+  `COMPOSER_PROCESS_TIMEOUT`; a script that can run longer starts with
+  `Composer\\Config::disableProcessTimeout`
+- `guidelines/shell.md` → *Remote commands* — a non-interactive ssh command
+  lacks what `~/.bashrc` puts on the `PATH` (nvm), and long-running jobs on a
+  server are started detached with `setsid nohup`
 
 ### Changed
 
@@ -42,6 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fields can be shared between blocks; custom fields are named for their
   meaning, not for the block; template text from editors via `{data…}`, fixed
   text via `f:translate`
+- `AGENTS.md` — the routing row for `shell.md` names host or container and
+  long-running jobs
 
 ### Fixed
 
