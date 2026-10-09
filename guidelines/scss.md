@@ -4,7 +4,7 @@ scope: frontend
 applies_to:
   - "**/*.scss"
   - "**/*.css"
-see_also: ["javascript.md", "typo3/content-blocks.md", "third-party-code.md"]
+see_also: ["javascript.md", "typo3/content-blocks.md", "third-party-code.md", "bootstrap.md"]
 ---
 # SCSS / CSS Guidelines
 
@@ -203,6 +203,10 @@ project that later adopts SiteKit collides with its own classes.
 Third-party libraries own their prefixes too (`fa-`, `mfp-`, `cc-`, …). Which ones
 apply depends on the project; record them in the project's `Guidelines/`.
 
+Bootstrap's component names are taken as well. An own class that starts with
+one — `.accordion-product-groups`, `.card-teaser` — reads like Bootstrap and is
+not. It takes the extension's prefix: `.ot-gallery-accordion`.
+
 ### Inner elements — no BEM double-underscore
 
 Inner elements use full prefix + hyphen. No `__`.
@@ -241,11 +245,49 @@ Do not use BEM modifier syntax (`--`). Use these patterns instead:
 <div class="ot-hero-stage ot-hero-stage--fullwidth">…</div>
 ```
 
-Rule: use an additional class for structural/layout variants, and `data-variant`
-or `data-bs-theme` for visual/thematic variants (colours, themes):
+Rule: one mechanism per question.
 
-- Layout changes (spacing, columns, aspect ratio) → additional class
-- Visual changes (colour scheme, theme, brand) → `data-variant` or `data-bs-theme`
+| Question | Mechanism |
+|---|---|
+| Light or dark? | `data-bs-theme` |
+| Which form of the component — `featured`, `muted`, `compact`? | `data-variant` |
+| Spacing, columns, aspect ratio | an additional class |
+| Which palette colour? | Bootstrap's own — see below, never an own attribute |
+
+**`data-variant` names the role, never the colour:** `featured`, not `red` or
+`primary`. A colour value rebuilds Bootstrap's palette as a second system, and
+it has to be migrated in every template and every stored record once the
+palette changes. The values exclude each other — an element has exactly one —
+and a select field in the backend maps onto it without translation:
+`data-variant="{data.variant}"`.
+
+**The colours of an own component come from its variables**, with Bootstrap's
+tokens as the fallback; a variant only sets those variables:
+
+```scss
+.cb-price-card {
+    background-color: var(--cb-price-card-bg, var(--bs-body-bg));
+    color: var(--cb-price-card-color, var(--bs-body-color));
+
+    &[data-variant="featured"] {
+        --cb-price-card-bg: var(--bs-primary);
+        --cb-price-card-color: var(--bs-white);
+    }
+}
+```
+
+**Looking ahead to Bootstrap 6 (provisional):** v6 sets the palette colour with `theme-*`
+classes, which define `--theme-bg`, `--theme-fg`, `--theme-border` and
+`--theme-contrast` and pass them on to the children. The documentation applies
+them to Bootstrap's own components; that an own component reads them as its
+fallback is our conclusion from it, see [bootstrap.md](bootstrap.md). A role
+value such as `featured` survives that change untouched.
+
+**Bootstrap components keep Bootstrap's variant classes** — `btn-dark`,
+`btn-outline-secondary`, `alert-warning` in Bootstrap 5, `btn-solid theme-primary`,
+`alert theme-warning` in Bootstrap 6. They are the variant of a Bootstrap
+component — not a BEM modifier, and not replaced by `data-variant`.
+`data-variant` is for components we build ourselves.
 
 The `data-variant` attribute is matched in SCSS with an attribute selector on the
 component class:
@@ -292,6 +334,18 @@ Rules:
 
 - state classes must always modify a component
 - never use standalone state classes
+
+### Which of two options is the prominent one
+
+A control that shows a state — a tab, a switch, a filter, a toggle — renders
+the **selected** option with the full colour as its ground, and the option you
+could switch to as an outline in the same colour. Never the other way round: a
+page where one control reads one way and the next the other way cannot be read
+at all. The colour says *what* an option is; only the fill changes with the
+state.
+
+Two links side by side are not a state. If clicking the quiet one navigates,
+this rule does not apply; if it changes what the current view shows, it does.
 
 ### Anti-patterns
 
@@ -444,12 +498,21 @@ architecture, not the symptom.
     }
 }
 
-/* Correct — define Bootstrap variable overrides in your global variables file
-   BEFORE importing Bootstrap. Overrides placed after the import have no effect. */
-$btn-primary-bg: #000;
-$btn-primary-border-color: #000;
-$btn-primary-color: #fff;
+/* Correct, for the whole site — the theme colour, set BEFORE importing
+   Bootstrap. Overrides placed after the import have no effect. */
+$primary: #000;
+
+/* Correct, for one area — the component's CSS variables, see below */
+.ot-section-dark .btn-primary {
+    --bs-btn-bg: #000;
+    --bs-btn-border-color: #000;
+    --bs-btn-hover-bg: #333;
+}
 ```
+
+Bootstrap 5 has no `$btn-primary-bg` — the button variants are generated from
+`$theme-colors`. A variable that Bootstrap does not read changes nothing and
+raises no error.
 
 ### Never use deep structural selectors tied to framework internals
 
@@ -495,6 +558,113 @@ lines.
     padding: var(--sk-spacing-section);
 }
 ```
+
+---
+
+## Bootstrap components — set their variables, not their properties
+
+**Basis:** verified against Bootstrap 5.3.8
+
+A Bootstrap 5.3 component reads its colours from CSS variables in every state.
+`.btn` sets `background-color: var(--bs-btn-hover-bg)` in `:hover` and
+`var(--bs-btn-disabled-bg)` in `:disabled`, both with a more specific selector
+than `.btn-primary`. A raw property therefore reaches the resting state only:
+
+```scss
+/* Wrong — hover, focus and disabled keep the variant's colour */
+.btn-primary {
+    background-color: var(--sk-color-brand);
+}
+
+/* Correct — every state Bootstrap defines reads it */
+.btn-primary {
+    --bs-btn-bg: var(--sk-color-brand);
+    --bs-btn-border-color: var(--sk-color-brand);
+}
+```
+
+The same holds for `--bs-alert-*`, `--bs-table-*`, `--bs-card-*` and the other
+components. Own rules state only the difference; a rule that repeats what
+Bootstrap already sets is a copy that drifts. Bootstrap 6 derives every state
+from the `--theme-*` tokens, so a raw property misses even more there — see
+[bootstrap.md](bootstrap.md).
+
+**Sass variables and CSS variables do different jobs.** `$primary` is resolved
+at compile time and applies everywhere. `--bs-btn-bg` is resolved at runtime,
+inherits, and can be set for one area of the page. A change for the whole site
+is a Sass variable before the import; a change for one area is a CSS variable.
+
+## Colour modes
+
+**Basis:** verified against Bootstrap 5.3.8 — `[data-bs-theme="dark"]` sets
+`color-scheme: dark` and redefines the `--bs-*` palette for its subtree; the
+light block sets no `color-scheme`
+
+Write every rule so that it can follow a switch to dark mode, also before the
+switch exists. Everything that reads `--bs-*` variables flips by itself;
+everything that carries a literal colour stays light.
+
+- **No literal colour in a component rule** — not `#fff`, not
+  `rgba(0, 0, 0, .06)`. A colour is a token; the rule reads `var(…)`.
+- **Bootstrap's semantic variables first:** `--bs-body-bg`, `--bs-body-color`,
+  `--bs-border-color`, `--bs-secondary-bg`, `--bs-tertiary-bg`,
+  `--bs-emphasis-color`. They already change with the mode.
+- **An own token carries both values and is declared once**, with
+  `light-dark()`. The browser resolves it against the `color-scheme` of the
+  element that uses it, so one declaration on `:root` serves every subtree:
+
+  ```scss
+  :root {
+      --sk-color-surface: light-dark(#fff, #1a1a1a);
+  }
+
+  // Bootstrap 5.3 sets no color-scheme for light — without this line a light
+  // subtree inside a dark page resolves to the dark value
+  [data-bs-theme="light"] {
+      color-scheme: light;
+  }
+  ```
+
+  This is how Bootstrap 6 defines its own tokens, so the token survives the
+  upgrade unchanged — see [bootstrap.md](bootstrap.md).
+- **Where the project's browser support rules out `light-dark()`**, declare the
+  token twice, in the same commit: under `:root` and under
+  `[data-bs-theme="dark"]`. A token that exists in only one of them breaks the
+  day the switch is built.
+- **A transparent colour is mixed, not built from `-rgb`:**
+  `color-mix(in oklab, var(--bs-primary), transparent 50%)` instead of
+  `rgba(var(--bs-primary-rgb), .5)`. It works with a `light-dark()` token, and
+  Bootstrap 6 removes the `-rgb` variables — see [bootstrap.md](bootstrap.md).
+- **Check both modes before calling it done.** In the browser console:
+  `document.documentElement.dataset.bsTheme = 'dark'`.
+
+## Type sizes — Bootstrap's scale
+
+**Basis:** verified against Bootstrap 5.3.8
+
+A font size comes from a class of Bootstrap's scale. No `font-size` in `rem` or
+`px` in a component rule — also not when a design mock-up names one.
+
+- **Heading level and size are separate.** The element follows the document
+  outline, the class sets the size: `<h3 class="card-title h5">`. `.h1`–`.h6`
+  stay in Bootstrap 6.
+- **When a step of the scale is wrong, change the step**, not one element. An
+  override on a single element is how a size stops being adjustable from one
+  place.
+- **Before changing a step, measure.** It reaches every element at that level —
+  templates, XLIFF labels and content stored in the database alike.
+
+In Bootstrap 5:
+
+- The scale is `.h1`–`.h6`, `.fs-1`–`.fs-6`, `.small`, `.lead`, `.display-*`;
+  a step is changed with `$h5-font-size` and its siblings before the import.
+- With `$enable-rfs` (on by default) Bootstrap shrinks every size above
+  `$rfs-base-value` (1.25rem) on small screens. A `font-size` in a component
+  rule switches that off for the element.
+
+Bootstrap 6 drops RFS for `clamp()`, renames the utilities to
+`.fs-xs`–`.fs-6xl` and removes `.lead` and `.display-*` — see
+[bootstrap.md](bootstrap.md).
 
 ---
 

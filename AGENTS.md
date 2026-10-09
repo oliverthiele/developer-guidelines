@@ -39,6 +39,7 @@ task looks small or the rule seems obvious, and never from memory.
 | TYPO3 extension PHP: TCA, Doctrine DBAL, services, commands, views, extension metadata | [`guidelines/typo3/developer.md`](guidelines/typo3/developer.md) |
 | TYPO3 Content Blocks: structure, portable assets, two-layer CSS, `config.yaml` | [`guidelines/typo3/content-blocks.md`](guidelines/typo3/content-blocks.md) |
 | SiteKit-based projects: layer model, template path abstraction | [`guidelines/typo3/sitekit.md`](guidelines/typo3/sitekit.md) |
+| TYPO3 deployment and database import: schema step, upgrade wizards, Composer on the server, data changes | [`guidelines/typo3/deployment.md`](guidelines/typo3/deployment.md) |
 | Architecture decision: which approach, and when deliberately not (component or partial, ViewHelper or DataProcessor) | [`guidelines/typo3/practices/README.md`](guidelines/typo3/practices/README.md) |
 | TYPO3 version questions: does this still hold in v13, v14? | [`guidelines/typo3/versions.md`](guidelines/typo3/versions.md) |
 | A changelog number or a removed/deprecated API, from the ExtensionScanner, PHPStan or memory | [`guidelines/typo3/changelog-index/`](guidelines/typo3/changelog-index/) — grep only, see below |
@@ -51,11 +52,12 @@ task looks small or the rule seems obvious, and never from memory.
 | SCSS / CSS: Bootstrap first, prefix system, custom properties, state classes | [`guidelines/scss.md`](guidelines/scss.md) |
 | JavaScript / TypeScript: `data-js` hooks, Bootstrap JS, framework choice | [`guidelines/javascript.md`](guidelines/javascript.md) |
 | Vue / Vite | [`guidelines/vue.md`](guidelines/vue.md) |
+| Bootstrap 5 → 6: what changes for our rules, where to look it up (v6 provisional) | [`guidelines/bootstrap.md`](guidelines/bootstrap.md) |
 | Vendored third-party code, license comments, minifier settings, shipped SCSS | [`guidelines/third-party-code.md`](guidelines/third-party-code.md) |
 | Testing: quality checks, execution order, PHPUnit | [`guidelines/testing.md`](guidelines/testing.md) |
 | Playwright E2E tests: patterns, visual regression, helpers | [`guidelines/playwright.md`](guidelines/playwright.md) |
 | Git: branching, commit messages, pull requests, releases | [`guidelines/git.md`](guidelines/git.md) |
-| Shell and bash scripts: Bash 3.2 vs 5.x, `ddev exec`, remote login shell | [`guidelines/shell.md`](guidelines/shell.md) |
+| Shell and bash scripts: Bash 3.2 vs 5.x, `ddev exec`, host or container, remote login shell, long-running jobs | [`guidelines/shell.md`](guidelines/shell.md) |
 | Documentation: README and CHANGELOG | [`guidelines/documentation.md`](guidelines/documentation.md) |
 
 A new guideline file gets its row here and nowhere else — every other list of

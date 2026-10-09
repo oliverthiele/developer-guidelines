@@ -7,6 +7,153 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.14.0] — 2026-10-09
+
+### Added
+
+- `guidelines/README.md` → *Comments — where knowledge belongs* — names, types
+  and tests first, the commit message for why a change was made, a comment only
+  for why the code has to stay this way. Every new comment must still be true
+  and useful once the change is merged. No comments in files TYPO3 rewrites —
+  `settings.php`, site `config.yaml` and `settings.yaml` — or in generated files;
+  a value that needs one moves to `additional.php`
+- `guidelines/xliff/typo3.md` → *Texts for editors and visitors* — labels and
+  descriptions are short, written from the editor's side and agreed with the
+  user first; before adding a frontend label, check what the core already
+  provides; every new key is translated into each language of the site
+- `guidelines/typo3/content-blocks.md` — frontend text via
+  `{cb:languagePath()}`, translation files for every site language, and two new
+  common mistakes: hardcoded frontend text, one project's content in a label
+- `guidelines/typo3/content-blocks.md` → *Reusing fields* — how a block declares
+  a field depends on who creates the column: the core (`useExistingField`),
+  another extension (`useExistingField` plus `type`, since Content Blocks reads
+  the type only from the base TCA) or another Content Block (same `identifier`
+  and `type`, without `useExistingField`, which would leave the column uncreated)
+- `guidelines/typo3/content-blocks.md` → *Palette identifiers are global* — an
+  existing palette of the same name wins without an error, so a palette carries
+  the block's name, never `header_palette`
+- `guidelines/typo3/content-blocks.md` → *A new Collection on deploy* — the
+  first schema run can fail on the Collection's index; flush the caches and run
+  it again
+- `guidelines/shell.md` → *Scripts that run on the host and inside the DDEV
+  container* — a `ddev` command inside the container exits 0 without doing
+  anything, so a script checks `IS_DDEV_PROJECT` before looking for the `ddev`
+  binary
+- `guidelines/shell.md` → *Long-running Composer scripts under DDEV* — DDEV sets
+  `COMPOSER_PROCESS_TIMEOUT`; a script that can run longer starts with
+  `Composer\\Config::disableProcessTimeout`
+- `guidelines/shell.md` → *Remote commands* — a non-interactive ssh command
+  lacks what `~/.bashrc` puts on the `PATH` (nvm), and long-running jobs on a
+  server are started detached with `setsid nohup`
+- `guidelines/git.md` → *Body* — a list of the changes as the summary, and a
+  short paragraph below it only when the diff cannot explain why; anything
+  longer goes into `Guidelines/`, `Documentation/` or an issue
+- `guidelines/git.md` → *Importing someone else's uncommitted work* —
+  `--author` for the person who wrote it, the reason in the body when the work
+  cannot be attributed, "Import from …" instead of "Backup"
+- `guidelines/git.md` → *Git on servers* — `checkout -B` against origin instead
+  of a stale local branch, git and composer as separate commands because a
+  failing `post-checkout` hook sets the exit status of `git checkout`, and what
+  to read before discarding a dirty working tree
+- `guidelines/git.md` → *Stage named paths only* — no `git add -A`, `git add .`,
+  `git add -u` or `git commit -a`; every path is named, because bulk staging
+  takes whatever lies in the working tree. `git rm` without `--cached` deletes
+  the file from disk as well and is only run after asking
+- `guidelines/bootstrap.md` — what changes for our rules in Bootstrap 6
+  (6.0.0-alpha.1, provisional) and where to look it up: colour modes with
+  `light-dark()`, `theme-*` variant classes, component variables, type sizes,
+  class names Bootstrap takes over, JavaScript renames, responsive prefixes and
+  browser minimums. Routing row in `AGENTS.md`
+- `guidelines/scss.md` → *Bootstrap components — set their variables, not their
+  properties* — a raw property reaches the resting state only; a site-wide
+  change is a Sass variable, a change for one area a CSS variable
+- `guidelines/scss.md` → *Colour modes* — no literal colours in component rules,
+  Bootstrap's semantic variables first, own tokens declared once with
+  `light-dark()` (plus `color-scheme: light` for light subtrees on 5.3), twice
+  only where browser support rules it out
+- `guidelines/scss.md` → *Type sizes — Bootstrap's scale* — sizes from the scale
+  classes, heading level and size separate, change the step rather than one
+  element; Bootstrap 5 specifics (RFS, `.fs-1`–`.fs-6`) marked as such
+- `guidelines/scss.md` → *Which of two options is the prominent one* — the
+  selected option of a state control is the filled one
+- `guidelines/scss.md` → *Prefix system* — Bootstrap's component names are taken
+- `guidelines/typo3/deployment.md` — what a deploy and a database import have to
+  account for: `database:updateschema`, `cache:flush` and `database:updateschema`
+  again, because the first run reads the cached TCA; a flush right after a
+  dropped column; `rm -rf var/cache/*` on a major upgrade; upgrade wizards named
+  one by one and confirmed with `--confirm`, since an unconfirmed wizard can be
+  marked as executed; Composer plugins in `require`; `SYS/setMemoryLimit`
+  overriding `php.ini`; scripted data changes. Routing row in `AGENTS.md`
+- `guidelines/fluid/README.md` → *Markup outside `<f:section>`* — what a
+  template with a layout, a template without one and a partial without
+  `section` render outside every section; no `f:debug` in partials
+- `guidelines/fluid/README.md` → *Typographic quotes break attributes* —
+  `type=“button“` falls back to a submit button
+- `guidelines/fluid/README.md` → *`<f:comment>`* — an HTML comment without
+  `<f:comment>` is executed by Fluid and sent to the page
+- `guidelines/README.md` → *Publishing generated documents — ask first* — before
+  an assistant publishes a report or plan to an external service, it asks
+  whether the developer wants a file in the project or a publication their plan
+  can restrict to named people; the file is the default, and standing
+  instructions answer the question once
+- `guidelines/documentation.md` → *Decisions.md* — an optional decision log,
+  one line per decision with the option not taken and its consequence
+- `guidelines/typo3/practices/fluid-components.md` → *Conventions* — component
+  arguments are typed for what the Record API delivers (`TypolinkParameter`,
+  one `FileReference` or a collection depending on `relationship`, `DateTime`),
+  with union types in Fluid 5 and `mixed` in Fluid 4; look for an existing
+  component before writing markup, and add a new one to the project's catalogue
+  in the same commit where the project keeps one
+- `guidelines/bootstrap.md` → *Already usable on 5.3* — the techniques v6 uses
+  that work on 5.3 already: `light-dark()` tokens, `color-mix()` instead of the
+  `-rgb` variables, component variables, role-named `data-variant`, logical
+  properties, `aria-expanded`, imports, prefixed classes
+- `guidelines/bootstrap.md` → *Transparent colours* — `color-mix()` replaces
+  `rgba(var(--bs-*-rgb), …)`; v6 removes the `-rgb` variables
+- `guidelines/scss.md` → *Colour modes* — a transparent colour is mixed with
+  `color-mix()`, not built from `-rgb`
+
+### Changed
+
+- `guidelines/README.md` → *Core Principle* — a preserved comment is updated
+  when the code it describes changes
+- `guidelines/typo3/content-blocks.md` — `prefixFields: false` is there so that
+  fields can be shared between blocks; custom fields are named for their
+  meaning, not for the block; template text from editors via `{data…}`, fixed
+  text via `f:translate`
+- `AGENTS.md` — the routing row for `shell.md` names host or container and
+  long-running jobs
+- `guidelines/git.md` → *GitKraken / AI Instructions* — the commit message body
+  follows the new *Body* rule
+- `guidelines/scss.md` → *Variants and modifiers* — one mechanism per question:
+  `data-bs-theme` for the mode, `data-variant` for the form of an own
+  component, an additional class for layout, Bootstrap's own classes for the
+  palette colour. `data-variant` names a role, never a colour, and Bootstrap
+  components keep their own variant classes
+
+### Fixed
+
+- `guidelines/typo3/content-blocks.md` and the `create-content-block` skill
+  listed `icon_identifier` as a standard TYPO3 field. It comes from an
+  extension and needs `type` next to `useExistingField`. The skill now also runs
+  the schema step before checking the backend
+- `guidelines/scss.md` → *Never override Bootstrap component classes with
+  `!important`* — the example set `$btn-primary-bg`, which Bootstrap 5 does not
+  have, so it changed nothing. It now shows `$primary` for the whole site and
+  `--bs-btn-*` for one area
+- `guidelines/fluid/README.md` → *CDATA no longer comments code out* — CDATA
+  inside `<f:comment>` is harmless in v14, because the comment body is emptied
+  before parsing; a CDATA section on its own is what reaches the page. The v13
+  deprecation entry is written when a template is parsed, not on every render.
+  Points at Feature #108148 for what CDATA means in Fluid 5
+- `guidelines/tooling.md` — `fluid:analyze` without `*.fluid.*` files prints no
+  findings, which looks like a clean run; `--stdin` analyses any template
+- `guidelines/bootstrap.md` — where 5.3 can already do what v6 does, new code
+  does it the v6 way. The custom property prefix is settled: v6 writes tokens
+  unprefixed and only its dist build adds `--bs-`. Cascade layers make a raw
+  property override every state. Bootstrap's v5 → v6 migration skill is listed
+  as a source, to be fetched when a migration starts
+
 ## [2.13.0] — 2026-10-08
 
 ### Added

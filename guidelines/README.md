@@ -9,7 +9,8 @@ Always prefer minimal, targeted changes.
 
 - Do not refactor existing structures unless explicitly required
 - Do not rename variables, methods, or files without necessity
-- Preserve existing comments and architecture
+- Preserve existing comments and architecture — and keep a comment true when
+  the code it describes changes, see [Comments](#comments--where-knowledge-belongs)
 - Extend instead of rewriting
 
 ## Setup
@@ -228,6 +229,86 @@ grep -rn 'Basis:\*\* verified against TYPO3 13' guidelines/     # to re-check
 - IDE: PhpStorm
 - Shell: commands always via `ddev` (e.g. `ddev composer ...`,
   `ddev exec typo3 ...`)
+
+## Comments — where knowledge belongs
+
+A comment is the weakest place to keep knowledge: it goes stale and nothing
+fails. Put each piece of knowledge in the first place that fits:
+
+| Knowledge | Where it goes |
+|---|---|
+| What the code does | **Names** — variable, method, an extracted method, an enum instead of a magic value |
+| What must hold | **Types and tests** — they fail when it stops being true |
+| Why this change was made, what was there before | **The commit message** |
+| Why the code has to stay this way | **A comment** |
+| A decision that spans several files | The project's `Guidelines/` or `Documentation/` folder |
+| What an editor needs to know | **The backend** — see [xliff/typo3.md → Texts for editors and visitors](xliff/typo3.md#texts-for-editors-and-visitors) |
+
+**The test for every new comment: is it still true and still useful once the
+change is merged?** If not, it belongs in the commit message, or nowhere.
+
+What passes the test: a constraint the code cannot express — an order that must
+not be tidied up, see [php.md](php.md) —, a workaround with a link to the
+upstream issue, framework behaviour that surprises, a pointer to a changelog
+entry the next upgrade has to find.
+
+What does not:
+
+- A comment that says what the next line does
+- A change log inside the code: "now uses X instead of Y", "fixed: …"
+- A reference to the task or the conversation: "as requested", "per the new
+  rule"
+- A docblock that repeats the declared types
+- Section banners and commented-out code
+
+Existing comments stay — see [Core Principle](#core-principle). Remove one only
+after asking. When the code a comment describes changes, update the comment in
+the same change, or propose removing it; a stale comment is worse than none.
+
+The reason is cost: every comment is read on every visit to the file, and the
+ones that only describe the diff bury the few that explain a constraint.
+
+### No comments in files a tool rewrites
+
+**Basis:** verified against TYPO3 14.3.7 (`typo3/cms-core`)
+
+TYPO3 writes some files from an array. A comment in them disappears the next
+time someone saves in the backend, and nobody notices:
+
+- `config/system/settings.php` — `ConfigurationManager::writeLocalConfiguration()`
+  rewrites it with `ArrayUtility::arrayExport()`, keys sorted, whenever the
+  Install Tool or an extension configuration is saved
+- `config/sites/*/config.yaml` and `settings.yaml` — `SiteWriter` rewrites them
+  with `Yaml::dump()` when the site or its settings are saved in the backend
+
+The same holds for every generated file: `phpstan-baseline.neon`, lock files,
+translation files that come back from a translation service.
+
+The reason for a value in these files goes into the commit message. If it has to
+stay next to the configuration, the value moves to `config/system/additional.php`
+and the comment goes with it — the core includes that file, and nothing in the
+core calls `writeAdditionalConfiguration()`, the method that could overwrite it.
+
+## Publishing generated documents — ask first
+
+A report, a plan or an evaluation written by an assistant can end up as a file
+in the project or on an external service — an artifact, a shared page,
+anything reachable by link. Publishing it there is the step that cannot be
+taken back: a link without login cannot be withdrawn from one person, records
+no access, and leaves the content with a third party. For customer material
+that is the wrong level, see
+[git.md → No customer data in public repositories](git.md#no-customer-data-in-public-repositories).
+
+**Before a generated document is published, ask how the developer wants it:**
+
+- as a file in the project — `Documentation/`, `ToDos/`, or wherever the
+  project keeps such material, or
+- published, if their plan can restrict sharing to named people or to their
+  organisation.
+
+Ask in the conversation and wait for the answer. Until there is one, write the
+file; never publish by default. If the developer's own instructions already
+answer the question, do not ask again.
 
 ## Decision Rules
 

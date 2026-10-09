@@ -24,7 +24,12 @@ Ask the user (only what's not already clear from context):
 
 1. **Name:** PascalCase directory name (e.g., `TechBadges`, `PriceCard`)
 2. **Purpose:** One sentence — what does the element display?
-3. **Fields:** Which fields are needed? Prefer `useExistingField: true` for standard TYPO3 fields (header, bodytext, header_link, subheader, icon_identifier, assets, image). Only create custom fields when no existing field fits.
+3. **Fields:** Which fields are needed? Reuse before creating, and declare each field by who creates its column — see *Reusing fields* in `guidelines/typo3/content-blocks.md`:
+   - Core fields (header, subheader, bodytext, header_link, assets, image): `useExistingField: true`
+   - Fields from another extension (e.g. `icon_identifier` from `ot-sitekit-ce-texticon`): `useExistingField: true` plus `type`
+   - Fields another Content Block creates: same `identifier` and `type`, without `useExistingField`
+
+   Only create a custom field when none of these fits, and name it for its meaning, not for the block.
 4. **Collection fields?** Does this element need repeatable sub-items (IRRE)? If yes, define the sub-fields.
 5. **Icon?** Does it use ot-icons? If yes, use the `i:icon` ViewHelper with no hardcoded `iconStyle` (use SiteSet default).
 6. **Styling:** Does it need custom CSS? Always create `assets/frontend.css` with portable defaults using the fallback pattern. If the project needs overrides, also create a Build SCSS file.
@@ -55,7 +60,7 @@ if (ExtensionManagementUtility::isLoaded('ot_iconselector')) {
 
 ## After creation
 
-1. Flush TYPO3 caches: `ddev exec typo3 cache:flush`
+1. Create new columns and flush the caches: `ddev exec typo3 database:updateschema "*.add"`, `ddev exec typo3 cache:flush`, then `database:updateschema "*.add"` once more — it must report nothing left to add (a new Collection can fail on the first run, see *A new Collection on deploy* in the guideline)
 2. Check the backend — the new element should appear in the configured SiteKit groups
 3. Do NOT run `fe-build` — the file watcher handles SCSS/JS changes automatically
 4. Test the element in the frontend — the portable CSS from `assets/frontend.css` should already provide basic styling
