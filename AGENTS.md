@@ -39,6 +39,7 @@ task looks small or the rule seems obvious, and never from memory.
 | TYPO3 extension PHP: TCA, Doctrine DBAL, services, commands, views, extension metadata | [`guidelines/typo3/developer.md`](guidelines/typo3/developer.md) |
 | TYPO3 Content Blocks: structure, portable assets, two-layer CSS, `config.yaml` | [`guidelines/typo3/content-blocks.md`](guidelines/typo3/content-blocks.md) |
 | SiteKit-based projects: layer model, template path abstraction | [`guidelines/typo3/sitekit.md`](guidelines/typo3/sitekit.md) |
+| TYPO3 deployment and database import: schema step, upgrade wizards, Composer on the server, data changes | [`guidelines/typo3/deployment.md`](guidelines/typo3/deployment.md) |
 | Architecture decision: which approach, and when deliberately not (component or partial, ViewHelper or DataProcessor) | [`guidelines/typo3/practices/README.md`](guidelines/typo3/practices/README.md) |
 | TYPO3 version questions: does this still hold in v13, v14? | [`guidelines/typo3/versions.md`](guidelines/typo3/versions.md) |
 | A changelog number or a removed/deprecated API, from the ExtensionScanner, PHPStan or memory | [`guidelines/typo3/changelog-index/`](guidelines/typo3/changelog-index/) — grep only, see below |

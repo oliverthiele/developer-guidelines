@@ -75,6 +75,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `guidelines/scss.md` → *Which of two options is the prominent one* — the
   selected option of a state control is the filled one
 - `guidelines/scss.md` → *Prefix system* — Bootstrap's component names are taken
+- `guidelines/typo3/deployment.md` — what a deploy and a database import have to
+  account for: `database:updateschema`, `cache:flush` and `database:updateschema`
+  again, because the first run reads the cached TCA; a flush right after a
+  dropped column; `rm -rf var/cache/*` on a major upgrade; upgrade wizards named
+  one by one and confirmed with `--confirm`, since an unconfirmed wizard can be
+  marked as executed; Composer plugins in `require`; `SYS/setMemoryLimit`
+  overriding `php.ini`; scripted data changes. Routing row in `AGENTS.md`
 
 ### Changed
 
