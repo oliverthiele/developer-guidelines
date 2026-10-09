@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.14.0] — 2026-10-09
+
 ### Added
 
 - `guidelines/README.md` → *Comments — where knowledge belongs* — names, types
