@@ -73,22 +73,29 @@ rm -rf var/cache/*
 
 ## Upgrade wizards
 
-**Basis:** verified against `helhum/typo3-console` 9.0.1
+**Basis:** verified against TYPO3 14.3.8 and `helhum/typo3-console` 9.0.1
 
-- **Name every wizard.** `upgrade:run all` — or an interactive `upgrade:run`
-  without an argument, which offers *all* as its default — also runs the wizards
-  that were left out on purpose. One of them migrates form definitions from
-  files to the database and removes the files.
-- **Confirm with `--confirm`, never by piping `yes`:**
+Since `helhum/typo3-console` 8, `vendor/bin/typo3 upgrade:run` is the core
+command — the console still ships an `UpgradeRunCommand` class but no longer
+registers it. `all`, `--confirm` and `--deny` belong to the console command of
+version 7 and earlier (TYPO3 11); the core command knows none of them.
+
+- **Name every wizard.** `upgrade:run` without an argument runs *every*
+  pending wizard, without asking — also the ones left out on purpose. One of
+  them migrates form definitions from files to the database and removes the
+  files. `upgrade:run all` is not a shortcut: it fails with `No such wizard`.
 
   ```bash
-  vendor/bin/typo3 upgrade:run myWizard --confirm myWizard
+  vendor/bin/typo3 upgrade:run myWizard
   ```
 
-  A wizard that asks for confirmation takes the default answer under
-  `--no-interaction`. When that default is "no", the wizard does nothing — and
-  if its confirmation is not marked as required, the console reports
-  `Skipped wizard "…" and marked as executed`. It is then never offered again.
+- **A wizard with a confirmation question runs interactively**, not under
+  `--no-interaction`. Without a terminal the default answer counts; when that
+  default is "no" and the confirmation is not marked as required, the wizard
+  changes nothing, reports `No changes applied, marking wizard as done.` — and
+  is never offered again. Do not pipe `yes` either: read the question. Whether
+  a wizard asks: it implements `ConfirmableInterface`.
+- **A wizard without a question** can run with `-n`.
 - **Check the result in the data**, not in the exit code: the table the wizard
   writes to, or `upgrade:list` afterwards.
 - **A wizard whose class moved namespace is offered again**, because its old

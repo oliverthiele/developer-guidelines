@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `guidelines/typo3/deployment.md` → *Upgrade wizards* described the
+  `upgrade:run` of `helhum/typo3-console` 7 and earlier. Since console 8 the
+  command is the core's: no `all` keyword, no `--confirm`; without an argument
+  it runs every pending wizard. A wizard with a confirmation question runs
+  interactively, since under `--no-interaction` a "no" default marks it as done
+
 ## [2.15.0] — 2026-10-09
 
 ### Added
